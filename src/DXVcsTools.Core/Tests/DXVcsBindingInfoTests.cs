@@ -1,20 +1,13 @@
 ﻿#if UNIT_TEST
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
-namespace DXVcsTools.Core.Tests
-{
+namespace DXVcsTools.Core.Tests {
     [TestFixture]
-    public class DXVcsBindingInfoTests
-    {
+    public class DXVcsBindingInfoTests {
         [Test]
-        public void GetProjectSccFileTest()
-        {
-            DXVcsBindingInfo bindingReader = new DXVcsBindingInfo();
+        public void GetProjectSccFileTest() {
+            var bindingReader = new DXVcsBindingInfo();
 
             Assert.AreEqual(@"c:\projects\HelloWorld\mssccprj.scc", bindingReader.GetProjectSccFile(@"c:\projects\HelloWorld\HelloWorld.csproj"));
             Assert.AreEqual(@"c:\mssccprj.scc", new DXVcsBindingInfo().GetProjectSccFile(@"c:\Test.csproj"));
@@ -22,4 +15,5 @@ namespace DXVcsTools.Core.Tests
     }
 }
 
-#endif // UNIT_TEST
+#endif
+// UNIT_TEST

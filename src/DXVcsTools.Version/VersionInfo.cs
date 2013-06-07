@@ -1,7 +1,5 @@
-﻿namespace DXVcsTools.Version
-{
-    public sealed class VersionInfo
-    {
+﻿namespace DXVcsTools.Version {
+    public sealed class VersionInfo {
         public const string Major = "1";
         public const string Minor = "2";
         public const string Build = "1";

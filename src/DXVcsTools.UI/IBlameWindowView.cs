@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using DXVcsTools.Data;
 
-namespace DXVcsTools.UI
-{
-    public interface IBlameWindowView
-    {
+namespace DXVcsTools.UI {
+    public interface IBlameWindowView {
         string Caption { get; set; }
         int CurrentLineIndex { get; }
         IList<IBlameLine> Lines { get; }

@@ -1,31 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using DXVcsTools.Core;
 using DXVcsTools.DXVcsClient;
-using System.Configuration;
-using System.IO;
-using DXVcsTools.Data;
-using System.Text;
-using System.Diagnostics;
 
-namespace TortoiseProc
-{
-    static class Program
-    {
+namespace TortoiseProc {
+    static class Program {
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
-        {
-            try
-            {
+        static void Main(string[] args) {
+            try {
                 Options options = Options.ParseOptions(args);
                 string command = options.GetValue("command", null);
-                switch (options.GetValue("command", ""))
-                {
+                switch (options.GetValue("command", "")) {
                     case "blame":
                         if (BlameRunner.Run(options, true)) return;
                         break;
@@ -41,41 +32,36 @@ namespace TortoiseProc
                 }
                 ShowUsage();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 MessageBox.Show(null, e.ToString(), null, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        static bool RunDiff(Options options)
-        {
+        static bool RunDiff(Options options) {
             string path = options.GetValue("path", null);
-            
-            if(string.IsNullOrEmpty(path))
+
+            if (string.IsNullOrEmpty(path))
                 return false;
-            
+
             string vcsFile, vcsService;
             ParsePath(path, out vcsFile, out vcsService);
 
             int leftVersion, rightVersion;
-            if(!int.TryParse(options.GetValue("startrev", "1"), out leftVersion))
+            if (!int.TryParse(options.GetValue("startrev", "1"), out leftVersion))
                 return false;
-            if(!int.TryParse(options.GetValue("endrev", "-1"), out rightVersion))
+            if (!int.TryParse(options.GetValue("endrev", "-1"), out rightVersion))
                 return false;
 
             IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(string.IsNullOrEmpty(vcsService) ? ConfigurationManager.AppSettings["DXVcsService"] : vcsService);
 
             string leftFile = null;
             string rightFile = null;
-            try
-            {
-                try
-                {
+            try {
+                try {
                     leftFile = GetFile(dxRepository, vcsFile, leftVersion);
                 }
                 catch (ArgumentException e) {
-                    if (e.Message.Equals("version", StringComparison.InvariantCultureIgnoreCase))
-                    {
+                    if (e.Message.Equals("version", StringComparison.InvariantCultureIgnoreCase)) {
                         MessageBox.Show(null, "Previous version doesn't exist.", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return true;
                     }
@@ -84,20 +70,16 @@ namespace TortoiseProc
                 }
                 rightFile = GetFile(dxRepository, vcsFile, rightVersion);
 
-                ProcessStartInfo startInfo = new ProcessStartInfo();
+                var startInfo = new ProcessStartInfo();
                 startInfo.FileName = ConfigurationManager.AppSettings["DiffTool"];
-                startInfo.Arguments = string.Format(ConfigurationManager.AppSettings["DiffToolArguments"],
-                    leftFile, rightFile,
-                    vcsFile + ":" + leftVersion.ToString(),
-                    vcsFile + ":" + rightVersion.ToString()
-                );
+                startInfo.Arguments = string.Format(ConfigurationManager.AppSettings["DiffToolArguments"], leftFile, rightFile, vcsFile + ":" + leftVersion.ToString(),
+                    vcsFile + ":" + rightVersion.ToString());
 
                 Process process = Process.Start(startInfo);
                 process.WaitForExit();
             }
-            finally
-            {
-                if (!string.IsNullOrEmpty(leftFile)) 
+            finally {
+                if (!string.IsNullOrEmpty(leftFile))
                     File.Delete(leftFile);
                 if (!string.IsNullOrEmpty(rightFile))
                     File.Delete(rightFile);
@@ -111,8 +93,7 @@ namespace TortoiseProc
             return fileName;
         }
 
-        public static void ParsePath(string path, out string fileName, out string fileSource)
-        {
+        public static void ParsePath(string path, out string fileName, out string fileSource) {
             string[] pathElements = path.Split('|');
             fileName = pathElements[0];
             if (pathElements.Length > 1)
@@ -121,8 +102,7 @@ namespace TortoiseProc
                 fileSource = null;
         }
 
-        private static void ShowUsage()
-        {
+        static void ShowUsage() {
             MessageBox.Show("Usage");
         }
     }

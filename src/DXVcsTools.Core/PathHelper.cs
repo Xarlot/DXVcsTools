@@ -2,17 +2,13 @@
 using System.IO;
 using System.Reflection;
 
-namespace DXVcsTools.Core
-{
-    public static class PathHelper
-    {
-        public static string ResolvePath(string path)
-        {
+namespace DXVcsTools.Core {
+    public static class PathHelper {
+        public static string ResolvePath(string path) {
             return ResolvePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path);
         }
 
-        public static string ResolvePath(string basePath, string path)
-        {
+        public static string ResolvePath(string basePath, string path) {
             if (!Path.IsPathRooted(basePath))
                 throw new ArgumentException("basePath must be rooted");
 

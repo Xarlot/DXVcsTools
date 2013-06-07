@@ -15,49 +15,59 @@
             <Thickness x:Key="horizontalSpaceMargin">0,0,5,0</Thickness>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel Name="clientArea" Margin="10" >
+    <DockPanel Name="clientArea" Margin="10">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="{Binding Source={StaticResource horizontalSpace}}"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="{Binding Source={StaticResource horizontalSpace}}" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}"/>
-                <RowDefinition/>
-                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}"/>
-                <RowDefinition/>
-                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}"/>
-                <RowDefinition/>
-                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}"/>
-                <RowDefinition/>
-                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}"/>
+                <RowDefinition />
+                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}" />
+                <RowDefinition />
+                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}" />
+                <RowDefinition />
+                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}" />
+                <RowDefinition />
+                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}" />
+                <RowDefinition />
+                <RowDefinition Height="{Binding Source={StaticResource verticalSpace}}" />
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Padding="0" VerticalAlignment="Center">Source file:</Label>
-            <TextBox Grid.Row="0" Grid.Column="2" Name="sourceFile" VerticalAlignment="Center" IsReadOnly="True" TextChanged="sourceFile_TextChanged" />
+            <TextBox Grid.Row="0" Grid.Column="2" Name="sourceFile" VerticalAlignment="Center" IsReadOnly="True"
+                     TextChanged="sourceFile_TextChanged" />
 
             <Label Grid.Row="2" Grid.Column="0" Padding="0" VerticalAlignment="Center">Original file:</Label>
-            <TextBox Grid.Row="2" Grid.Column="2" Name="originalFile" VerticalAlignment="Center" IsReadOnly="True" TextChanged="originalFile_TextChanged" />
+            <TextBox Grid.Row="2" Grid.Column="2" Name="originalFile" VerticalAlignment="Center" IsReadOnly="True"
+                     TextChanged="originalFile_TextChanged" />
 
             <Label Grid.Row="4" Grid.Column="0" Padding="0" VerticalAlignment="Center">Target file:</Label>
             <DockPanel Grid.Row="4" Grid.Column="2" VerticalAlignment="Center">
-                <ComboBox Name="branchSelector" SelectionChanged="branchSelector_SelectionChanged" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4 0 0 0" />
+                <ComboBox Name="branchSelector" SelectionChanged="branchSelector_SelectionChanged"
+                          DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4 0 0 0" />
                 <TextBox Name="targetFile" TextChanged="targetFile_TextChanged" VerticalAlignment="Center" />
             </DockPanel>
 
             <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Name="reviewTarget">Review target file after merge</CheckBox>
 
-            <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Name="checkInTarget" Checked="checkInTarget_Toggled" Unchecked="checkInTarget_Toggled">Check-in target file after merge</CheckBox>
+            <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Name="checkInTarget"
+                      Checked="checkInTarget_Toggled" Unchecked="checkInTarget_Toggled">
+                Check-in target file after merge
+            </CheckBox>
         </Grid>
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-            <Button Name="okButton" Content="Merge" MinWidth="100" Margin="{StaticResource horizontalSpaceMargin}" IsDefault="True" Click="okButton_Click" />
-            <Button Name="compareButton" Content="Compare" MinWidth="100" Margin="{StaticResource horizontalSpaceMargin}" Click="compareButton_Click" />
-            <Button Name="cancelButton" Content="Close" MinWidth="100" Margin="0" Click="cancelButton_Click" IsCancel="True" />
+            <Button Name="okButton" Content="Merge" MinWidth="100" Margin="{StaticResource horizontalSpaceMargin}"
+                    IsDefault="True" Click="okButton_Click" />
+            <Button Name="compareButton" Content="Compare" MinWidth="100"
+                    Margin="{StaticResource horizontalSpaceMargin}" Click="compareButton_Click" />
+            <Button Name="cancelButton" Content="Close" MinWidth="100" Margin="0" Click="cancelButton_Click"
+                    IsCancel="True" />
         </WrapPanel>
         <TextBox Name="checkInComment" MinHeight="80" Margin="0,0,0,10"
                  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
-                 IsEnabled="{Binding ElementName=checkInTarget, Path=IsChecked}" TextChanged="checkInComment_TextChanged"/>
+                 IsEnabled="{Binding ElementName=checkInTarget, Path=IsChecked}"
+                 TextChanged="checkInComment_TextChanged" />
     </DockPanel>
 </Window>

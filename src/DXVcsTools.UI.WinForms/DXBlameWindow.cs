@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using DXVcsTools.Data;
 
-namespace DXVcsTools.UI.WinForms
-{
-    public partial class DXBlameWindow : Form, IBlameWindowView 
-    {
-        object CopyComment = new object();
-        object ShowPreviousRevision = new object();
-        object ShowDifferences = new object();
-        
+namespace DXVcsTools.UI.WinForms {
+    public partial class DXBlameWindow : Form, IBlameWindowView {
+        readonly object CopyComment = new object();
+        readonly object ShowDifferences = new object();
+        readonly object ShowPreviousRevision = new object();
+        public DXBlameWindow() {
+            InitializeComponent();
+        }
+
         string IBlameWindowView.Caption {
-            get { return this.Text; }
-            set { this.Text = value; }
+            get { return Text; }
+            set { Text = value; }
         }
 
         int IBlameWindowView.CurrentLineIndex {
             get {
                 BlameViewControl currentBlameView = GetActiveBlameViewControl();
-                if(currentBlameView != null)
+                if (currentBlameView != null)
                     return currentBlameView.CurrentLineIndex;
                 return -1;
             }
@@ -28,7 +29,7 @@ namespace DXVcsTools.UI.WinForms
         IList<IBlameLine> IBlameWindowView.Lines {
             get {
                 BlameViewControl currentBlameView = GetActiveBlameViewControl();
-                if(currentBlameView != null)
+                if (currentBlameView != null)
                     return currentBlameView.Lines;
                 return null;
             }
@@ -49,74 +50,65 @@ namespace DXVcsTools.UI.WinForms
             remove { Events.AddHandler(ShowDifferences, value); }
         }
 
-        public DXBlameWindow()
-        {
-            InitializeComponent();
-        }
-
-        void IBlameWindowView.ClipboardSetText(string text)
-        {
+        void IBlameWindowView.ClipboardSetText(string text) {
             if (string.IsNullOrEmpty(text))
                 Clipboard.Clear();
             else
                 Clipboard.SetText(text);
         }
-        
+
         void IBlameWindowView.ShowModal() {
-            this.ShowDialog();
+            ShowDialog();
         }
-        
-        void IBlameWindowView.ShowRevision(IList<IBlameLine> data, string caption,  int lineNumber)
-        {
-            TabPage tabPage = new TabPage();
-            BlameViewControl blameViewControl = new BlameViewControl();
+
+        void IBlameWindowView.ShowRevision(IList<IBlameLine> data, string caption, int lineNumber) {
+            var tabPage = new TabPage();
+            var blameViewControl = new BlameViewControl();
             blameViewControl.Fill(data);
             blameViewControl.Dock = DockStyle.Fill;
-            blameViewControl.InfoContextMenuStrip = this.contextMenuStrip1;
+            blameViewControl.InfoContextMenuStrip = contextMenuStrip1;
 
             tabPage.Controls.Add(blameViewControl);
             tabPage.Text = caption;
             tabControl1.TabPages.Add(tabPage);
             tabControl1.SelectedTab = tabPage;
         }
-        
-        void IBlameWindowView.ShowError(string title, string message)
-        {
+
+        void IBlameWindowView.ShowError(string title, string message) {
             MessageBox.Show(this, message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-       
+
         void RaiseEvent(object eventObject) {
-            EventHandler handler = (EventHandler)Events[eventObject];
-            if(handler != null)
+            var handler = (EventHandler)Events[eventObject];
+            if (handler != null)
                 handler(this, EventArgs.Empty);
         }
 
-        BlameViewControl GetActiveBlameViewControl() { 
+        BlameViewControl GetActiveBlameViewControl() {
             TabPage selectedTabPage = tabControl1.SelectedTab;
-            if(selectedTabPage.Controls.Count > 0 && selectedTabPage.Controls[0] is BlameViewControl)
+            if (selectedTabPage.Controls.Count > 0 && selectedTabPage.Controls[0] is BlameViewControl)
                 return selectedTabPage.Controls[0] as BlameViewControl;
             return null;
         }
 
         void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-            if(e.ClickedItem == this.copyCommentToolStripMenuItem) {
+            if (e.ClickedItem == copyCommentToolStripMenuItem) {
                 RaiseEvent(CopyComment);
-            } else if(e.ClickedItem == this.blamePreviousRevisionToolStripMenuItem) {
+            }
+            else if (e.ClickedItem == blamePreviousRevisionToolStripMenuItem) {
                 RaiseEvent(ShowPreviousRevision);
-            } else if(e.ClickedItem == this.showChangesToolStripMenuItem) {
+            }
+            else if (e.ClickedItem == showChangesToolStripMenuItem) {
                 RaiseEvent(ShowDifferences);
             }
         }
 
-        private void tabControl1_MouseClick(object sender, MouseEventArgs e)
-        {
-            if(e.Button != MouseButtons.Middle && e.Clicks != 1)
+        void tabControl1_MouseClick(object sender, MouseEventArgs e) {
+            if (e.Button != MouseButtons.Middle && e.Clicks != 1)
                 return;
 
-            for (int i = 1; i < tabControl1.TabCount; i++) 
-            {
-                if (tabControl1.GetTabRect(i).Contains(e.Location)) 
-                {
+            for (int i = 1; i < tabControl1.TabCount; i++) {
+                if (tabControl1.GetTabRect(i).Contains(e.Location)) {
                     tabControl1.TabPages.RemoveAt(i);
                     break;
                 }

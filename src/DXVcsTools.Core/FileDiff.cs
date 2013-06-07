@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SharpSvn.Diff;
 using System.IO;
+using SharpSvn.Diff;
 
-namespace DXVcsTools.Core
-{
-    public class FileDiffException : Exception
-    {
-        public FileDiffException() : this(null) { }
-        public FileDiffException(string message) : base(message) { }
+namespace DXVcsTools.Core {
+    public class FileDiffException : Exception {
+        public FileDiffException() : this(null) {
+        }
+        public FileDiffException(string message) : base(message) {
+        }
     }
 
-    public class FileDiff
-    {
-        public bool Merge(string originalFile, string modifiedFile, string targetFile)
-        {
+    public class FileDiff {
+        public bool Merge(string originalFile, string modifiedFile, string targetFile) {
             if (string.IsNullOrEmpty(originalFile))
                 throw new ArgumentException("originalFile");
 
@@ -26,22 +21,19 @@ namespace DXVcsTools.Core
             if (string.IsNullOrEmpty(targetFile))
                 throw new ArgumentException("targetFile");
 
-            using (MemoryStream targetStream = new MemoryStream())
-            {
+            using (var targetStream = new MemoryStream()) {
                 SvnFileDiff diff = null;
                 if (!SvnFileDiff.TryCreate(originalFile, modifiedFile, targetFile, new SvnFileDiffArgs(), out diff))
                     throw new FileDiffException("SvnFileDiff.TryCreate failed");
 
-                try
-                {
+                try {
                     if (diff.HasConflicts)
                         return false;
 
                     if (!diff.WriteMerged(targetStream, new SvnDiffWriteMergedArgs()))
                         throw new FileDiffException("SvnFileDiff.WriteMerged failed");
                 }
-                finally
-                {
+                finally {
                     diff.Dispose();
                 }
 

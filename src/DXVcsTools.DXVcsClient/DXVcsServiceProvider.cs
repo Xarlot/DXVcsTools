@@ -4,29 +4,25 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using DXVCS;
 
-namespace DXVcsTools.DXVcsClient
-{
-    class DXVcsServiceProvider : MarshalByRefObject
-    {
-        private static bool channelRegistered;
-        private IDXVCSService service;
+namespace DXVcsTools.DXVcsClient {
+    class DXVcsServiceProvider : MarshalByRefObject {
+        static bool channelRegistered;
+        IDXVCSService service;
 
         static void RegisterChannel() {
-            Hashtable properties = new Hashtable();
+            var properties = new Hashtable();
             properties.Add("timeout", 200000);
             properties.Add("secure", true);
 
-            BinaryClientFormatterSinkProvider clientSinkProvider = new BinaryClientFormatterSinkProvider();
+            var clientSinkProvider = new BinaryClientFormatterSinkProvider();
             clientSinkProvider.Next = new CompressedClientFormatterSinkProvider(false);
 
-            TcpChannel clientChannel = new TcpChannel(properties, clientSinkProvider, null);
+            var clientChannel = new TcpChannel(properties, clientSinkProvider, null);
             ChannelServices.RegisterChannel(clientChannel, false);
         }
 
-        public IDXVCSService CreateService(string serviceUrl)
-        {
-            if (!channelRegistered)
-            {
+        public IDXVCSService CreateService(string serviceUrl) {
+            if (!channelRegistered) {
                 RegisterChannel();
                 channelRegistered = true;
             }
@@ -35,9 +31,8 @@ namespace DXVcsTools.DXVcsClient
             return service;
         }
 
-        public override object InitializeLifetimeService()
-        {
-            return null;    // lease never expires
+        public override object InitializeLifetimeService() {
+            return null; // lease never expires
         }
     }
 }

@@ -1,26 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DXVCS;
 
-namespace DXVcsTools.DXVcsClient
-{
-    class FileHistory : IEnumerable<FileVersionInfo> 
-    {
-        readonly string vcsFile;
+namespace DXVcsTools.DXVcsClient {
+    class FileHistory : IEnumerable<FileVersionInfo> {
         readonly IDXVCSService service;
-        FileHistoryInfo[] history;
+        readonly string vcsFile;
         byte[][] data;
-        int[] versions;
+        FileHistoryInfo[] history;
         byte[] previousData;
+        int[] versions;
+        public FileHistory(string vcsFile, IDXVCSService service) {
+            this.vcsFile = vcsFile;
+            this.service = service;
+        }
 
-        FileHistoryInfo[] History 
-        {
-            get 
-            {
-                if (history == null)
-                {
+        FileHistoryInfo[] History {
+            get {
+                if (history == null) {
                     history = service.GetFileHistory(vcsFile, null, null, null, false);
                     Array.Sort(history, (x, y) => y.Version - x.Version);
 
@@ -30,30 +28,21 @@ namespace DXVcsTools.DXVcsClient
             }
         }
 
-        public int Count 
-        {
+        public int Count {
             get { return History.Length; }
         }
 
-        public FileHistory(string vcsFile, IDXVCSService service)
-        {
-            this.vcsFile = vcsFile;
-            this.service = service;
-        }
-
-        public IEnumerator<FileVersionInfo> GetEnumerator()
-        {
+        public IEnumerator<FileVersionInfo> GetEnumerator() {
             int i = 0;
             bool previousIsBranch = false;
-            foreach (FileHistoryInfo historyInfo in History)
-            {
+            foreach (FileHistoryInfo historyInfo in History) {
                 if (historyInfo.Type != HistoryInfoType.File)
                     continue;
 
-                if(!previousIsBranch) {
+                if (!previousIsBranch) {
                     byte[] revisionData = DXVCSHelpers.TryToDecompressData(data[i]);
                     int version;
-                    if(Diff.IsDiffs(revisionData, out version)) {
+                    if (Diff.IsDiffs(revisionData, out version)) {
                         byte[] curSplitter;
                         DiffByteItem[] diffs = Diff.BytesToDiffs(revisionData, out curSplitter);
                         revisionData = Diff.GetDataFromDiff(previousData, diffs, curSplitter);
@@ -67,10 +56,8 @@ namespace DXVcsTools.DXVcsClient
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
     }
-    
 }

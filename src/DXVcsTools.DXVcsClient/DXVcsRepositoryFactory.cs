@@ -2,22 +2,17 @@
 using System.IO;
 using System.Reflection;
 
-namespace DXVcsTools.DXVcsClient
-{
-    public class DXVcsRepositoryFactory
-    {
+namespace DXVcsTools.DXVcsClient {
+    public class DXVcsRepositoryFactory {
         static DXVcsServiceProvider _serviceProvider;
         static readonly object _serviceProviderLock = new object();
 
-        static DXVcsRepositoryFactory()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+        static DXVcsRepositoryFactory() {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
 
-        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            if (args.Name == typeof(DXVcsServiceProvider).Assembly.FullName)
-            {
+        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+            if (args.Name == typeof(DXVcsServiceProvider).Assembly.FullName) {
                 return typeof(DXVcsServiceProvider).Assembly;
             }
 
@@ -29,15 +24,12 @@ namespace DXVcsTools.DXVcsClient
             return null;
         }
 
-        public static IDXVcsRepository Create(string serviceUrl)
-        {
+        public static IDXVcsRepository Create(string serviceUrl) {
             if (string.IsNullOrEmpty(serviceUrl))
                 throw new ArgumentException("serviceUrl");
 
-            lock (_serviceProviderLock)
-            {
-                if (_serviceProvider == null)
-                {
+            lock (_serviceProviderLock) {
+                if (_serviceProvider == null) {
                     CreateServiceProvider();
                 }
             }
@@ -45,22 +37,15 @@ namespace DXVcsTools.DXVcsClient
             return new DXVcsRepository(_serviceProvider.CreateService(serviceUrl));
         }
 
-        static void CreateServiceProvider()
-        {
-            AppDomainSetup domainSetup = new AppDomainSetup();
+        static void CreateServiceProvider() {
+            var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetAssembly(typeof(DXVcsServiceProvider)).Location);
 
             AppDomain domain = AppDomain.CreateDomain("DXVcsServiceProviderDomain", null, domainSetup);
-            _serviceProvider = (DXVcsServiceProvider)domain.CreateInstanceAndUnwrap(
-                typeof(DXVcsServiceProvider).Assembly.FullName,
-                typeof(DXVcsServiceProvider).FullName,
-                false,
-                BindingFlags.Public | BindingFlags.Instance,
-                null,
-                null,
-                null,
-                null,
-                null);
+            _serviceProvider =
+                (DXVcsServiceProvider)
+                    domain.CreateInstanceAndUnwrap(typeof(DXVcsServiceProvider).Assembly.FullName, typeof(DXVcsServiceProvider).FullName, false, BindingFlags.Public | BindingFlags.Instance, null, null,
+                        null, null, null);
         }
     }
 }

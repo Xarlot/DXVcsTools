@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace DXVcsTools.UI
-{
-    public interface IPortWindowView
-    {
+namespace DXVcsTools.UI {
+    public interface IPortWindowView {
         bool CanUpdate { get; }
         string Title { get; set; }
         string SourceFile { get; set; }
