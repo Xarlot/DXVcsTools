@@ -16,8 +16,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DXVcsTools</RootNamespace>
     <AssemblyName>DXVcsTools.VSIX</AssemblyName>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>DXVcsTools.Key.pfx</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -53,6 +53,7 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -121,6 +122,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="MenuViewModel.cs" />
     <Compile Include="MyControl.xaml.cs">
       <DependentUpon>MyControl.xaml</DependentUpon>
@@ -149,12 +151,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DXVcsTools.Key.pfx" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="DXVcsTools.VSIX.vsct">
@@ -172,6 +172,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DXVcsTools.Core\DXVcsTools.Core.csproj">
+      <Project>{FF2054C1-BA2D-4A2B-A61C-ED8E5EF50860}</Project>
+      <Name>DXVcsTools.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DXVcsTools.DXVcsClient\DXVcsTools.DXVcsClient.csproj">
+      <Project>{12aff108-fd20-4c7d-89c4-020d2cb87b35}</Project>
+      <Name>DXVcsTools.DXVcsClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DXVcsTools.UI.WinForms\DXVcsTools.UI.WinForms.csproj">
+      <Project>{9de18f37-7cd2-4c15-81c5-51feec29cb79}</Project>
+      <Name>DXVcsTools.UI.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DXVcsTools.UI.Wpf\DXVcsTools.UI.Wpf.csproj">
+      <Project>{31804bef-2694-4d7b-8cc6-a7ad518311b6}</Project>
+      <Name>DXVcsTools.UI.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DXVcsTools.UI\DXVcsTools.UI.csproj">
+      <Project>{6f3a4678-865a-4e2a-a1a3-60d8746f3bcf}</Project>
+      <Name>DXVcsTools.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
