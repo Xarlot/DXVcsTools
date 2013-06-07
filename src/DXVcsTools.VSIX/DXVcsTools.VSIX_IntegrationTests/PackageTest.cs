@@ -1,5 +1,5 @@
 ﻿using System;
-using Company.DXVcsTools_VSIX;
+using DXVcsTools.VSIX;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

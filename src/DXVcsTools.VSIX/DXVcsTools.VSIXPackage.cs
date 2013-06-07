@@ -7,7 +7,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Company.DXVcsTools_VSIX {
+namespace DXVcsTools.VSIX {
     /// <summary>
     ///     This is the class that implements the package exposed by this assembly.
     ///     The minimum requirement for a class to be considered a valid package for Visual Studio

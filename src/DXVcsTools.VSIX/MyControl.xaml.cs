@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Company.DXVcsTools_VSIX {
+namespace DXVcsTools.VSIX {
     /// <summary>
     ///     Interaction logic for MyControl.xaml
     /// </summary>

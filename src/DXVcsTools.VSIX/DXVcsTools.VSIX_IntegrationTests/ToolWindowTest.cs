@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using Company.DXVcsTools_VSIX;
+using DXVcsTools.VSIX;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VsSDK.IntegrationTestLibrary;

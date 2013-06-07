@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace Company.DXVcsTools_VSIX {
+namespace DXVcsTools.VSIX {
     /// <summary>
     ///     This class implements the tool window exposed by this package and hosts a user control.
     ///     In Visual Studio tool windows are composed of a frame (implemented by the shell) and a pane,
