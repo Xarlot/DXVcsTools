@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace DXVcsTools.Data
-{
-    public interface IBlameLine
-    {
+namespace DXVcsTools.Data {
+    public interface IBlameLine {
         string SourceLine { get; }
         string Comment { get; }
         string User { get; }

@@ -1,15 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+﻿<?xml
+  version="1.0"
+  encoding="utf-8"?>
+
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011"
+                 xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="DXVcsTools.VSIX..e213e784-cf13-4a14-94e8-1057b05ea2ae" Version="1.0" Language="en-US" Publisher="Xarlot" />
+    <Identity Id="2631d8dd-813b-41eb-8f9a-fe0fc88ecba9" Version="2.0" Language="en-US" Publisher="Company" />
     <DisplayName>DXVcsTools.VSIX</DisplayName>
-    <Description xml:space="preserve">DXVcsTools VSIX project</Description>
+    <Description>DXVcsTools package</Description>
   </Metadata>
-  <Installation>
+  <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
-    <InstallationTarget Version="10.0" Id="Microsoft.VisualStudio.Pro" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed"
+                Version="11.0" />
   </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%"
+           Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
 </PackageManifest>

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace DXVcsTools.DXVcsClient
-{
-    public interface IDXVcsRepository
-    {
+namespace DXVcsTools.DXVcsClient {
+    public interface IDXVcsRepository {
         FileVersionInfo[] GetFileHistory(string vcsFile, out string fileName);
         FileDiffInfo GetFileDiffInfo(string vcsFile);
         FileDiffInfo GetFileDiffInfo(string vcsFile, Action<int, int> progressAction, SpacesAction spacesAction);
