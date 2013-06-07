@@ -1,0 +1,2 @@
+This is a stub file.
+It is used in the setup.iss to run AfterInstall function. The file is placed in a setup temporary folder and removed when setup is complete.

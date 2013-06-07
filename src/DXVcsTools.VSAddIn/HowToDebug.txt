@@ -1,0 +1,6 @@
+To start VSAddIn project for debugging, change project debug properties as follows:
+
+Start external program: C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe
+Command line arguments: /resetaddin DXVcsTools.VSAddIn.Connect
+Working directory: C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\
+
