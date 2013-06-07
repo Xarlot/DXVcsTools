@@ -10,28 +10,29 @@ using DXVcsTools.UI;
 using DXVcsTools.UI.WinForms;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Configuration = System.Configuration.Configuration;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace DXVcsTools.VSIX {
     public class MenuViewModel {
-        DTE2 _applicationObject;
-        Configuration _configuration;
+        DTE applicationObject;
+        Configuration configuration;
 
         public void DoConnect(object application) {
-            _applicationObject = (DTE2)application;
+            applicationObject = Package.GetGlobalService(typeof(DTE)) as DTE ;
 
-            _configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+            configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
         }
         public void DoPort() {
             string fileName = null;
             if (!CanHandleActiveDocument(ref fileName))
                 return;
-
-            var dxPortConfiguration = ConfigurationHelper.GetSection<DXPortConfiguration>(_configuration, "dxPortConfiguration");
+            
+            var dxPortConfiguration = ConfigurationHelper.GetSection<DXPortConfiguration>(configuration, "dxPortConfiguration");
             IViewFactory factory = CreateViewFactory(dxPortConfiguration.UIType);
 
-            var model = new PortWindowModel(fileName, _applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
+            var model = new PortWindowModel(fileName, applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
 
             IPortWindowView ui = factory.CreatePortWindow();
 
