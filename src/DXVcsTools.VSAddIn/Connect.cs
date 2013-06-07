@@ -6,7 +6,7 @@ using System.Resources;
 using System.Windows;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
-using DXVcsTools.UI.WinForms;
+using DXVcsTools.UI.Wpf;
 using EnvDTE;
 using EnvDTE80;
 using Extensibility;

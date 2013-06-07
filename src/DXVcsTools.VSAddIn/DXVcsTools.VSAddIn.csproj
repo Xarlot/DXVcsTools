@@ -158,10 +158,6 @@
       <Project>{FF2054C1-BA2D-4A2B-A61C-ED8E5EF50860}</Project>
       <Name>DXVcsTools.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DXVcsTools.UI.WinForms\DXVcsTools.UI.WinForms.csproj">
-      <Project>{9DE18F37-7CD2-4C15-81C5-51FEEC29CB79}</Project>
-      <Name>DXVcsTools.UI.WinForms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DXVcsTools.UI.Wpf\DXVcsTools.UI.Wpf.csproj">
       <Project>{31804BEF-2694-4D7B-8CC6-A7AD518311B6}</Project>
       <Name>DXVcsTools.UI.Wpf</Name>

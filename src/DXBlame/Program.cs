@@ -6,7 +6,6 @@ using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Wpf;
 using DXVcsTools.Version;
-using ViewFactory = DXVcsTools.UI.WinForms.ViewFactory;
 
 namespace DXBlame {
     class Program {

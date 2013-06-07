@@ -29,6 +29,8 @@ namespace DXVcsTools.VSIX {
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
     public sealed class DXVcsTools_VSIXPackage : Package {
+        MenuViewModel Menu { get; set; }
+
         /// <summary>
         ///     Default constructor of the package.
         ///     Inside this method you can place any initialization code that does not require
@@ -38,6 +40,8 @@ namespace DXVcsTools.VSIX {
         /// </summary>
         public DXVcsTools_VSIXPackage() {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
+            Menu = new MenuViewModel();
+            Menu.DoConnect();
         }
 
         /// <summary>
@@ -67,13 +71,7 @@ namespace DXVcsTools.VSIX {
         ///     the OleMenuCommandService service and the MenuCommand class.
         /// </summary>
         void MenuItemCallback(object sender, EventArgs e) {
-            // Show a Message Box to prove we were here
-            var uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(0, ref clsid, "DXVcsTools.VSIX", string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", ToString()), string.Empty, 0,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO, 0, // false
-                out result));
+            Menu.DoPort();
         }
 
         #region Package Members

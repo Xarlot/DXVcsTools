@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
-using DXVcsTools.UI.WinForms;
+using DXVcsTools.UI.Wpf;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -19,7 +19,7 @@ namespace DXVcsTools.VSIX {
         DTE applicationObject;
         Configuration configuration;
 
-        public void DoConnect(object application) {
+        public void DoConnect() {
             applicationObject = Package.GetGlobalService(typeof(DTE)) as DTE ;
 
             configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
@@ -30,7 +30,7 @@ namespace DXVcsTools.VSIX {
                 return;
             
             var dxPortConfiguration = ConfigurationHelper.GetSection<DXPortConfiguration>(configuration, "dxPortConfiguration");
-            IViewFactory factory = CreateViewFactory(dxPortConfiguration.UIType);
+            IViewFactory factory = new ViewFactory();
 
             var model = new PortWindowModel(fileName, applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
 
@@ -41,33 +41,24 @@ namespace DXVcsTools.VSIX {
 
             ui.ShowModal();
         }
-        IViewFactory CreateViewFactory(DXPortUIType uiType) {
-            if (uiType == DXPortUIType.WinForms)
-                return new ViewFactory();
-
-            if (uiType == DXPortUIType.Wpf)
-                return new UI.Wpf.ViewFactory();
-
-            throw new ArgumentException("Unexpected value: " + uiType, "uiType");
-        }
 
         string GetClassQualifiedCommandName(string name) {
             return string.Format("{0}.{1}", GetType().FullName, name);
         }
 
         bool CanHandleActiveDocument(ref string fileName) {
-            //if (_applicationObject.ActiveDocument == null) {
-            //    MessageBox.Show("No current document.", _addInInstance.Name, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            //    return false;
-            //}
+            if (applicationObject.ActiveDocument == null) {
+                MessageBox.Show("No current document.", "test", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
 
-            //fileName = _applicationObject.ActiveDocument.FullName;
-            //var sourceControl = (SourceControl2)_applicationObject.SourceControl;
+            fileName = applicationObject.ActiveDocument.FullName;
+            var sourceControl = (SourceControl2)applicationObject.SourceControl;
 
-            //if (!sourceControl.IsItemUnderSCC(fileName)) {
-            //    MessageBox.Show(string.Concat("File ", fileName, " is not under source control."), _addInInstance.Name, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            //    return false;
-            //}
+            if (!sourceControl.IsItemUnderSCC(fileName)) {
+                MessageBox.Show(string.Concat("File ", fileName, " is not under source control."), "test", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
 
             return true;
         }
