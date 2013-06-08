@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="MyToolWindow.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="OptionsViewModel.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -152,7 +153,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -178,14 +178,11 @@
     <ProjectReference Include="..\DXVcsTools.Core\DXVcsTools.Core.csproj">
       <Project>{FF2054C1-BA2D-4A2B-A61C-ED8E5EF50860}</Project>
       <Name>DXVcsTools.Core</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\DXVcsTools.DXVcsClient\DXVcsTools.DXVcsClient.csproj">
       <Project>{12aff108-fd20-4c7d-89c4-020d2cb87b35}</Project>
       <Name>DXVcsTools.DXVcsClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DXVcsTools.UI.Wpf\DXVcsTools.UI.Wpf.csproj">
-      <Project>{31804bef-2694-4d7b-8cc6-a7ad518311b6}</Project>
-      <Name>DXVcsTools.UI.Wpf</Name>
     </ProjectReference>
     <ProjectReference Include="..\DXVcsTools.UI\DXVcsTools.UI.csproj">
       <Project>{6f3a4678-865a-4e2a-a1a3-60d8746f3bcf}</Project>

@@ -1,18 +1,10 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Runtime.InteropServices;
 
 namespace DXVcsTools.Core {
-    public class DXVcsBranch : ConfigurationElement {
-        const string nameProperty = "name";
-        const string pathProperty = "path";
-
-        [ConfigurationProperty(nameProperty, IsRequired = true)]
-        public string Name {
-            get { return this[nameProperty] as string; }
-        }
-
-        [ConfigurationProperty(pathProperty, IsRequired = true)]
-        public string Path {
-            get { return this[pathProperty] as string; }
-        }
+    public class DXVcsBranch {
+        public string Name { get; set; }
+        public string Path { get; set; }
     }
 }
