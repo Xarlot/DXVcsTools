@@ -145,9 +145,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="C:\Users\Igor\Documents\Visual Studio 2008\Addins\DXVcsTools.VSAddIn - For Testing.AddIn">
-      <Link>DXVcsTools.VSAddIn - For Testing.AddIn</Link>
-    </Content>
     <Content Include="DXVcsTools.VSAddIn.AddIn" />
   </ItemGroup>
   <ItemGroup>
