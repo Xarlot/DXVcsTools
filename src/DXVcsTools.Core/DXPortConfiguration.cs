@@ -3,47 +3,47 @@ using System.Configuration;
 
 namespace DXVcsTools.Core {
     public class DXPortConfiguration : ConfigurationSection {
-        const string reviewTargetProperty = "reviewTarget";
-        const string checkInTargetProperty = "checkInTarget";
-        const string closeAfterMergeProperty = "closeAfterMerge";
-        const string diffToolProperty = "diffTool";
-        const string uiTypeProperty = "uiType";
-        const string blameTypeProperty = "blameType";
-        const string branchesProperty = "branches";
+        const string ReviewTargetProperty = "reviewTarget";
+        const string CheckInTargetProperty = "checkInTarget";
+        const string CloseAfterMergeProperty = "closeAfterMerge";
+        const string DiffToolProperty = "diffTool";
+        const string UITypeProperty = "uiType";
+        const string BlameTypeProperty = "blameType";
+        const string BranchesProperty = "branches";
 
-        [ConfigurationProperty(reviewTargetProperty, DefaultValue = false)]
+        [ConfigurationProperty(ReviewTargetProperty, DefaultValue = false)]
         public bool ReviewTarget {
-            get { return Convert.ToBoolean(this[reviewTargetProperty]); }
+            get { return Convert.ToBoolean(this[ReviewTargetProperty]); }
         }
 
-        [ConfigurationProperty(checkInTargetProperty, DefaultValue = false)]
+        [ConfigurationProperty(CheckInTargetProperty, DefaultValue = false)]
         public bool CheckInTarget {
-            get { return Convert.ToBoolean(this[checkInTargetProperty]); }
+            get { return Convert.ToBoolean(this[CheckInTargetProperty]); }
         }
 
-        [ConfigurationProperty(closeAfterMergeProperty, DefaultValue = false)]
+        [ConfigurationProperty(CloseAfterMergeProperty, DefaultValue = false)]
         public bool CloseAfterMerge {
-            get { return Convert.ToBoolean(this[closeAfterMergeProperty]); }
+            get { return Convert.ToBoolean(this[CloseAfterMergeProperty]); }
         }
 
-        [ConfigurationProperty(diffToolProperty, IsRequired = true)]
+        [ConfigurationProperty(DiffToolProperty, IsRequired = true)]
         public string DiffTool {
-            get { return this[diffToolProperty] as string; }
+            get { return this[DiffToolProperty] as string; }
         }
 
-        [ConfigurationProperty(uiTypeProperty, DefaultValue = DXPortUIType.WinForms)]
+        [ConfigurationProperty(UITypeProperty, DefaultValue = DXPortUIType.Wpf)]
         public DXPortUIType UIType {
-            get { return (DXPortUIType)this[uiTypeProperty]; }
+            get { return (DXPortUIType)this[UITypeProperty]; }
         }
 
-        [ConfigurationProperty(blameTypeProperty, DefaultValue = DXBlameType.Native)]
+        [ConfigurationProperty(BlameTypeProperty, DefaultValue = DXBlameType.Native)]
         public DXBlameType BlameType {
-            get { return (DXBlameType)this[blameTypeProperty]; }
+            get { return (DXBlameType)this[BlameTypeProperty]; }
         }
 
-        [ConfigurationProperty(branchesProperty)]
+        [ConfigurationProperty(BranchesProperty)]
         public DXVcsBranchCollection Branches {
-            get { return this[branchesProperty] as DXVcsBranchCollection; }
+            get { return this[BranchesProperty] as DXVcsBranchCollection; }
         }
     }
 }
