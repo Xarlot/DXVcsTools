@@ -25,7 +25,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -153,6 +153,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
+      <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn.wxs">
+      <Link>Lib\SharpSvn\SharpSvn.wxs</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -166,6 +174,53 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\lib\DX\DevExpress.Data.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Data.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Core.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Core.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.VS2010.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Themes.VS2010.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn-DB44-20-win32.dll">
+      <Link>Lib\SharpSvn\SharpSvn-DB44-20-win32.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn-Sasl21-22-win32.dll">
+      <Link>Lib\SharpSvn\SharpSvn-Sasl21-22-win32.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn.dll">
+      <Link>Lib\SharpSvn\SharpSvn.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn.UI.dll">
+      <Link>Lib\SharpSvn\SharpSvn.UI.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn.UI.xml">
+      <Link>Lib\SharpSvn\SharpSvn.UI.xml</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\SharpSvn\SharpSvn.xml">
+      <Link>Lib\SharpSvn\SharpSvn.xml</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Lib\DXVcs\DXVCS.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
