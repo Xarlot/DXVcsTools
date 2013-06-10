@@ -11,7 +11,7 @@
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
-    dx:ThemeManager.ThemeName="VS2010">
+    dx:ThemeManager.ThemeName="Office2013">
     <UserControl.Resources>
         <ResourceDictionary>
             <ui:ObjectToEnumerableConverter x:Key="objectToEnumerableConverter"/>
@@ -41,7 +41,7 @@
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <dxg:GridControl 
-                FilterString="[IsChecked] = true"
+                FilterString="[IsChecked] != false"
                 ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}"
                 SelectedItem="{Binding Path=SelectedItem}">
                 <dxg:GridControl.Columns>

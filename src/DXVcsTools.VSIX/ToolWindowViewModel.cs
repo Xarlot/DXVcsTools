@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DevExpress.Xpf.Mvvm;
@@ -13,15 +14,15 @@ namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel {
         readonly DTE dte;
         SolutionItem solutionItem;
-        FileItemBase selectedItem;
+        ProjectItemBase selectedItem;
 
         public SolutionItem Solution {
             get { return solutionItem; }
             set { SetProperty(ref solutionItem, value, "Solution"); }
         }
-        public FileItemBase SelectedItem {
+        public ProjectItemBase SelectedItem {
             get { return selectedItem; }
-            set { SetProperty(ref selectedItem, value, "SelectedItem"); }
+            set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
         }
         public DelegateCommand MergeCommand { get; private set; }
         public DelegateCommand MergeAllCommand { get; private set; }

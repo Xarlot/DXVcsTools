@@ -163,6 +163,9 @@
       <Link>Lib\DX\DevExpress.Xpf.Grid.v13.1.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll</Link>
+    </Content>
     <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
       <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -195,15 +198,6 @@
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll">
       <Link>Lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.VS2010.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Themes.VS2010.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\lib\SharpSvn\SharpSvn-DB44-20-win32.dll">
       <Link>Lib\SharpSvn\SharpSvn-DB44-20-win32.dll</Link>

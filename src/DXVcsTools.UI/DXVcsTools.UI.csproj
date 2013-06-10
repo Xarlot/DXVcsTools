@@ -100,11 +100,9 @@
     <Reference Include="DevExpress.Xpf.Mvvm.v13.1">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.PropertyGrid.v13.1">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.VS2010.v13.1">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.VS2010.v13.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
