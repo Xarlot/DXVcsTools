@@ -6,11 +6,11 @@ using DXVcsTools.Core;
 namespace DXVcsTools.UI {
     public class PortWindowModel {
         readonly IList<string> branches;
-        readonly DXPortConfiguration configuration;
+        readonly OptionsViewModel configuration;
         readonly string vcsServer;
         int selectedBranchIndex;
         string targetVcsFile;
-        public PortWindowModel(string sourceFile, string projectFile, DXPortConfiguration configuration) {
+        public PortWindowModel(string sourceFile, string projectFile, OptionsViewModel configuration) {
             if (string.IsNullOrEmpty(sourceFile))
                 throw new ArgumentException("sourceFile");
 

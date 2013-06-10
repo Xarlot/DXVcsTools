@@ -12,6 +12,13 @@ using DXVcsTools.Core;
 
 namespace DXVcsTools.Core {
     public class OptionsViewModel {
+        public OptionsViewModel() {
+            Branches = new List<DXVcsBranch>();
+            Branches.Add(new DXVcsBranch() { Name = "13.1", Path = "$/2013.1/" });
+            Branches.Add(new DXVcsBranch() { Name = "13.2", Path = "$/2013.2/" });
+            DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
+        }
+
         const string DxVcsToolsCategory = "DXVcsTools options";
 
         [Category(DxVcsToolsCategory)]

@@ -29,7 +29,7 @@ namespace DXVcsTools.VSIX {
             if (!CanHandleActiveDocument(ref fileName))
                 return;
             
-            var dxPortConfiguration = ConfigurationHelper.GetSection<DXPortConfiguration>(configuration, "dxPortConfiguration");
+            var dxPortConfiguration = new OptionsViewModel();
             IViewFactory factory = new ViewFactory();
 
             var model = new PortWindowModel(fileName, applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
