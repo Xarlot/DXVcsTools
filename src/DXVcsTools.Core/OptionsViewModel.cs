@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Drawing.Design;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,9 +9,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using DXVcsTools.Core;
-using Microsoft.VisualStudio.Shell;
 
-namespace DXVcsTools.VSIX {
+namespace DXVcsTools.Core {
     public class OptionsViewModel {
         const string DxVcsToolsCategory = "DXVcsTools options";
 
