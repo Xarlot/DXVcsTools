@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using DXVcsTools.Core;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -32,6 +33,7 @@ namespace DXVcsTools.VSIX {
     public sealed class DXVcsTools_VSIXPackage : Package {
         MenuViewModel Menu { get; set; }
         ToolWindowViewModel ToolWindowViewModel { get; set; }
+        OptionsViewModel Options { get; set; }
 
         /// <summary>
         ///     Default constructor of the package.
@@ -43,10 +45,12 @@ namespace DXVcsTools.VSIX {
         public DXVcsTools_VSIXPackage() {
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
 
+            Options = new OptionsViewModel();
+
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
 
-            ToolWindowViewModel = new ToolWindowViewModel(dte);
+            ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
         }
 
         /// <summary>

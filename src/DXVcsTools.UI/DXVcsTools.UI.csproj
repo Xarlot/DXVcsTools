@@ -127,6 +127,8 @@
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
     <Compile Include="IUpdatableViewModel.cs" />
+    <Compile Include="MergeHelper.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />

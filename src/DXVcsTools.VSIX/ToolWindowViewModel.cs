@@ -15,6 +15,7 @@ namespace DXVcsTools.VSIX {
         readonly DTE dte;
         SolutionItem solutionItem;
         ProjectItemBase selectedItem;
+        OptionsViewModel options;
 
         public SolutionItem Solution {
             get { return solutionItem; }
@@ -24,23 +25,26 @@ namespace DXVcsTools.VSIX {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
         }
-        public DelegateCommand MergeCommand { get; private set; }
-        public DelegateCommand MergeAllCommand { get; private set; }
+        public RelayCommand MergeCommand { get; private set; }
+        public RelayCommand MergeAllCommand { get; private set; }
         public void Update() {
             DteWrapper dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
             SelectedItem = null;
         }
 
-        public ToolWindowViewModel(DTE dte) {
+        public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
-            MergeCommand = new DelegateCommand(Merge, CanMerge);
-            MergeAllCommand = new DelegateCommand(MergeAll, CanMergeAll);
+            this.options = options;
+            MergeCommand = new RelayCommand(Merge, CanMerge);
+            MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
         }
         void Merge() {
+            MergeHelper helper = new MergeHelper(options, new PortWindowModel(SelectedItem.Path, Solution.Path, options));
+            helper.MergeChanges();
         }
         bool CanMerge() {
-            return SelectedItem.Return(x => x.IsChecked, () => false);
+            return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
         }
         void MergeAll() {
         }

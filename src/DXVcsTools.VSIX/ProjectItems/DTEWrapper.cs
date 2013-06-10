@@ -14,11 +14,11 @@ namespace DXVcsTools.Core {
             this.dte = dte;
         }
         public SolutionItem BuildTree() {
-            return new SolutionItem(GetProjects(dte.Solution)) { Name = dte.Solution.FullName };
+            return new SolutionItem(GetProjects(dte.Solution)) { Name = dte.Solution.FullName, Path = dte.Solution.FileName};
         }
         IEnumerable<ProjectItem> GetProjects(Solution solution) {
             string name = solution.FullName;
-            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) { Name = name });
+            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) { Name = name, Path = item.FileName });
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
             var children = project.ProjectItems;
