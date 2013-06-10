@@ -155,6 +155,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.dll">
+      <Link>Lib\DX\DevExpress.Xpf.Grid.v13.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
       <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
       <IncludeInVSIX>true</IncludeInVSIX>

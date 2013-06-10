@@ -89,6 +89,14 @@
     <Reference Include="DevExpress.Xpf.Core.v13.1">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v13.1.dll</HintPath>
     </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v13.1.Core, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll</HintPath>
+    </Reference>
     <Reference Include="DevExpress.Xpf.Mvvm.v13.1">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</HintPath>
     </Reference>
@@ -120,7 +128,14 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
+    <Compile Include="IUpdatableViewModel.cs" />
+    <Compile Include="View\ChildNodesSelector.cs" />
+    <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />
+    <Compile Include="View\UpdateOnLoadedBehavior.cs" />
+    <Compile Include="View\TotalMergeWindowControl.xaml.cs">
+      <DependentUpon>TotalMergeWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DXPortWindow.xaml.cs">
       <DependentUpon>DXPortWindow.xaml</DependentUpon>
     </Compile>
@@ -170,6 +185,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\TotalMergeWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\DXPortWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

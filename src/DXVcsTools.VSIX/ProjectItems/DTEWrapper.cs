@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,30 +17,43 @@ namespace DXVcsTools.Core {
             return new SolutionItem(GetProjects(dte.Solution)) { Name = dte.Solution.FullName };
         }
         IEnumerable<ProjectItem> GetProjects(Solution solution) {
-            string name = solution.FileName;
-            return solution.Projects.Cast<EnvDTE.Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) { Name = name });
+            string name = solution.FullName;
+            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) { Name = name });
         }
-        IEnumerable<FileItemBase> GetFilesAndDirectories(EnvDTE.Project project) {
+        IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
             var children = project.ProjectItems;
             if (children.If(x => x.Count == 0).ReturnSuccess())
                 yield break;
-            foreach (EnvDTE.ProjectItem item in children) {
-                FolderItem folder = new FolderItem(GetChildrenItems(item)) { Name = item.Name };
-                yield return folder;
+            foreach (EnvDTE.ProjectItem projectItem in children) {
+                var item = GetItem(projectItem);
+                if (item != null)
+                    yield return item;
             }
         }
-        IEnumerable<FileItemBase> GetChildrenItems(EnvDTE.ProjectItem projectItem) {
-            if (projectItem.FileCount > 0) {
-                for (short i = 0; i < projectItem.FileCount; i++) {
-                    var file = projectItem.FileNames[i];
-                    yield return new FileItem() { Name = i.ToString(), Path = file };
-                }
+        FileItemBase GetItem(EnvDTE.ProjectItem projectItem) {
+            if (projectItem.FileCount < 1)
+                return null;
+            string fileName = projectItem.FileNames[0];
+            FileItemBase item = null;
+            if (File.Exists(fileName)) {
+                var fileInfo = new FileInfo(fileName);
+                item = new FileItem() { Name = fileInfo.Name };
             }
-            var children = projectItem.ProjectItems;
-            if (children.If(x => x.Count == 0).ReturnSuccess())
-                yield break;
-            foreach (EnvDTE.ProjectItem item in children)
-                yield return new FolderItem(GetChildrenItems(item));
+            if (Directory.Exists(fileName)) {
+                DirectoryInfo info = new DirectoryInfo(fileName);
+                item = new FolderItem(GetChildrenItems(projectItem)) { Name = info.Name, Path = fileName };
+            }
+            if (item == null)
+                return null;
+            item.IsChecked = dte.SourceControl.IsItemCheckedOut(projectItem.Name);
+            return item;
+        }
+        IEnumerable<FileItemBase> GetChildrenItems(EnvDTE.ProjectItem projectItem) {
+            foreach (EnvDTE.ProjectItem childItem in projectItem.ProjectItems) {
+                var item = GetItem(childItem);
+                if (item != null)
+                    yield return item;
+            }
         }
     }
 }

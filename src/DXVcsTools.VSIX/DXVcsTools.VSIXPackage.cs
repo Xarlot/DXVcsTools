@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -30,6 +31,7 @@ namespace DXVcsTools.VSIX {
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
     public sealed class DXVcsTools_VSIXPackage : Package {
         MenuViewModel Menu { get; set; }
+        ToolWindowViewModel ToolWindowViewModel { get; set; }
 
         /// <summary>
         ///     Default constructor of the package.
@@ -39,9 +41,12 @@ namespace DXVcsTools.VSIX {
         ///     initialization is the Initialize method.
         /// </summary>
         public DXVcsTools_VSIXPackage() {
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
+            DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+
             Menu = new MenuViewModel();
-            Menu.DoConnect();
+            Menu.DoConnect(dte);
+
+            ToolWindowViewModel = new ToolWindowViewModel(dte);
         }
 
         /// <summary>
@@ -53,12 +58,13 @@ namespace DXVcsTools.VSIX {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = FindToolWindow(typeof(MyToolWindow), 0, true);
+            MyToolWindow window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
             if ((null == window) || (null == window.Frame)) {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            window.Initialize(ToolWindowViewModel);
         }
 
 

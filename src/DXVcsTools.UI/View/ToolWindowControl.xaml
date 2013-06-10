@@ -4,12 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:view="clr-namespace:DXVcsTools.UI.View"
+             xmlns:i="clr-namespace:DevExpress.Xpf.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v13.1"
+             xmlns:ui="clr-namespace:DXVcsTools.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             dx:ThemeManager.ThemeName="VS2010">
     <Grid>
         <dx:DXTabControl>
-            <dx:DXTabItem Header="DXPort">
-                
+            <dx:DXTabItem Header="TotalMerge">
+                <view:TotalMergeWindowControl>
+                    <i:Interaction.Behaviors>
+                        <ui:UpdateOnLoadedBehavior/>
+                    </i:Interaction.Behaviors>
+                </view:TotalMergeWindowControl>
             </dx:DXTabItem>
         </dx:DXTabControl>
     </Grid>

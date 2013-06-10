@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DXVcsTools.Core {
     public class FileItem : FileItemBase {
+        public override int Priority { get { return 50; } }
         public FileItem() : base(null) {}
 
     }

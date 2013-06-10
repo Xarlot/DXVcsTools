@@ -19,20 +19,11 @@ namespace DXVcsTools.VSIX {
         DTE applicationObject;
         Configuration configuration;
 
-        public void DoConnect() {
-            applicationObject = Package.GetGlobalService(typeof(DTE)) as DTE ;
-
+        public void DoConnect(DTE dte) {
+            applicationObject = dte;
             configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
         }
         public void DoPort() {
-            DteWrapper wrapper = new DteWrapper(applicationObject);
-            SolutionItem item = wrapper.BuildTree();
-            foreach (var item2 in item.Children) {
-                foreach (var item3 in item2.Children) {
-                    
-                }
-            }
-
             string fileName = null;
             if (!CanHandleActiveDocument(ref fileName))
                 return;
