@@ -8,16 +8,9 @@ namespace DXVcsTools.Core {
     public class SolitionEnumeratorHelper {
         IDteWrapper dte;
         SolutionItem solution;
-        IEnumerable<ProjectItem> projectItems;
-        IEnumerable<FileItemBase> files;
         public SolitionEnumeratorHelper(IDteWrapper dte) {
             this.dte = dte;
+            solution = dte.BuildTree();
         }
-        public void Initialize() {
-            solution = dte.GetSolution();
-            projectItems = dte.GetProjects();
-            files = dte.GetFiles();
-        }
-
     }
 }

@@ -25,6 +25,14 @@ namespace DXVcsTools.VSIX {
             configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
         }
         public void DoPort() {
+            DteWrapper wrapper = new DteWrapper(applicationObject);
+            SolutionItem item = wrapper.BuildTree();
+            foreach (var item2 in item.Children) {
+                foreach (var item3 in item2.Children) {
+                    
+                }
+            }
+
             string fileName = null;
             if (!CanHandleActiveDocument(ref fileName))
                 return;

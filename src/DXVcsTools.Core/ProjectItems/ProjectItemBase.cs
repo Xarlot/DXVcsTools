@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 using DevExpress.Xpf.Mvvm;
 
 namespace DXVcsTools.Core {
-    public class ProjectItemBase : BindableBase {
-        public ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
+    public abstract class ProjectItemBase : BindableBase {
+        string name;
+        public string Name {
+            get { return name; }
+            set { SetProperty(ref name, value, "Name"); }
+        }
+        protected ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
             Children = children;
         }
         public IEnumerable<ProjectItemBase> Children { get; private set; }

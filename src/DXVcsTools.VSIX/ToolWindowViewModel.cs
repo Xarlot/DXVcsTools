@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DevExpress.Xpf.Mvvm;
 
-namespace DXVcsTools.Core {
-    public class FileItem : FileItemBase {
-        public FileItem() : base(null) {}
-
+namespace DXVcsTools.VSIX {
+    public class ToolWindowViewModel : BindableBase {
+        public 
     }
 }

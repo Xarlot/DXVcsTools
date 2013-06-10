@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 using DevExpress.Xpf.Mvvm;
 
 namespace DXVcsTools.Core {
-    public class FileItemBase : ProjectItemBase {
+    public abstract class FileItemBase : ProjectItemBase {
+        string path;
+        public string Path {
+            get { return path; }
+            set { SetProperty(ref path, value, "Path"); }
+        }
+        protected FileItemBase(IEnumerable<FileItemBase> items) : base(items) {
+        }
     }
 }
