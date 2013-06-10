@@ -42,9 +42,11 @@
             </dxb:BarManager.Bars>
             <dxg:GridControl 
                 FilterString="[IsChecked] = true"
-                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}">
+                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}"
+                SelectedItem="{Binding Path=SelectedItem}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="Name" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="Path" ReadOnly="True"/>
                     <dxg:GridColumn FieldName="IsChecked" Visible="False">
                         <dxg:GridColumn.EditSettings>
                             <dxe:CheckEditSettings/>
@@ -57,7 +59,8 @@
                         ChildNodesSelector="{StaticResource childNodesSelector}"
                         ShowCheckboxes="True"
                         CheckBoxFieldName="IsChecked"
-                        AllowRecursiveNodeChecking="True"/>
+                        AllowRecursiveNodeChecking="True"
+                        NavigationStyle="Row"/>
                 </dxg:GridControl.View>
             </dxg:GridControl>
         </dxb:BarManager>
