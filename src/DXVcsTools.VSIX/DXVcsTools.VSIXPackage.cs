@@ -2,6 +2,9 @@
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using DXVcsTools.Core;
 using EnvDTE;
@@ -43,6 +46,8 @@ namespace DXVcsTools.VSIX {
         ///     initialization is the Initialize method.
         /// </summary>
         public DXVcsTools_VSIXPackage() {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
 
             Options = new OptionsViewModel();
@@ -51,6 +56,13 @@ namespace DXVcsTools.VSIX {
             Menu.DoConnect(dte);
 
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
+        }
+
+        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                if (assembly.FullName == args.Name)
+                    return assembly;
+            return Assembly.Load(new AssemblyName(args.Name));
         }
 
         /// <summary>

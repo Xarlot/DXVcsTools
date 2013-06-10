@@ -40,7 +40,34 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Data.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Data.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Core.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v13.1.Core, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll</HintPath>
+    </Reference>
     <Reference Include="DevExpress.Xpf.Mvvm.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v13.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DXVCS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DXVcs\DXVCS.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
@@ -155,17 +182,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Grid.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Themes.Office2013.v13.1.dll</Link>
-    </Content>
     <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
       <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -187,18 +203,6 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\lib\DX\DevExpress.Data.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Data.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Core.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Core.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll">
-      <Link>Lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="..\..\lib\SharpSvn\SharpSvn-DB44-20-win32.dll">
       <Link>Lib\SharpSvn\SharpSvn-DB44-20-win32.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -221,9 +225,6 @@
     </Content>
     <Content Include="..\..\lib\SharpSvn\SharpSvn.xml">
       <Link>Lib\SharpSvn\SharpSvn.xml</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Lib\DXVcs\DXVCS.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Package.ico" />
