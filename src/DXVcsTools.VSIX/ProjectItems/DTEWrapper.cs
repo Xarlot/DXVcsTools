@@ -45,7 +45,8 @@ namespace DXVcsTools.Core {
             }
             if (item == null)
                 return null;
-            item.IsChecked = dte.SourceControl.IsItemCheckedOut(projectItem.Name);
+            item.IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName);
+            item.MergeState = MergeState.None;
             return item;
         }
         IEnumerable<FileItemBase> GetChildrenItems(EnvDTE.ProjectItem projectItem) {

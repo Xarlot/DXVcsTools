@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 using DevExpress.Xpf.Mvvm;
 
 namespace DXVcsTools.Core {
+    public enum MergeState {
+        None,
+        Success,
+        Conflict,
+        InProgress,
+    }
+
     public abstract class ProjectItemBase : BindableBase {
         string name;
         bool isChecked;
-        bool isMerged = true;
+        bool isCheckOut;
+        MergeState mergeState;
+
         public virtual int Priority { get { return 0; } }
         public string Name {
             get { return name; }
@@ -19,9 +28,13 @@ namespace DXVcsTools.Core {
             get { return isChecked; }
             set { SetProperty(ref isChecked, value, "IsChecked"); }
         }
-        public bool IsMerged {
-            get { return isMerged; }
-            set { SetProperty(ref isMerged, value, "IsMerged"); }
+        public bool IsCheckOut {
+            get { return isCheckOut; }
+            set { SetProperty(ref isCheckOut, value, "IsCheckOut"); }
+        }
+        public MergeState MergeState {
+            get { return mergeState; }
+            set { SetProperty(ref mergeState, value, "MergeState"); }
         }
         protected ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
             Children = children;

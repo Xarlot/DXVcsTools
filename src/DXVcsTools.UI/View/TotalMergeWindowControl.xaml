@@ -41,13 +41,14 @@
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <dxg:GridControl 
-                FilterString="[IsChecked] != false"
+                FilterString="[IsCheckOut] = false"
                 ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}"
                 SelectedItem="{Binding Path=SelectedItem}">
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Name" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="Path" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="IsChecked" Visible="False">
+                    <dxg:GridColumn FieldName="Name" />
+                    <dxg:GridColumn FieldName="Path" />
+                    <dxg:GridColumn FieldName="MergeState" />
+                    <dxg:GridColumn FieldName="IsCheckOut" >
                         <dxg:GridColumn.EditSettings>
                             <dxe:CheckEditSettings/>
                         </dxg:GridColumn.EditSettings>
