@@ -5,20 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
-             xmlns:i="clr-namespace:DevExpress.Xpf.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v13.1"
-             xmlns:ui="clr-namespace:DXVcsTools.UI"
+             xmlns:ui="clr-namespace:DXVcsTools.UI" 
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              dx:ThemeManager.ThemeName="VS2010">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <dx:DXTabControl>
-            <dx:DXTabItem Header="TotalMerge">
-                <view:TotalMergeWindowControl>
-                    <i:Interaction.Behaviors>
-                        <ui:UpdateOnLoadedBehavior/>
-                    </i:Interaction.Behaviors>
-                </view:TotalMergeWindowControl>
-            </dx:DXTabItem>
-        </dx:DXTabControl>
+        <view:TotalMergeWindowControl Visibility="{Binding Path=CanTotalMerge, Converter={StaticResource boolToVisibilityConverter}}">
+            <dxmvvm:Interaction.Triggers>
+                <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding Path=UpdateCommand}"/>
+            </dxmvvm:Interaction.Triggers>
+        </view:TotalMergeWindowControl>
+        <TextBlock Text="{Binding Path=ErrorHint}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"></TextBlock>
     </Grid>
 </UserControl>

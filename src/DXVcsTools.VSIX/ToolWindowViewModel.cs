@@ -15,9 +15,19 @@ namespace DXVcsTools.VSIX {
         readonly DTE dte;
         SolutionItem solutionItem;
         ProjectItemBase selectedItem;
-        OptionsViewModel options;
+        readonly OptionsViewModel options;
         DXVcsBranch currentBranch;
+        DXVcsBranch masterBranch;
+        bool canTotalMerge;
 
+        public bool CanTotalMerge {
+            get { return canTotalMerge; }
+            set { SetProperty(ref canTotalMerge, value, "CanTotalMerge", CommandManager.InvalidateRequerySuggested); }
+        }
+        public DXVcsBranch MasterBranch {
+            get { return masterBranch; }
+            private set { SetProperty(ref masterBranch, value, "MasterBranch", CommandManager.InvalidateRequerySuggested); }
+        }
         public DXVcsBranch CurrentBranch {
             get { return currentBranch; }
             set { SetProperty(ref currentBranch, value, "CurrentBrunch"); }
@@ -33,17 +43,17 @@ namespace DXVcsTools.VSIX {
         }
         public RelayCommand MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
-        public void Update() {
-            DteWrapper dteWrapper = new DteWrapper(dte);
-            Solution = dteWrapper.BuildTree();
-            SelectedItem = null;
-        }
+        public RelayCommand UpdateCommand { get; private set; }
 
+        DXVcsBranch FindMasterBranch() {
+            return options.Branches.FirstOrDefault(branch => Solution.Path.StartsWith(branch.Path));
+        }
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
             this.options = options;
             MergeCommand = new RelayCommand(Merge, CanMerge);
             MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
+            UpdateCommand = new RelayCommand(Update, CanUpdate);
         }
         void Merge() {
             MergeHelper helper = new MergeHelper(options, new PortWindowModel(SelectedItem.Path, Solution.Path, options));
@@ -55,6 +65,16 @@ namespace DXVcsTools.VSIX {
         void MergeAll() {
         }
         bool CanMergeAll() {
+            return true;
+        }
+        public void Update() {
+            DteWrapper dteWrapper = new DteWrapper(dte);
+            Solution = dteWrapper.BuildTree();
+            SelectedItem = null;
+            MasterBranch = FindMasterBranch();
+            CanTotalMerge = MasterBranch != null;
+        }
+        bool CanUpdate() {
             return true;
         }
     }
