@@ -16,7 +16,13 @@ namespace DXVcsTools.VSIX {
         SolutionItem solutionItem;
         ProjectItemBase selectedItem;
         OptionsViewModel options;
+        DXVcsBranch currentBranch;
 
+        public DXVcsBranch CurrentBranch {
+            get { return currentBranch; }
+            set { SetProperty(ref currentBranch, value, "CurrentBrunch"); }
+        }
+        public IEnumerable<DXVcsBranch> AvailableBranches { get { return this.options.Branches; } }
         public SolutionItem Solution {
             get { return solutionItem; }
             set { SetProperty(ref solutionItem, value, "Solution"); }

@@ -6,9 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:ui="clr-namespace:DXVcsTools.UI"
-    xmlns:dxe="clr-namespace:DevExpress.Xpf.Editors.Settings;assembly=DevExpress.Xpf.Core.v13.1"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:ui="clr-namespace:DXVcsTools.UI"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     dx:ThemeManager.ThemeName="Office2013">
@@ -22,6 +22,12 @@
         <dxb:BarManager>
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem 
+                    x:Name="bUpdate" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Command="{Binding UpdateCommand}"                    
+                    Hint="Update">
+                </dxb:BarButtonItem>
+                <dxb:BarButtonItem 
                     x:Name="bMerge" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
                     Command="{Binding MergeCommand}"                    
@@ -33,11 +39,26 @@
                     Command="{Binding MergeAllCommand}"                    
                     Hint="Merge all items">
                 </dxb:BarButtonItem>
+                <dxb:BarEditItem 
+                    x:Name="bCurrentBranch" 
+                    EditValue="{Binding Path=CurrentBranch}"
+                    EditWidth="150" 
+                    Content="Branch:">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings 
+                            ItemsSource="{Binding Path=AvailableBranches}"
+                            IsTextEditable="False"
+                            DisplayMember="Name">
+                        </dxe:ComboBoxEditSettings>
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar IsMainMenu="True">
+                    <dxb:BarButtonItemLink BarItemName="bUpdate" />
                     <dxb:BarButtonItemLink BarItemName="bMerge" />
                     <dxb:BarButtonItemLink BarItemName="bMergeAll" />
+                    <dxb:BarEditItemLink BarItemName="bCurrentBranch"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <dxg:GridControl 
