@@ -108,7 +108,6 @@
   <ItemGroup>
     <Compile Include="DirectoryHelper.cs" />
     <Compile Include="DXBlameType.cs" />
-    <Compile Include="DXPortConfiguration.cs" />
     <Compile Include="DXPortUIType.cs" />
     <Compile Include="DXVcsBindingInfo.cs" />
     <Compile Include="DXVcsBranch.cs" />
