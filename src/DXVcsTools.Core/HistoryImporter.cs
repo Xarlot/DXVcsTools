@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using DXVcsTools.DXVcsClient;
 using SharpSvn;
 
 namespace DXVcsTools.Core {
     public class HistoryImporter {
-        readonly Uri _svnRepository;
-        readonly string _workingCopy;
+        readonly Uri svnRepository;
+        readonly string workingCopy;
 
         public HistoryImporter(string svnRepository, string workingCopy) {
             if (string.IsNullOrEmpty(svnRepository))
@@ -15,8 +16,8 @@ namespace DXVcsTools.Core {
             if (string.IsNullOrEmpty(workingCopy))
                 throw new ArgumentException("workingCopy");
 
-            _svnRepository = new Uri(PathHelper.ResolvePath(svnRepository));
-            _workingCopy = PathHelper.ResolvePath(workingCopy);
+            this.svnRepository = new Uri(PathHelper.ResolvePath(svnRepository));
+            this.workingCopy = PathHelper.ResolvePath(workingCopy);
         }
 
         public Uri ImportFile(string file, string projectFile) {
@@ -41,12 +42,12 @@ namespace DXVcsTools.Core {
             return ImportFileHistory(fileName, fileHistory);
         }
 
-        Uri ImportFileHistory(string fileName, FileVersionInfo[] fileHistory) {
+        Uri ImportFileHistory(string fileName, IEnumerable<FileVersionInfo> fileHistory) {
             using (var svn = new SvnClient()) {
                 Uri svnImportFolder = CreateTempRepositoryDirectory(svn);
-                CreateWorkingCopy(svn, new SvnUriTarget(svnImportFolder), _workingCopy);
+                CreateWorkingCopy(svn, new SvnUriTarget(svnImportFolder), workingCopy);
 
-                string filePath = Path.Combine(_workingCopy, fileName);
+                string filePath = Path.Combine(workingCopy, fileName);
                 File.Create(filePath).Close();
                 if (!svn.Add(filePath))
                     throw new ApplicationException(string.Format("Can't add file {0} under SVN control", filePath));
@@ -67,7 +68,7 @@ namespace DXVcsTools.Core {
         }
 
         Uri CreateTempRepositoryDirectory(SvnClient client) {
-            var tempDirectory = new Uri(client.GetRepositoryRoot(_svnRepository), string.Concat(Guid.NewGuid(), "/"));
+            var tempDirectory = new Uri(client.GetRepositoryRoot(svnRepository), string.Concat(Guid.NewGuid(), "/"));
 
             if (!client.RemoteCreateDirectory(tempDirectory, new SvnCreateDirectoryArgs {LogMessage = string.Empty}))
                 throw new ApplicationException(string.Format("Can't create remote directory {0}", tempDirectory));

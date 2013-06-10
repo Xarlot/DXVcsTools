@@ -12,10 +12,10 @@ namespace DXVcsTools.DXVcsClient {
     }
 
     public class StringsDiff {
-        static readonly string[] newLines = new[] {"\r\n", "\r", "\n"};
+        static readonly string[] NewLines = new[] {"\r\n", "\r", "\n"};
 
         public static string[] GetTextLines(string text) {
-            return text.Split(newLines, StringSplitOptions.None);
+            return text.Split(NewLines, StringSplitOptions.None);
         }
 
         public static DiffStringItem[] DiffStringLines(string[] dataA, string[] dataB, SpacesAction spacesAction) {
