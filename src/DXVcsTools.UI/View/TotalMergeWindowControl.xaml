@@ -8,6 +8,7 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:ui="clr-namespace:DXVcsTools.UI"
     xmlns:dxe="clr-namespace:DevExpress.Xpf.Editors.Settings;assembly=DevExpress.Xpf.Core.v13.1"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     dx:ThemeManager.ThemeName="VS2010">
@@ -18,25 +19,47 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <dxg:GridControl 
-            FilterString="[IsChecked] = true"
-            ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}">
-            <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="Name" ReadOnly="True"/>
-                <dxg:GridColumn FieldName="IsChecked" Visible="False">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:CheckEditSettings/>
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-            </dxg:GridControl.Columns>
-            <dxg:GridControl.View>
-                <dxg:TreeListView 
-                    TreeDerivationMode="ChildNodesSelector"
-                    ChildNodesSelector="{StaticResource childNodesSelector}"
-                    ShowCheckboxes="True"
-                    CheckBoxFieldName="IsChecked"
-                    AllowRecursiveNodeChecking="True"/>
-            </dxg:GridControl.View>
-        </dxg:GridControl>
+        <dxb:BarManager>
+            <dxb:BarManager.Items>
+                <dxb:BarButtonItem 
+                    x:Name="bMerge" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Command="{Binding MergeCommand}"                    
+                    Hint="Merge current item">
+                </dxb:BarButtonItem>
+                <dxb:BarButtonItem 
+                    x:Name="bMergeAll" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Command="{Binding MergeAllCommand}"                    
+                    Hint="Merge all items">
+                </dxb:BarButtonItem>
+            </dxb:BarManager.Items>
+            <dxb:BarManager.Bars>
+                <dxb:Bar IsMainMenu="True">
+                    <dxb:BarButtonItemLink BarItemName="bMerge" />
+                    <dxb:BarButtonItemLink BarItemName="bMergeAll" />
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+            <dxg:GridControl 
+                FilterString="[IsChecked] = true"
+                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="Name" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="IsChecked" Visible="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:CheckEditSettings/>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControl.Columns>
+                <dxg:GridControl.View>
+                    <dxg:TreeListView 
+                        TreeDerivationMode="ChildNodesSelector"
+                        ChildNodesSelector="{StaticResource childNodesSelector}"
+                        ShowCheckboxes="True"
+                        CheckBoxFieldName="IsChecked"
+                        AllowRecursiveNodeChecking="True"/>
+                </dxg:GridControl.View>
+            </dxg:GridControl>
+        </dxb:BarManager>
     </Grid>
 </UserControl>

@@ -9,7 +9,7 @@ using EnvDTE;
 
 namespace DXVcsTools.Core {
     public class DteWrapper : IDteWrapper {
-        DTE dte;
+        readonly DTE dte;
         public DteWrapper(DTE dte) {
             this.dte = dte;
         }
@@ -49,11 +49,7 @@ namespace DXVcsTools.Core {
             return item;
         }
         IEnumerable<FileItemBase> GetChildrenItems(EnvDTE.ProjectItem projectItem) {
-            foreach (EnvDTE.ProjectItem childItem in projectItem.ProjectItems) {
-                var item = GetItem(childItem);
-                if (item != null)
-                    yield return item;
-            }
+            return projectItem.ProjectItems.Cast<EnvDTE.ProjectItem>().Select(GetItem).Where(item => item != null);
         }
     }
 }
