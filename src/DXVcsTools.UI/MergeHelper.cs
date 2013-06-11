@@ -10,45 +10,33 @@ using DXVcsTools.UI;
 
 namespace DXVcsTools.Core {
     public class MergeHelper {
-        OptionsViewModel ViewModel { get; set; }
-        PortWindowModel Model { get; set; }
-        public MergeHelper(OptionsViewModel options, PortWindowModel model) {
-            ViewModel = options;
-            Model = model;
+        OptionsViewModel Options { get; set; }
+        PortViewModel Port { get; set; }
+        public MergeHelper(OptionsViewModel options, PortViewModel model) {
+            Options = options;
+            Port = model;
         }
-
-            //        view.Title = "DXPort v" + VersionInfo.FullVersion;
-
-            //view.SourceFile = model.SourceFile;
-            //view.OriginalFile = model.OriginalVcsFile;
-            //view.TargetFile = model.TargetVcsFile;
-
-            //FillBranchSelector();
-
-            //view.ReviewTarget = model.ReviewTarget;
-            //view.CheckInTarget = model.CheckInTarget;
-
         public void MergeChanges() {
             try {
-                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Model.VcsServer);
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
 
                 string tmpOriginalFile = Path.GetTempFileName();
                 try {
-                    repository.GetLatestVersion(Model.OriginalVcsFile, tmpOriginalFile);
+                    repository.GetLatestVersion(Port.OriginalVcsFile, tmpOriginalFile);
 
-                    string tmpTargetFile = repository.GetFileWorkingPath(Model.TargetVcsFile);
+                    string tmpTargetFile = repository.GetFileWorkingPath(Port.TargetVcsFile);
                     if (string.IsNullOrEmpty(tmpTargetFile))
                         throw new ApplicationException("Can't proceed because target file doesn't have working directory configured.");
 
-                    repository.CheckOutFile(Model.TargetVcsFile, tmpTargetFile, string.Empty);
+                    repository.CheckOutFile(Port.TargetVcsFile, tmpTargetFile, string.Empty);
 
                     var diff = new FileDiff();
-                    if (!diff.Merge(tmpOriginalFile, Model.SourceFile, tmpTargetFile)) {
+                    if (!diff.Merge(tmpOriginalFile, Port.SourceFile, tmpTargetFile)) {
                         throw new ApplicationException("Automatic merge failed, please port changes manually");
                     }
 
-                    if (ViewModel.ReviewTarget) {
-                        ReviewTargetFile(repository, Model.TargetVcsFile, tmpTargetFile);
+                    if (Options.ReviewTarget) {
+                        ReviewTargetFile(repository, Port.TargetVcsFile, tmpTargetFile);
                     }
 
                     //if (view.CheckInTarget) {
@@ -84,7 +72,7 @@ namespace DXVcsTools.Core {
         }
         void LaunchDiffTool(string leftFile, string rightFile) {
             var startInfo = new ProcessStartInfo();
-            startInfo.FileName = Model.DiffTool;
+            startInfo.FileName = Port.DiffTool;
             startInfo.Arguments = string.Format("\"{0}\" \"{1}\"", leftFile, rightFile);
 
             Process process = Process.Start(startInfo);

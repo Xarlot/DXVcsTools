@@ -4,38 +4,38 @@ using System.Collections.ObjectModel;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class PortWindowModel {
+    public class PortViewModel {
         readonly IList<string> branches;
         readonly OptionsViewModel configuration;
         readonly string vcsServer;
         int selectedBranchIndex;
         string targetVcsFile;
-        public PortWindowModel(string sourceFile, string projectFile, OptionsViewModel configuration) {
-            if (string.IsNullOrEmpty(sourceFile))
-                throw new ArgumentException("sourceFile");
+        public PortViewModel(PortOptionsViewModel portOptions, OptionsViewModel configuration) {
+            //if (string.IsNullOrEmpty(sourceFile))
+            //    throw new ArgumentException("sourceFile");
 
-            if (string.IsNullOrEmpty(projectFile))
-                throw new ArgumentException("projectFile");
+            //if (string.IsNullOrEmpty(projectFile))
+            //    throw new ArgumentException("projectFile");
 
-            if (configuration == null)
-                throw new ArgumentNullException("configuration");
+            //if (configuration == null)
+            //    throw new ArgumentNullException("configuration");
 
-            SourceFile = sourceFile;
-            ProjectFile = projectFile;
-            this.configuration = configuration;
+            //SourceFile = sourceFile;
+            //ProjectFile = projectFile;
+            //this.configuration = configuration;
 
-            var locator = new DXVcsFileLocator(new DXVcsBindingInfo());
-            OriginalVcsFile = locator.GetVcsLocation(sourceFile, projectFile, out vcsServer);
-            TargetVcsFile = OriginalVcsFile;
+            //var locator = new DXVcsFileLocator(new DXVcsBindingInfo());
+            //OriginalVcsFile = locator.GetVcsLocation(sourceFile, projectFile, out vcsServer);
+            //TargetVcsFile = OriginalVcsFile;
 
-            branches = new ReadOnlyCollection<string>(GetBranchesList());
+            //branches = new ReadOnlyCollection<string>(GetBranchesList());
 
-            for (int i = 0; i < branches.Count; i++) {
-                if (targetVcsFile.StartsWith(branches[i])) {
-                    selectedBranchIndex = i;
-                    break;
-                }
-            }
+            //for (int i = 0; i < branches.Count; i++) {
+            //    if (targetVcsFile.StartsWith(branches[i])) {
+            //        selectedBranchIndex = i;
+            //        break;
+            //    }
+            //}
         }
 
         public string SourceFile { get; private set; }

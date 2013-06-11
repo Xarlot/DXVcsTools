@@ -10,7 +10,9 @@ namespace DXVcsTools.Core {
 
             _bindingInfo = bindingInfo;
         }
-
+        public string GetVcsLocation(string projectFile, out string server) {
+            return GetVcsLocation(projectFile, projectFile, out server);
+        }
         public string GetVcsLocation(string file, string projectFile, out string server) {
             if (string.IsNullOrEmpty(file))
                 throw new ArgumentException("file");

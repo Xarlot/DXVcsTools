@@ -128,6 +128,7 @@
     <Compile Include="BlameWindowPresenter.cs" />
     <Compile Include="IUpdatableViewModel.cs" />
     <Compile Include="MergeHelper.cs" />
+    <Compile Include="PortOptionsViewModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
@@ -146,7 +147,7 @@
     <Compile Include="View\OptionsControl.xaml.cs">
       <DependentUpon>OptionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PortWindowModel.cs" />
+    <Compile Include="PortViewModel.cs" />
     <Compile Include="PortWindowPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewFactory.cs" />

@@ -62,7 +62,9 @@ namespace DXVcsTools.VSIX {
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 if (assembly.FullName == args.Name)
                     return assembly;
-            return Assembly.Load(new AssemblyName(args.Name));
+            if (args.Name.StartsWith("DevExpress.Xpf"))
+                return Assembly.Load(new AssemblyName(args.Name));
+            return null;
         }
 
         /// <summary>

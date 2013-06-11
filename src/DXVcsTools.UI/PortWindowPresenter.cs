@@ -7,10 +7,10 @@ using DXVcsTools.Version;
 
 namespace DXVcsTools.UI {
     public class PortWindowPresenter {
-        readonly PortWindowModel model;
+        readonly PortViewModel model;
         readonly IPortWindowView view;
 
-        public PortWindowPresenter(IPortWindowView view, PortWindowModel model) {
+        public PortWindowPresenter(IPortWindowView view, PortViewModel model) {
             this.view = view;
             this.model = model;
         }

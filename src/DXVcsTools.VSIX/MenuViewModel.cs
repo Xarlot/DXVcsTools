@@ -24,21 +24,21 @@ namespace DXVcsTools.VSIX {
             configuration = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
         }
         public void DoPort() {
-            string fileName = null;
-            if (!CanHandleActiveDocument(ref fileName))
-                return;
+            //string fileName = null;
+            //if (!CanHandleActiveDocument(ref fileName))
+            //    return;
             
-            var dxPortConfiguration = new OptionsViewModel();
-            IViewFactory factory = new ViewFactory();
+            //var dxPortConfiguration = new OptionsViewModel();
+            //IViewFactory factory = new ViewFactory();
 
-            var model = new PortWindowModel(fileName, applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
+            //var model = new PortViewModel(fileName, applicationObject.ActiveDocument.ProjectItem.ContainingProject.FullName, dxPortConfiguration);
 
-            IPortWindowView ui = factory.CreatePortWindow();
+            //IPortWindowView ui = factory.CreatePortWindow();
 
-            var presenter = new PortWindowPresenter(ui, model);
-            presenter.Initialize();
+            //var presenter = new PortWindowPresenter(ui, model);
+            //presenter.Initialize();
 
-            ui.ShowModal();
+            //ui.ShowModal();
         }
 
         string GetClassQualifiedCommandName(string name) {
