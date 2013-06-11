@@ -10,24 +10,32 @@
         xmlns:ui="clr-namespace:DXVcsTools.UI"             
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300">
-    <dxg:GridControl 
-        ItemsSource="{Binding Path=Source}">
-        <dxg:GridControl.Columns>
-            <dxg:GridColumn FieldName="Name" />
-            <dxg:GridColumn FieldName="Path" />
-            <dxg:GridColumn FieldName="MergeState" />
-            <dxg:GridColumn FieldName="IsCheckOut" >
-                <dxg:GridColumn.EditSettings>
-                    <dxe:CheckEditSettings/>
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
-        </dxg:GridControl.Columns>
-        <dxg:GridControl.View>
-            <dxg:TableView 
-                NavigationStyle="Row"
-                FocusedRow="{Binding Path=SelectedItem}">
-            </dxg:TableView>
-        </dxg:GridControl.View>
-    </dxg:GridControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <dxe:ProgressBarEdit EditValue="{Binding Path=MergeProgress}" Minimum="0" Maximum="100" Margin="5"/>
+        <dxg:GridControl 
+            Grid.Row="1"
+            ItemsSource="{Binding Path=Source}">
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="Name" />
+                <dxg:GridColumn FieldName="Path" />
+                <dxg:GridColumn FieldName="MergeState" />
+                <dxg:GridColumn FieldName="IsCheckOut" >
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:CheckEditSettings/>
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+            </dxg:GridControl.Columns>
+            <dxg:GridControl.View>
+                <dxg:TableView 
+                    NavigationStyle="Row"
+                    FocusedRow="{Binding Path=SelectedItem}">
+                </dxg:TableView>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </Grid>
 
 </UserControl>

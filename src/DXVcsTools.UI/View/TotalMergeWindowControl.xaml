@@ -38,7 +38,7 @@
                     x:Name="bCurrentBranch" 
                     EditValue="{Binding Path=CurrentBranch}"
                     EditWidth="150" 
-                    Content="Branch:">
+                    Content="Port to:">
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings 
                             ItemsSource="{Binding Path=AvailableBranches}"

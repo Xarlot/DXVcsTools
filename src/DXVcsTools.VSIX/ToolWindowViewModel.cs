@@ -22,9 +22,13 @@ namespace DXVcsTools.VSIX {
         DXVcsBranch currentBranch;
         DXVcsBranch masterBranch;
         bool canTotalMerge;
-        ICollectionView flatSource;
+        IEnumerable flatSource;
+        double mergeProgress;
 
-
+        public double MergeProgress {
+            get { return mergeProgress; }
+            set { SetProperty(ref mergeProgress, value, "MergeProgress"); }
+        }
         public bool CanTotalMerge {
             get { return canTotalMerge; }
             set { SetProperty(ref canTotalMerge, value, "CanTotalMerge", CommandManager.InvalidateRequerySuggested); }
@@ -42,7 +46,10 @@ namespace DXVcsTools.VSIX {
             get { return solutionItem; }
             set { SetProperty(ref solutionItem, value, "Solution"); }
         }
-        public IEnumerable Source { get { return flatSource; } } 
+        public IEnumerable Source {
+            get { return flatSource; }
+            private set { SetProperty(ref flatSource, value, "Source", CommandManager.InvalidateRequerySuggested); }
+        } 
         public ProjectItemBase SelectedItem {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
@@ -76,11 +83,16 @@ namespace DXVcsTools.VSIX {
             return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
         }
         void MergeAll() {
-            foreach (ProjectItemBase item in Source) {
-                if (item.MergeState == MergeState.None) {
-                    item.MergeState = PerformMerge(item);
-                }
+            List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
+            int count = items.Count;
+            int index = 0;
+            foreach (ProjectItemBase item in items) {
+                item.MergeState = PerformMerge(item);
+                MergeProgress = index++ / count;
             }
+        }
+        async Task<MergeState> PerformMergeAsync(ProjectItemBase item) {
+            return PerformMerge(item);
         }
         bool CanMergeAll() {
             return true;
@@ -88,13 +100,17 @@ namespace DXVcsTools.VSIX {
         public void Update() {
             DteWrapper dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
-            flatSource = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
-            flatSource.Filter = item => (item as ProjectItemBase).Return(x => x.IsCheckOut, () => false);
+            var source = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
+            source.Filter = item => (item as ProjectItemBase).Return(x => x.IsCheckOut, () => false);
+            Source = source;
 
             PortOptions = new PortOptionsViewModel(Solution.Path, Options);
             MasterBranch = FindMasterBranch(PortOptions);
             CanTotalMerge = MasterBranch != null;
             PortOptions.MasterBranch = MasterBranch;
+
+            CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch);
+            MergeProgress = 0;
         }
         bool CanUpdate() {
             return true;
