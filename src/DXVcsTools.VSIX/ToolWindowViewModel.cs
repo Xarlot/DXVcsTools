@@ -89,6 +89,7 @@ namespace DXVcsTools.VSIX {
             DteWrapper dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
             flatSource = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
+            flatSource.Filter = item => (item as ProjectItemBase).Return(x => x.IsCheckOut, () => false);
 
             PortOptions = new PortOptionsViewModel(Solution.Path, Options);
             MasterBranch = FindMasterBranch(PortOptions);

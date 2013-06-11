@@ -11,7 +11,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300">
     <dxg:GridControl 
-        FilterString="[IsCheckOut] = true"
         ItemsSource="{Binding Path=Source}">
         <dxg:GridControl.Columns>
             <dxg:GridColumn FieldName="Name" />
