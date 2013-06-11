@@ -10,7 +10,17 @@ namespace DXVcsTools.UI {
         readonly string vcsServer;
         int selectedBranchIndex;
         string targetVcsFile;
+
+        PortOptionsViewModel PortOptions { get; set; }
+        OptionsViewModel Options { get; set; }
+        public string VcsServer {
+            get { return vcsServer; }
+        }
+
+
         public PortViewModel(PortOptionsViewModel portOptions, OptionsViewModel configuration) {
+            PortOptions = portOptions;
+            Options = configuration;
             //if (string.IsNullOrEmpty(sourceFile))
             //    throw new ArgumentException("sourceFile");
 
@@ -74,10 +84,6 @@ namespace DXVcsTools.UI {
                     throw new ArgumentNullException("value");
                 targetVcsFile = value;
             }
-        }
-
-        public string VcsServer {
-            get { return vcsServer; }
         }
 
         // public bool IsKnownTargetVcsFileBranch() - proposed rename

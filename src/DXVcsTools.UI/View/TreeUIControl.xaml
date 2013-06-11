@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="DXVcsTools.UI.View.TreeUIControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:ui="clr-namespace:DXVcsTools.UI"             
+        mc:Ignorable="d" 
+        d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ui:HierarchyToEnumerableConverter x:Key="objectToEnumerableConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <dxg:GridControl 
+                FilterString="[IsCheckOut] = false"
+                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}">
+        <dxg:GridControl.Columns>
+            <dxg:GridColumn FieldName="Name" />
+            <dxg:GridColumn FieldName="Path" />
+            <dxg:GridColumn FieldName="MergeState" />
+            <dxg:GridColumn FieldName="IsCheckOut" >
+                <dxg:GridColumn.EditSettings>
+                    <dxe:CheckEditSettings/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+        </dxg:GridControl.Columns>
+        <dxg:GridControl.View>
+            <dxg:TableView/>
+            <!--ChildNodesSelector="{StaticResource childNodesSelector}"-->
+            <!--<dxg:TreeListView
+                        FocusedRow="{Binding Path=SelectedItem}"
+                        AutoExpandAllNodes="True"
+                        ChildNodesPath="Children"
+                        TreeDerivationMode="ChildNodesSelector"
+                        ShowCheckboxes="True"
+                        CheckBoxFieldName="IsChecked"
+                        AllowRecursiveNodeChecking="True"
+                        NavigationStyle="Row"/>-->
+        </dxg:GridControl.View>
+    </dxg:GridControl>
+
+</UserControl>

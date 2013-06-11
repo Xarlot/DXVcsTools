@@ -17,4 +17,27 @@ namespace DXVcsTools.UI {
             throw new NotImplementedException();
         }
     }
+    public class HierarchyToEnumerableConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            var solution = (SolutionItem)value;
+            if (solution == null)
+                return null;
+            return GetChildren(solution);
+        }
+        IEnumerable<ProjectItemBase> GetChildren(ProjectItemBase root) {
+            if (root.Children == null)
+                yield break;
+            foreach (var item in root.Children) {
+                if (item is FileItem)
+                    yield return item;
+                foreach (var subItem in GetChildren(item)) {
+                    if (subItem is FileItem)
+                        yield return subItem;
+                }
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
 }

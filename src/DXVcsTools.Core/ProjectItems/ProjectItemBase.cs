@@ -11,6 +11,7 @@ namespace DXVcsTools.Core {
         Success,
         Conflict,
         InProgress,
+        TargetDirectoryError,
     }
 
     public abstract class ProjectItemBase : BindableBase {

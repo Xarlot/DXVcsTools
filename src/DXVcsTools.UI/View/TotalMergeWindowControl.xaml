@@ -4,20 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:ui="clr-namespace:DXVcsTools.UI" 
+    xmlns:view="clr-namespace:DXVcsTools.UI.View"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-    xmlns:ui="clr-namespace:DXVcsTools.UI"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     dx:ThemeManager.ThemeName="Office2013">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ui:ObjectToEnumerableConverter x:Key="objectToEnumerableConverter"/>
-            <ui:ChildNodesSelector x:Key="childNodesSelector"/>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <dxb:BarManager>
             <dxb:BarManager.Items>
@@ -61,30 +56,7 @@
                     <dxb:BarEditItemLink BarItemName="bCurrentBranch"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
-            <dxg:GridControl 
-                FilterString="[IsCheckOut] = false"
-                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}"
-                SelectedItem="{Binding Path=SelectedItem}">
-                <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Name" />
-                    <dxg:GridColumn FieldName="Path" />
-                    <dxg:GridColumn FieldName="MergeState" />
-                    <dxg:GridColumn FieldName="IsCheckOut" >
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:CheckEditSettings/>
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                </dxg:GridControl.Columns>
-                <dxg:GridControl.View>
-                    <dxg:TreeListView 
-                        TreeDerivationMode="ChildNodesSelector"
-                        ChildNodesSelector="{StaticResource childNodesSelector}"
-                        ShowCheckboxes="True"
-                        CheckBoxFieldName="IsChecked"
-                        AllowRecursiveNodeChecking="True"
-                        NavigationStyle="Row"/>
-                </dxg:GridControl.View>
-            </dxg:GridControl>
+            <view:FlatUIControl/>
         </dxb:BarManager>
     </Grid>
 </UserControl>

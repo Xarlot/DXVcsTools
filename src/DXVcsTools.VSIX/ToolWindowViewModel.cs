@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
 using DXVcsTools.DXVcsClient;
@@ -19,6 +22,8 @@ namespace DXVcsTools.VSIX {
         DXVcsBranch currentBranch;
         DXVcsBranch masterBranch;
         bool canTotalMerge;
+        ICollectionView flatSource;
+
 
         public bool CanTotalMerge {
             get { return canTotalMerge; }
@@ -37,11 +42,12 @@ namespace DXVcsTools.VSIX {
             get { return solutionItem; }
             set { SetProperty(ref solutionItem, value, "Solution"); }
         }
+        public IEnumerable Source { get { return flatSource; } } 
         public ProjectItemBase SelectedItem {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
         }
-        PortViewModel Port { get; set; }
+        PortOptionsViewModel PortOptions { get; set; }
         public OptionsViewModel Options { get; private set; }
 
         public RelayCommand MergeCommand { get; private set; }
@@ -60,13 +66,21 @@ namespace DXVcsTools.VSIX {
             UpdateCommand = new RelayCommand(Update, CanUpdate);
         }
         void Merge() {
-            MergeHelper helper = new MergeHelper(Options, Port);
-            helper.MergeChanges();
+            SelectedItem.MergeState = PerformMerge(SelectedItem);
+        }
+        MergeState PerformMerge(ProjectItemBase item) {
+            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            return helper.MergeChanges(CurrentBranch, item.Path, null);
         }
         bool CanMerge() {
             return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
         }
         void MergeAll() {
+            foreach (ProjectItemBase item in Source) {
+                if (item.MergeState == MergeState.None) {
+                    item.MergeState = PerformMerge(item);
+                }
+            }
         }
         bool CanMergeAll() {
             return true;
@@ -74,14 +88,32 @@ namespace DXVcsTools.VSIX {
         public void Update() {
             DteWrapper dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
-            SelectedItem = null;
-            PortOptionsViewModel portOptions = new PortOptionsViewModel(Solution.Path, Options);
-            Port = new PortViewModel(portOptions, Options);
-            MasterBranch = FindMasterBranch(portOptions);
+            flatSource = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
+
+            PortOptions = new PortOptionsViewModel(Solution.Path, Options);
+            MasterBranch = FindMasterBranch(PortOptions);
             CanTotalMerge = MasterBranch != null;
+            PortOptions.MasterBranch = MasterBranch;
         }
         bool CanUpdate() {
             return true;
+        }
+        IEnumerable GetFlatItemsSource() {
+            if (Solution == null)
+                return new List<object>();
+            return GetChildren(Solution);
+        }
+        IEnumerable<ProjectItemBase> GetChildren(ProjectItemBase root) {
+            if (root.Children == null)
+                yield break;
+            foreach (var item in root.Children) {
+                if (item is FileItem)
+                    yield return item;
+                foreach (var subItem in GetChildren(item)) {
+                    if (subItem is FileItem)
+                        yield return subItem;
+                }
+            }
         }
     }
 }

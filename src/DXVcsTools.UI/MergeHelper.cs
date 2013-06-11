@@ -11,73 +11,107 @@ using DXVcsTools.UI;
 namespace DXVcsTools.Core {
     public class MergeHelper {
         OptionsViewModel Options { get; set; }
-        PortViewModel Port { get; set; }
-        public MergeHelper(OptionsViewModel options, PortViewModel model) {
+        PortOptionsViewModel Port { get; set; }
+        public MergeHelper(OptionsViewModel options, PortOptionsViewModel model) {
             Options = options;
             Port = model;
         }
-        public void MergeChanges() {
+        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath = null) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
-
                 string tmpOriginalFile = Path.GetTempFileName();
+
+                string vcsOriginalPath = Port.GetRelativePath(filePath);
+                string vcsTargetFile = mergePath == null ? GetMergeVcsPath(filePath, currentBranch) : Port.GetRelativePath(mergePath, currentBranch.Path);
+
                 try {
-                    repository.GetLatestVersion(Port.OriginalVcsFile, tmpOriginalFile);
+                    repository.GetLatestVersion(vcsOriginalPath, tmpOriginalFile);
 
-                    string tmpTargetFile = repository.GetFileWorkingPath(Port.TargetVcsFile);
+                    string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
                     if (string.IsNullOrEmpty(tmpTargetFile))
-                        throw new ApplicationException("Can't proceed because target file doesn't have working directory configured.");
-
-                    repository.CheckOutFile(Port.TargetVcsFile, tmpTargetFile, string.Empty);
+                        return MergeState.TargetDirectoryError;
+                    repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
 
                     var diff = new FileDiff();
-                    if (!diff.Merge(tmpOriginalFile, Port.SourceFile, tmpTargetFile)) {
-                        throw new ApplicationException("Automatic merge failed, please port changes manually");
+                    if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
+                        return MergeState.Conflict;
                     }
-
-                    if (Options.ReviewTarget) {
-                        ReviewTargetFile(repository, Port.TargetVcsFile, tmpTargetFile);
-                    }
-
-                    //if (view.CheckInTarget) {
-                    //    if (view.ReviewTarget) {
-                    //        if (!view.ShowQuestion(view.Title, "Check in file " + tmpTargetFile + "?"))
-                    //            return;
-                    //    }
-
-                    //    repository.CheckInFile(view.TargetFile, tmpTargetFile, view.CheckInComment);
-                    //}
-
-                    //if (!view.ReviewTarget)
-                    //    view.ShowInfo(view.Title, "Merge finished successfully.");
                 }
                 finally {
                     File.Delete(tmpOriginalFile);
                 }
             }
-            catch (Exception exception) {
-//                view.ShowError(null, exception.Message);
+            catch {
             }
-        }
-        void ReviewTargetFile(IDXVcsRepository repository, string vcsFile, string file) {
-            string tmpVcsFile = Path.GetTempFileName();
+            return MergeState.Success;
+            //            try {
+            //                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
 
-            try {
-                repository.GetLatestVersion(vcsFile, tmpVcsFile);
-                LaunchDiffTool(tmpVcsFile, file);
-            }
-            finally {
-                File.Delete(tmpVcsFile);
-            }
-        }
-        void LaunchDiffTool(string leftFile, string rightFile) {
-            var startInfo = new ProcessStartInfo();
-            startInfo.FileName = Port.DiffTool;
-            startInfo.Arguments = string.Format("\"{0}\" \"{1}\"", leftFile, rightFile);
+            //                string tmpOriginalFile = Path.GetTempFileName();
+            //                try {
+            //                    repository.GetLatestVersion(Port.OriginalVcsFile, tmpOriginalFile);
 
-            Process process = Process.Start(startInfo);
-            process.WaitForExit();
+            //                    string tmpTargetFile = repository.GetFileWorkingPath(Port.TargetVcsFile);
+            //                    if (string.IsNullOrEmpty(tmpTargetFile))
+            //                        throw new ApplicationException("Can't proceed because target file doesn't have working directory configured.");
+
+            //                    repository.CheckOutFile(Port.TargetVcsFile, tmpTargetFile, string.Empty);
+
+            //                    var diff = new FileDiff();
+            //                    if (!diff.Merge(tmpOriginalFile, Port.SourceFile, tmpTargetFile)) {
+            //                        throw new ApplicationException("Automatic merge failed, please port changes manually");
+            //                    }
+
+            //                    if (Options.ReviewTarget) {
+            //                        ReviewTargetFile(repository, Port.TargetVcsFile, tmpTargetFile);
+            //                    }
+
+            //                    //if (view.CheckInTarget) {
+            //                    //    if (view.ReviewTarget) {
+            //                    //        if (!view.ShowQuestion(view.Title, "Check in file " + tmpTargetFile + "?"))
+            //                    //            return;
+            //                    //    }
+
+            //                    //    repository.CheckInFile(view.TargetFile, tmpTargetFile, view.CheckInComment);
+            //                    //}
+
+            //                    //if (!view.ReviewTarget)
+            //                    //    view.ShowInfo(view.Title, "Merge finished successfully.");
+            //                }
+            //                finally {
+            //                    File.Delete(tmpOriginalFile);
+            //                }
+            //            }
+            //            catch (Exception exception) {
+            ////                view.ShowError(null, exception.Message);
+            //            }
+        }
+        string GetMergeVcsPath(string filePath, DXVcsBranch currentBranch) {
+            string relativePath = Port.GetRelativePath(filePath);
+            return relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
         }
 
     }
+
+//void ReviewTargetFile(IDXVcsRepository repository, string vcsFile, string file) {
+//            string tmpVcsFile = Path.GetTempFileName();
+
+//            try {
+//                repository.GetLatestVersion(vcsFile, tmpVcsFile);
+//                LaunchDiffTool(tmpVcsFile, file);
+//            }
+//            finally {
+//                File.Delete(tmpVcsFile);
+//            }
+//        }
+//        void LaunchDiffTool(string leftFile, string rightFile) {
+//            var startInfo = new ProcessStartInfo();
+//            startInfo.FileName = Port.DiffTool;
+//            startInfo.Arguments = string.Format("\"{0}\" \"{1}\"", leftFile, rightFile);
+
+//            Process process = Process.Start(startInfo);
+//            process.WaitForExit();
+//        }
+
+//    }
 }

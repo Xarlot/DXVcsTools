@@ -32,6 +32,7 @@ namespace DXVcsTools.VSIX {
             base.Content = new MyControl();
         }
         public void Initialize(ToolWindowViewModel viewModel) {
+            viewModel.Update();
             Control.DataContext = viewModel;
         }
     }

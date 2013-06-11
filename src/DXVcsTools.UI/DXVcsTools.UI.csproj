@@ -133,6 +133,12 @@
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />
+    <Compile Include="View\FlatUIControl.xaml.cs">
+      <DependentUpon>FlatUIControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TreeUIControl.xaml.cs">
+      <DependentUpon>TreeUIControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UpdateOnLoadedBehavior.cs" />
     <Compile Include="View\TotalMergeWindowControl.xaml.cs">
       <DependentUpon>TotalMergeWindowControl.xaml</DependentUpon>
@@ -186,6 +192,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\FlatUIControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TotalMergeWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -199,6 +209,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TreeUIControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
