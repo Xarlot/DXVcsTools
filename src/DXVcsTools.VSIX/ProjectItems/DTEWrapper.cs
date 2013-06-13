@@ -33,7 +33,14 @@ namespace DXVcsTools.Core {
         FileItemBase GetItem(EnvDTE.ProjectItem projectItem) {
             if (projectItem.FileCount < 1)
                 return null;
-            string fileName = projectItem.FileNames[0];
+            string fileName = null;
+            try {
+                fileName = projectItem.FileNames[0];
+            }
+            catch {
+            }
+            if (fileName == null)
+                return null;
             FileItemBase item = null;
             if (File.Exists(fileName)) {
                 var fileInfo = new FileInfo(fileName);

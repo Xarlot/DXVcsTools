@@ -16,7 +16,7 @@ namespace DXVcsTools.Core {
             Options = options;
             Port = model;
         }
-        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool isBatch) {
+        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool showPreview) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string tmpOriginalFile = Path.GetTempFileName();
@@ -37,7 +37,7 @@ namespace DXVcsTools.Core {
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
                         return MergeState.Conflict;
                     }
-                    if (CanPreviewTarget(isBatch))
+                    if (showPreview)
                         PreviewTarget(repository, vcsTargetFile, tmpTargetFile);
                 }
                 finally {
@@ -112,9 +112,6 @@ namespace DXVcsTools.Core {
         string GetMergeVcsPath(string filePath, DXVcsBranch currentBranch) {
             string relativePath = Port.GetRelativePath(filePath);
             return relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
-        }
-        bool CanPreviewTarget(bool isBatch) {
-            return !isBatch && Options.ReviewTarget;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace DXVcsTools.VSIX {
         PortOptionsViewModel PortOptions { get; set; }
         public OptionsViewModel Options { get; private set; }
 
-        public RelayCommand MergeCommand { get; private set; }
+        public RelayCommand<bool?> MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
         public RelayCommand ShowMergeCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
@@ -69,20 +69,21 @@ namespace DXVcsTools.VSIX {
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
             Options = options;
-            MergeCommand = new RelayCommand(Merge, CanMerge);
+            MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
             MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             ShowMergeCommand = new RelayCommand(ShowMerge, CanShowMerge);
         }
-        void Merge() {
-            SelectedItem.MergeState = PerformMerge(SelectedItem, false);
+        void Merge(bool? parameter) {
+            bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
+            SelectedItem.MergeState = PerformMerge(SelectedItem, showPreview);
         }
-        MergeState PerformMerge(ProjectItemBase item, bool isBatch) {
-            MergeHelper helper = new MergeHelper(Options, PortOptions);
-            return helper.MergeChanges(CurrentBranch, item.Path, null, isBatch);
-        }
-        bool CanMerge() {
+        bool CanMerge(bool? parameter) {
             return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
+        }
+        MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
+            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview);
         }
         void MergeAll() {
             List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
