@@ -29,6 +29,7 @@
                     Command="{Binding UpdateCommand}"                    
                     Hint="Update">
                 </dxb:BarButtonItem>
+
                 <dxb:BarSplitButtonItem 
                     x:Name="bMerge" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
@@ -41,12 +42,14 @@
                         </dxb:PopupMenu>
                     </dxb:BarSplitButtonItem.PopupControl>
                 </dxb:BarSplitButtonItem>
+                
                 <dxb:BarButtonItem 
                     x:Name="bMergeAll" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
                     Command="{Binding MergeAllCommand}"                    
                     Hint="Merge all items">
                 </dxb:BarButtonItem>
+                
                 <dxb:BarEditItem 
                     x:Name="bCurrentBranch" 
                     EditValue="{Binding Path=CurrentBranch}"
@@ -60,6 +63,7 @@
                         </dxe:ComboBoxEditSettings>
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
+                
                 <dxb:BarButtonItem 
                     x:Name="bMergeSubMenuItem" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
@@ -67,6 +71,7 @@
                     CommandParameter="{StaticResource FalseBoolean}"
                     Content="Merge without review">
                 </dxb:BarButtonItem>
+                
                 <dxb:BarButtonItem 
                     x:Name="bMergeAndReviewTargetSubMenuItem" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
@@ -78,6 +83,7 @@
             <dxb:BarManager.Bars>
                 <dxb:Bar>
                     <dxb:BarItemLink BarItemName="bUpdate" />
+                    <dxb:BarItemLinkSeparator/>
                     <dxb:BarItemLink BarItemName="bMerge"/>
                     <dxb:BarItemLink BarItemName="bMergeAll" />
                     <dxb:BarItemLink BarItemName="bCurrentBranch"/>

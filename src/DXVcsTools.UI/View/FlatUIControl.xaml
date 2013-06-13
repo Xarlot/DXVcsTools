@@ -43,7 +43,9 @@
             <dxg:GridControl.View>
                 <dxg:TableView 
                     NavigationStyle="Row"
-                    FocusedRow="{Binding Path=SelectedItem}">
+                    FocusedRow="{Binding Path=SelectedItem}"
+                    AutoWidth="True"
+                    AllowGrouping="False">
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>

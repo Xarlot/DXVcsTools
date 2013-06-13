@@ -33,10 +33,11 @@ namespace DXVcsTools.VSIX {
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
-    public sealed class DXVcsTools_VSIXPackage : Package {
+    public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents {
         MenuViewModel Menu { get; set; }
         ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
+        uint solutionEventsCookie;
 
         /// <summary>
         ///     Default constructor of the package.
@@ -76,13 +77,17 @@ namespace DXVcsTools.VSIX {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
+            var window = GetMyToolWindow();
+            window.Initialize(ToolWindowViewModel);
+        }
+        MyToolWindow GetMyToolWindow() {
             MyToolWindow window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
             if ((null == window) || (null == window.Frame)) {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            window.Initialize(ToolWindowViewModel);
+            return window;
         }
 
 
@@ -119,7 +124,48 @@ namespace DXVcsTools.VSIX {
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand(menuToolWin);
             }
+
+            // Get solution
+            var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
+            if (solution != null) {
+                // Register for solution events
+                solution.AdviseSolutionEvents(this, out solutionEventsCookie);
+            }
         }
         #endregion
+
+        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
+            var window = GetMyToolWindow();
+            window.Initialize(ToolWindowViewModel);
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved) {
+            ToolWindowViewModel.Update();
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
+            return VSConstants.S_OK;
+        }
     }
 }
