@@ -59,7 +59,7 @@ namespace DXVcsTools.VSIX {
 
         public RelayCommand<bool?> MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
-        public RelayCommand ShowMergeCommand { get; private set; }
+        public RelayCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
@@ -72,7 +72,7 @@ namespace DXVcsTools.VSIX {
             MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
             MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
-            ShowMergeCommand = new RelayCommand(ShowMerge, CanShowMerge);
+            BlameCommand = new RelayCommand(Blame, CanBlame);
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
@@ -133,10 +133,10 @@ namespace DXVcsTools.VSIX {
             CommandManager.InvalidateRequerySuggested();
             Update();
         }
-        void ShowMerge() {
+        void Blame() {
             MergeHelper helper = new MergeHelper(Options, PortOptions);
         }
-        bool CanShowMerge() {
+        bool CanBlame() {
             return SelectedItem != null;
         }
     }
