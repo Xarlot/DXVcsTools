@@ -153,6 +153,9 @@
   <ItemGroup>
     <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="MenuViewModel.cs" />
+    <Compile Include="MenuWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MyControl.xaml.cs">
       <DependentUpon>MyControl.xaml</DependentUpon>
     </Compile>

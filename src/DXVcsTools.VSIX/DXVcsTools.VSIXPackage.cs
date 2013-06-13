@@ -73,7 +73,7 @@ namespace DXVcsTools.VSIX {
         ///     tool window. See the Initialize method to see how the menu item is associated to
         ///     this function using the OleMenuCommandService service and the MenuCommand class.
         /// </summary>
-        void ShowToolWindow(object sender, EventArgs e) {
+        void ShowToolWindow() {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
@@ -112,18 +112,21 @@ namespace DXVcsTools.VSIX {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
             base.Initialize();
 
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs) {
-                // Create the command for the menu item.
-                var menuCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidDXVcsToolsRoot);
-                var menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-                mcs.AddCommand(menuItem);
-                // Create the command for the tool window
-                var toolwndCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyTool);
-                var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-                mcs.AddCommand(menuToolWin);
-            }
+            //// Add our command handlers for menu (commands must exist in the .vsct file)
+            //var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            //if (null != mcs) {
+            //    // Create the command for the menu item.
+            //    var menuCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidDXVcsToolsRoot);
+            //    var menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
+            //    mcs.AddCommand(menuItem);
+            //    // Create the command for the tool window
+            //    var toolwndCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyTool);
+            //    var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
+            //    mcs.AddCommand(menuToolWin);
+            //}
+            VSDevExpressMenu devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
+            VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
+            wizardMenu.Click += wizardMenu_Click;
 
             // Get solution
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
@@ -131,6 +134,10 @@ namespace DXVcsTools.VSIX {
                 // Register for solution events
                 solution.AdviseSolutionEvents(this, out solutionEventsCookie);
             }
+        }
+
+        void wizardMenu_Click(object sender, EventArgs e) {
+            ShowToolWindow();
         }
         #endregion
 
