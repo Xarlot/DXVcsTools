@@ -39,7 +39,7 @@ namespace DXVcsTools.VSIX {
         }
         public DXVcsBranch CurrentBranch {
             get { return currentBranch; }
-            set { SetProperty(ref currentBranch, value, "CurrentBrunch", CurrentBranchChanged); }
+            set { SetProperty(ref currentBranch, value, "CurrentBranch", CurrentBranchChanged); }
         }
         public IEnumerable<DXVcsBranch> AvailableBranches { get { return Options.Branches; } }
         public SolutionItem Solution {
@@ -84,15 +84,9 @@ namespace DXVcsTools.VSIX {
         }
         void MergeAll() {
             List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
-            int count = items.Count;
-            int index = 0;
             foreach (ProjectItemBase item in items) {
                 item.MergeState = PerformMerge(item);
-                MergeProgress = index++ / count;
             }
-        }
-        async Task<MergeState> PerformMergeAsync(ProjectItemBase item) {
-            return PerformMerge(item);
         }
         bool CanMergeAll() {
             return true;

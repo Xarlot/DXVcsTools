@@ -11,11 +11,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <dxe:ProgressBarEdit EditValue="{Binding Path=MergeProgress}" Minimum="0" Maximum="100" Margin="5"/>
         <dxg:GridControl 
             Grid.Row="1"
             ItemsSource="{Binding Path=Source}">
@@ -39,7 +34,7 @@
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsCheckOut" >
+                <dxg:GridColumn FieldName="IsCheckOut">
                     <dxg:GridColumn.EditSettings>
                         <dxe:CheckEditSettings/>
                     </dxg:GridColumn.EditSettings>
@@ -53,5 +48,4 @@
             </dxg:GridControl.View>
         </dxg:GridControl>
     </Grid>
-
 </UserControl>
