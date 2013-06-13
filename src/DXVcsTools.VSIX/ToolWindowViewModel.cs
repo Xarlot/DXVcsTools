@@ -88,7 +88,7 @@ namespace DXVcsTools.VSIX {
         void MergeAll() {
             List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
             foreach (ProjectItemBase item in items) {
-                item.MergeState = PerformMerge(item, true);
+                item.MergeState = PerformMerge(item, false);
             }
         }
         bool CanMergeAll() {
