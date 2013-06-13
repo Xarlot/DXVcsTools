@@ -22,7 +22,23 @@
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Name" />
                 <dxg:GridColumn FieldName="Path" />
-                <dxg:GridColumn FieldName="MergeState" />
+                <dxg:GridColumn FieldName="MergeState">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0" x:Name="back">
+                                <dxe:TextEdit x:Name="PART_Editor"/>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="Success">
+                                    <Setter Property="Background" Value="LightGreen" TargetName="back"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="Conflict">
+                                    <Setter Property="Background" Value="LightPink" TargetName="back"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
                 <dxg:GridColumn FieldName="IsCheckOut" >
                     <dxg:GridColumn.EditSettings>
                         <dxe:CheckEditSettings/>

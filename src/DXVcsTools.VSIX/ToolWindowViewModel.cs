@@ -39,7 +39,7 @@ namespace DXVcsTools.VSIX {
         }
         public DXVcsBranch CurrentBranch {
             get { return currentBranch; }
-            set { SetProperty(ref currentBranch, value, "CurrentBrunch"); }
+            set { SetProperty(ref currentBranch, value, "CurrentBrunch", CurrentBranchChanged); }
         }
         public IEnumerable<DXVcsBranch> AvailableBranches { get { return Options.Branches; } }
         public SolutionItem Solution {
@@ -49,7 +49,7 @@ namespace DXVcsTools.VSIX {
         public IEnumerable Source {
             get { return flatSource; }
             private set { SetProperty(ref flatSource, value, "Source", CommandManager.InvalidateRequerySuggested); }
-        } 
+        }
         public ProjectItemBase SelectedItem {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
@@ -59,7 +59,7 @@ namespace DXVcsTools.VSIX {
 
         public RelayCommand MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
-        public RelayCommand UpdateCommand { get; private set; }
+        public DelegateCommand UpdateCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(Solution.Path);
@@ -131,6 +131,10 @@ namespace DXVcsTools.VSIX {
                         yield return subItem;
                 }
             }
+        }
+        void CurrentBranchChanged() {
+            CommandManager.InvalidateRequerySuggested();
+            Update();
         }
     }
 }
