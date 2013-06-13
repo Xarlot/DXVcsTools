@@ -130,6 +130,6 @@
     <value>Can not create tool window.</value>
   </data>
   <data name="ToolWindowTitle" xml:space="preserve">
-    <value>My Tool Window</value>
+    <value>DXVcsTools port window</value>
   </data>
 </root>

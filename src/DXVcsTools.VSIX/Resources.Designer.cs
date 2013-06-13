@@ -70,7 +70,7 @@ namespace DXVcsTools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Tool Window.
+        ///   Looks up a localized string similar to DXVcsTools port window.
         /// </summary>
         internal static string ToolWindowTitle {
             get {
