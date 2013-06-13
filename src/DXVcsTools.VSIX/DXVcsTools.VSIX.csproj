@@ -252,6 +252,10 @@
       <Project>{6f3a4678-865a-4e2a-a1a3-60d8746f3bcf}</Project>
       <Name>DXVcsTools.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DXVcsTools.Version\DXVcsTools.Version.csproj">
+      <Project>{7A04901D-A838-4CB9-8758-CC3BFAD60309}</Project>
+      <Name>DXVcsTools.Version</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using DXVcsTools.Version;
 using Microsoft.VisualStudio.Shell;
 
 namespace DXVcsTools.VSIX {
@@ -17,7 +18,7 @@ namespace DXVcsTools.VSIX {
         /// </summary>
         public MyToolWindow() : base(null) {
             // Set the window title reading it from the resources.
-            Caption = Resources.ToolWindowTitle;
+            Caption = Resources.ToolWindowTitle + " - " + VersionInfo.FullVersion;
             // Set the image that will appear on the tab of the window frame
             // when docked with an other window
             // The resource ID correspond to the one defined in the resx file

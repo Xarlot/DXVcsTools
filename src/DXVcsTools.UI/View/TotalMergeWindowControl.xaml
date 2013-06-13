@@ -21,7 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <dxb:BarManager>
+        <dxb:BarManager AllowCustomization="False">
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem 
                     x:Name="bUpdate" 
