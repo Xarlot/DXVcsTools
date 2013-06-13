@@ -16,7 +16,7 @@ namespace DXVcsTools.Core {
             Options = options;
             Port = model;
         }
-        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath = null) {
+        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool isBatch) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string tmpOriginalFile = Path.GetTempFileName();
@@ -32,10 +32,13 @@ namespace DXVcsTools.Core {
                         return MergeState.TargetDirectoryError;
                     repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
 
+
                     var diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
                         return MergeState.Conflict;
                     }
+                    if (CanPreviewTarget(isBatch))
+                        PreviewTarget(repository, vcsTargetFile, tmpTargetFile);
                 }
                 finally {
                     File.Delete(tmpOriginalFile);
@@ -86,32 +89,32 @@ namespace DXVcsTools.Core {
             ////                view.ShowError(null, exception.Message);
             //            }
         }
+        void PreviewTarget(IDXVcsRepository repository, string vcsFile, string file) {
+            string tmpVcsFile = Path.GetTempFileName();
+
+            try {
+                repository.GetLatestVersion(vcsFile, tmpVcsFile);
+                LaunchDiffTool(tmpVcsFile, file);
+            }
+            finally {
+                File.Delete(tmpVcsFile);
+            }
+        }
+        void LaunchDiffTool(string leftFile, string rightFile) {
+            var startInfo = new ProcessStartInfo();
+            startInfo.FileName = Options.DiffTool;
+            startInfo.Arguments = string.Format("\"{0}\" \"{1}\"", leftFile, rightFile);
+
+            Process process = Process.Start(startInfo);
+            process.WaitForExit();
+
+        }
         string GetMergeVcsPath(string filePath, DXVcsBranch currentBranch) {
             string relativePath = Port.GetRelativePath(filePath);
             return relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
         }
-
+        bool CanPreviewTarget(bool isBatch) {
+            return !isBatch && Options.ReviewTarget;
+        }
     }
-
-//void ReviewTargetFile(IDXVcsRepository repository, string vcsFile, string file) {
-//            string tmpVcsFile = Path.GetTempFileName();
-
-//            try {
-//                repository.GetLatestVersion(vcsFile, tmpVcsFile);
-//                LaunchDiffTool(tmpVcsFile, file);
-//            }
-//            finally {
-//                File.Delete(tmpVcsFile);
-//            }
-//        }
-//        void LaunchDiffTool(string leftFile, string rightFile) {
-//            var startInfo = new ProcessStartInfo();
-//            startInfo.FileName = Port.DiffTool;
-//            startInfo.Arguments = string.Format("\"{0}\" \"{1}\"", leftFile, rightFile);
-
-//            Process process = Process.Start(startInfo);
-//            process.WaitForExit();
-//        }
-
-//    }
 }

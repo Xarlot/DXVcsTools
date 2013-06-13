@@ -59,6 +59,7 @@ namespace DXVcsTools.VSIX {
 
         public RelayCommand MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
+        public RelayCommand ShowMergeCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
@@ -70,14 +71,15 @@ namespace DXVcsTools.VSIX {
             Options = options;
             MergeCommand = new RelayCommand(Merge, CanMerge);
             MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
-            UpdateCommand = new RelayCommand(Update, CanUpdate);
+            UpdateCommand = new DelegateCommand(Update, CanUpdate);
+            ShowMergeCommand = new RelayCommand(ShowMerge, CanShowMerge);
         }
         void Merge() {
-            SelectedItem.MergeState = PerformMerge(SelectedItem);
+            SelectedItem.MergeState = PerformMerge(SelectedItem, false);
         }
-        MergeState PerformMerge(ProjectItemBase item) {
+        MergeState PerformMerge(ProjectItemBase item, bool isBatch) {
             MergeHelper helper = new MergeHelper(Options, PortOptions);
-            return helper.MergeChanges(CurrentBranch, item.Path, null);
+            return helper.MergeChanges(CurrentBranch, item.Path, null, isBatch);
         }
         bool CanMerge() {
             return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
@@ -85,7 +87,7 @@ namespace DXVcsTools.VSIX {
         void MergeAll() {
             List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
             foreach (ProjectItemBase item in items) {
-                item.MergeState = PerformMerge(item);
+                item.MergeState = PerformMerge(item, true);
             }
         }
         bool CanMergeAll() {
@@ -129,6 +131,12 @@ namespace DXVcsTools.VSIX {
         void CurrentBranchChanged() {
             CommandManager.InvalidateRequerySuggested();
             Update();
+        }
+        void ShowMerge() {
+            MergeHelper helper = new MergeHelper(Options, PortOptions);
+        }
+        bool CanShowMerge() {
+            return SelectedItem != null;
         }
     }
 }
