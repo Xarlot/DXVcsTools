@@ -113,5 +113,13 @@ namespace DXVcsTools.Core {
             string relativePath = Port.GetRelativePath(filePath);
             return relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
         }
+
+        public void CheckIn(CheckInViewModel checkInViewModel) {
+            IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+            string vcsOriginalPath = Port.GetRelativePath(checkInViewModel.FilePath);
+            repository.CheckInFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
+            if (checkInViewModel.StaysChecked)
+                repository.CheckOutFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
+        }
     }
 }

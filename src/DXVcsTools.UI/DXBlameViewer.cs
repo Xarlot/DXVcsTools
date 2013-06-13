@@ -9,7 +9,6 @@ namespace DXVcsTools.UI.Wpf {
         public DXBlameViewer(string tortoiseProc) {
             if (string.IsNullOrEmpty(tortoiseProc))
                 throw new ArgumentException("tortoiseProc");
-
             _tortoiseProc = PathHelper.ResolvePath(tortoiseProc);
         }
 

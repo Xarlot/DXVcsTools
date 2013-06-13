@@ -15,7 +15,7 @@ using DevExpress.Xpf.Mvvm.Native;
 using EnvDTE;
 
 namespace DXVcsTools.VSIX {
-    public class ToolWindowViewModel : BindableBase, IUpdatableViewModel {
+    public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
         readonly DTE dte;
         SolutionItem solutionItem;
         ProjectItemBase selectedItem;
@@ -61,6 +61,7 @@ namespace DXVcsTools.VSIX {
         public RelayCommand MergeAllCommand { get; private set; }
         public RelayCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
+        public RelayCommand CheckInCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(Solution.Path);
@@ -69,10 +70,13 @@ namespace DXVcsTools.VSIX {
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
             Options = options;
+            ServiceContainer = new ServiceContainer(this);
+
             MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
             MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             BlameCommand = new RelayCommand(Blame, CanBlame);
+            CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
@@ -138,6 +142,23 @@ namespace DXVcsTools.VSIX {
         }
         bool CanBlame() {
             return SelectedItem != null;
+        }
+        bool CanCheckIn() {
+            return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+        }
+        void CheckIn() {
+            CheckInViewModel model = new CheckInViewModel(SelectedItem.Path, false);
+            bool? result = GetService<IDialogService>().ShowDialog("CheckInControl");
+            if (result != null && (bool)result) {
+                MergeHelper helper = new MergeHelper(Options, PortOptions);
+                helper.CheckIn(model);
+                SelectedItem.IsChecked = model.StaysChecked;
+            }
+        }
+
+        public IServiceContainer ServiceContainer { get; private set; }
+        protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
+            return ServiceContainer.GetService<T>(searchMode);
         }
     }
 }

@@ -11,6 +11,7 @@
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:i="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     dx:ThemeManager.ThemeName="Office2013">
@@ -20,6 +21,10 @@
             <system:Boolean x:Key="FalseBoolean">False</system:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
+    <i:Interaction.Behaviors>
+        <ui:DialogService ViewLocator="{view:CheckInControlLocator}" />
+    </i:Interaction.Behaviors>
+
     <Grid>
         <dxb:BarManager AllowCustomization="False">
             <dxb:BarManager.Items>
@@ -79,6 +84,13 @@
                     Content="Merge and review"
                     CommandParameter="{StaticResource TrueBoolean}">
                 </dxb:BarButtonItem>
+
+                <dxb:BarButtonItem 
+                    x:Name="bCheckIn" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Command="{Binding CheckInCommand}"                    
+                    Hint="Check in">
+                </dxb:BarButtonItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar>
@@ -87,6 +99,7 @@
                     <dxb:BarItemLink BarItemName="bMerge"/>
                     <dxb:BarItemLink BarItemName="bMergeAll" />
                     <dxb:BarItemLink BarItemName="bCurrentBranch"/>
+                    <dxb:BarItemLink BarItemName="bCheckIn"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <view:FlatUIControl/>

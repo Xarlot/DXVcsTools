@@ -97,6 +97,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.1.Core.dll</HintPath>
     </Reference>
+    <Reference Include="DevExpress.Xpf.LayoutControl.v13.1, Version=13.1.0.0, Culture=neutral, PublicKeyToken=79868b8147b5eae4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v13.1.dll</HintPath>
+    </Reference>
     <Reference Include="DevExpress.Xpf.Mvvm.v13.1">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.1.dll</HintPath>
     </Reference>
@@ -111,7 +115,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -126,20 +132,32 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
-    <Compile Include="IUpdatableViewModel.cs" />
+    <Compile Include="CheckInControl.xaml.cs">
+      <DependentUpon>CheckInControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CheckInViewModel.cs" />
+    <Compile Include="MVVM\DialogService.cs" />
+    <Compile Include="MVVM\IUpdatableViewModel.cs" />
     <Compile Include="MergeHelper.cs" />
     <Compile Include="PortOptionsViewModel.cs" />
-    <Compile Include="RelayCommand.cs" />
+    <Compile Include="MVVM\RelayCommand.cs" />
+    <Compile Include="View\CheckInControl.xaml.cs">
+      <DependentUpon>CheckInControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CheckInControlLocator.cs" />
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />
     <Compile Include="View\FlatUIControl.xaml.cs">
       <DependentUpon>FlatUIControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MultipleCheckInControl.xaml.cs">
+      <DependentUpon>MultipleCheckInControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TreeUIControl.xaml.cs">
       <DependentUpon>TreeUIControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\UpdateOnLoadedBehavior.cs" />
+    <Compile Include="MVVM\UpdateOnLoadedBehavior.cs" />
     <Compile Include="View\TotalMergeWindowControl.xaml.cs">
       <DependentUpon>TotalMergeWindowControl.xaml</DependentUpon>
     </Compile>
@@ -192,7 +210,19 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CheckInControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CheckInControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FlatUIControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MultipleCheckInControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

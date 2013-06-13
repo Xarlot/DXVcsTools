@@ -14,31 +14,43 @@
             <ui:HierarchyToEnumerableConverter x:Key="objectToEnumerableConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <dxg:GridControl 
-                FilterString="[IsCheckOut] = false"
-                ItemsSource="{Binding Path=Solution, Converter={StaticResource objectToEnumerableConverter}}">
+    <dxg:GridControl
+            Grid.Row="1"
+            ItemsSource="{Binding Path=HierarchicalSource}">
         <dxg:GridControl.Columns>
             <dxg:GridColumn FieldName="Name" />
             <dxg:GridColumn FieldName="Path" />
-            <dxg:GridColumn FieldName="MergeState" />
-            <dxg:GridColumn FieldName="IsCheckOut" >
+            <dxg:GridColumn FieldName="MergeState">
+                <dxg:GridColumn.CellTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0" x:Name="back">
+                            <dxe:TextEdit x:Name="PART_Editor"/>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=Value}" Value="Success">
+                                <Setter Property="Background" Value="LightGreen" TargetName="back"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Value}" Value="Conflict">
+                                <Setter Property="Background" Value="LightPink" TargetName="back"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </dxg:GridColumn.CellTemplate>
+            </dxg:GridColumn>
+            <dxg:GridColumn FieldName="IsCheckOut">
                 <dxg:GridColumn.EditSettings>
                     <dxe:CheckEditSettings/>
                 </dxg:GridColumn.EditSettings>
             </dxg:GridColumn>
         </dxg:GridControl.Columns>
         <dxg:GridControl.View>
-            <dxg:TableView/>
-            <!--ChildNodesSelector="{StaticResource childNodesSelector}"-->
-            <!--<dxg:TreeListView
-                        FocusedRow="{Binding Path=SelectedItem}"
-                        AutoExpandAllNodes="True"
-                        ChildNodesPath="Children"
-                        TreeDerivationMode="ChildNodesSelector"
-                        ShowCheckboxes="True"
-                        CheckBoxFieldName="IsChecked"
-                        AllowRecursiveNodeChecking="True"
-                        NavigationStyle="Row"/>-->
+            <dxg:TreeListView 
+                TreeDerivationMode="ChildNodesSelector"
+                ChildNodesPath="Children"
+                NavigationStyle="Row"
+                FocusedRow="{Binding Path=SelectedItem}"
+                AutoWidth="True">
+            </dxg:TreeListView>
         </dxg:GridControl.View>
     </dxg:GridControl>
 
