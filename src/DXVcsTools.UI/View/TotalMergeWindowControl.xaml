@@ -30,14 +30,14 @@
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem 
                     x:Name="bUpdate" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png" 
                     Command="{Binding UpdateCommand}"                    
                     Hint="Update">
                 </dxb:BarButtonItem>
 
                 <dxb:BarSplitButtonItem 
                     x:Name="bMerge" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
                     Command="{Binding MergeCommand}" 
                     Hint="Merge current item">
                     <dxb:BarSplitButtonItem.PopupControl>
@@ -50,7 +50,7 @@
                 
                 <dxb:BarButtonItem 
                     x:Name="bMergeAll" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
                     Command="{Binding MergeAllCommand}"                    
                     Hint="Merge all items">
                 </dxb:BarButtonItem>
@@ -71,7 +71,7 @@
                 
                 <dxb:BarButtonItem 
                     x:Name="bMergeSubMenuItem" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
                     Command="{Binding MergeCommand}"                    
                     CommandParameter="{StaticResource FalseBoolean}"
                     Content="Merge without review">
@@ -79,7 +79,7 @@
                 
                 <dxb:BarButtonItem 
                     x:Name="bMergeAndReviewTargetSubMenuItem" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
                     Command="{Binding MergeCommand}"     
                     Content="Merge and review"
                     CommandParameter="{StaticResource TrueBoolean}">
@@ -87,7 +87,7 @@
 
                 <dxb:BarButtonItem 
                     x:Name="bCheckIn" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
                     Command="{Binding CheckInCommand}" 
                     Content="Check In"
                     Hint="Check in">
@@ -95,7 +95,7 @@
 
                 <dxb:BarButtonItem 
                     x:Name="bShowDiff" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png" 
                     Command="{Binding ShowDiffCommand}"    
                     Content="Show Diff"
                     Hint="Show diff">
