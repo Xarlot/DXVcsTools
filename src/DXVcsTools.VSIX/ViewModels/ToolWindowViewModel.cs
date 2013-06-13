@@ -62,6 +62,7 @@ namespace DXVcsTools.VSIX {
         public RelayCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
         public RelayCommand CheckInCommand { get; private set; }
+        public RelayCommand ShowDiffCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(Solution.Path);
@@ -77,6 +78,7 @@ namespace DXVcsTools.VSIX {
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             BlameCommand = new RelayCommand(Blame, CanBlame);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
+            ShowDiffCommand = new RelayCommand(ShowDiff, CanShowDiff);
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
@@ -148,12 +150,19 @@ namespace DXVcsTools.VSIX {
         }
         void CheckIn() {
             CheckInViewModel model = new CheckInViewModel(SelectedItem.Path, false);
-            bool? result = GetService<IDialogService>().ShowDialog("CheckInControl");
+            bool? result = GetService<IDialogService>().ShowDialog("CheckInControl", model, "Check in");
             if (result != null && (bool)result) {
                 MergeHelper helper = new MergeHelper(Options, PortOptions);
                 helper.CheckIn(model);
                 SelectedItem.IsChecked = model.StaysChecked;
             }
+        }
+        bool CanShowDiff() {
+            return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+        }
+        void ShowDiff() {
+            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            helper.ShowDiff(SelectedItem.Path);
         }
 
         public IServiceContainer ServiceContainer { get; private set; }

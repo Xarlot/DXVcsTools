@@ -121,5 +121,10 @@ namespace DXVcsTools.Core {
             if (checkInViewModel.StaysChecked)
                 repository.CheckOutFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
         }
+        public void ShowDiff(string filePath) {
+            IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+            string vcsOriginalPath = Port.GetRelativePath(filePath);
+            PreviewTarget(repository, vcsOriginalPath, filePath);
+        }
     }
 }

@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
-        <ui:DialogService ViewLocator="{view:CheckInControlLocator}" />
+        <ui:DialogService ThemeName="Office2013" ViewLocator="{view:CheckInControlLocator}" />
     </i:Interaction.Behaviors>
 
     <Grid>
@@ -91,6 +91,13 @@
                     Command="{Binding CheckInCommand}"                    
                     Hint="Check in">
                 </dxb:BarButtonItem>
+
+                <dxb:BarButtonItem 
+                    x:Name="bShowDiff" 
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
+                    Command="{Binding ShowDiffCommand}"                    
+                    Hint="Show diff">
+                </dxb:BarButtonItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar>
@@ -100,6 +107,7 @@
                     <dxb:BarItemLink BarItemName="bMergeAll" />
                     <dxb:BarItemLink BarItemName="bCurrentBranch"/>
                     <dxb:BarItemLink BarItemName="bCheckIn"/>
+                    <dxb:BarItemLink BarItemName="bShowDiff"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <view:FlatUIControl/>
