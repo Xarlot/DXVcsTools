@@ -7,9 +7,6 @@
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
         xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-        xmlns:ui="clr-namespace:DXVcsTools.UI"
-        xmlns:i="clr-namespace:DevExpress.Xpf.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v13.1"
-        xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v13.1"
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -49,6 +46,10 @@
                     FocusedRow="{Binding Path=SelectedItem}"
                     AutoWidth="True"
                     AllowGrouping="False">
+                    <dxg:TableView.RowCellMenuCustomizations>
+                        <dxb:BarItemLink x:Name="bCheckIn"/>
+                        <dxb:BarItemLink x:Name="bShowDiff"/>
+                    </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>

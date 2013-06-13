@@ -88,14 +88,16 @@
                 <dxb:BarButtonItem 
                     x:Name="bCheckIn" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
-                    Command="{Binding CheckInCommand}"                    
+                    Command="{Binding CheckInCommand}" 
+                    Content="Check In"
                     Hint="Check in">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem 
                     x:Name="bShowDiff" 
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/IndentIncrease_16x16.png" 
-                    Command="{Binding ShowDiffCommand}"                    
+                    Command="{Binding ShowDiffCommand}"    
+                    Content="Show Diff"
                     Hint="Show diff">
                 </dxb:BarButtonItem>
             </dxb:BarManager.Items>
@@ -105,9 +107,10 @@
                     <dxb:BarItemLinkSeparator/>
                     <dxb:BarItemLink BarItemName="bMerge"/>
                     <dxb:BarItemLink BarItemName="bMergeAll" />
-                    <dxb:BarItemLink BarItemName="bCurrentBranch"/>
                     <dxb:BarItemLink BarItemName="bCheckIn"/>
                     <dxb:BarItemLink BarItemName="bShowDiff"/>
+                    <dxb:BarItemLinkSeparator/>
+                    <dxb:BarItemLink BarItemName="bCurrentBranch"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <view:FlatUIControl/>
