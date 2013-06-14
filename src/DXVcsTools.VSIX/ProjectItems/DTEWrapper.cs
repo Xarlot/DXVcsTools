@@ -52,6 +52,7 @@ namespace DXVcsTools.Core {
             }
             if (item == null)
                 return null;
+            item.ItemWrapper = new ProjectItemWrapper(projectItem);
             item.IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName);
             item.MergeState = MergeState.None;
             return item;

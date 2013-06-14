@@ -127,6 +127,7 @@
     <Compile Include="ProjectItems\FileItemBase.cs" />
     <Compile Include="ProjectItems\FolderItem.cs" />
     <Compile Include="ProjectItems\IDTEWrapper.cs" />
+    <Compile Include="ProjectItems\IProjectItemWrapper.cs" />
     <Compile Include="ProjectItems\ProjectItem.cs" />
     <Compile Include="ProjectItems\ProjectItemBase.cs" />
     <Compile Include="ProjectItems\SolitionEnumeratorHelper.cs" />

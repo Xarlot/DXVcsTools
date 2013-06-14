@@ -19,6 +19,7 @@ namespace DXVcsTools.VSIX {
         readonly DTE dte;
         SolutionItem solutionItem;
         ProjectItemBase selectedItem;
+        IEnumerable<ProjectItemBase> selectedItems;
         DXVcsBranch currentBranch;
         DXVcsBranch masterBranch;
         bool canTotalMerge;
@@ -53,6 +54,10 @@ namespace DXVcsTools.VSIX {
         public ProjectItemBase SelectedItem {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
+        }
+        public IEnumerable<ProjectItemBase> SelectedItems {
+            get { return selectedItems; }
+            set { SetProperty(ref selectedItems, value, "SelectedItems", CommandManager.InvalidateRequerySuggested); }
         }
         PortOptionsViewModel PortOptions { get; set; }
         public OptionsViewModel Options { get; private set; }

@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ui="clr-namespace:DXVcsTools.UI" 
     xmlns:view="clr-namespace:DXVcsTools.UI.View"
-    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"

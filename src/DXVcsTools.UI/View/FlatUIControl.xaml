@@ -12,15 +12,19 @@
     <Grid>
         <dxg:GridControl
             Grid.Row="1"
-            ItemsSource="{Binding Path=Source}">
+            ItemsSource="{Binding Path=Source}"
+            SelectedItems="{Binding Path=SelectedItems}">
             <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="Name" />
+                <dxg:GridColumn FieldName="Name" Width="200" FixedWidth="True" />
                 <dxg:GridColumn FieldName="Path" />
-                <dxg:GridColumn FieldName="MergeState">
+                <dxg:GridColumn 
+                    FieldName="MergeState" 
+                    FixedWidth="True" 
+                    Width="100">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
                             <Border BorderThickness="0" x:Name="back">
-                                <dxe:TextEdit x:Name="PART_Editor"/>
+                                <dxe:TextEdit HorizontalContentAlignment="Center" x:Name="PART_Editor"/>
                             </Border>
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding Path=Value}" Value="Success">
@@ -33,7 +37,7 @@
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsCheckOut">
+                <dxg:GridColumn FieldName="IsCheckOut" FixedWidth="True" Width="70">
                     <dxg:GridColumn.EditSettings>
                         <dxe:CheckEditSettings/>
                     </dxg:GridColumn.EditSettings>

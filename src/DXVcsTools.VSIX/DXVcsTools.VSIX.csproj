@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationHelper.cs" />
+    <Compile Include="ProjectItems\ProjectItemWrapper.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="MenuWrapper.cs">
       <SubType>Component</SubType>
