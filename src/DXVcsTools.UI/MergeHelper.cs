@@ -45,6 +45,7 @@ namespace DXVcsTools.Core {
                 }
             }
             catch {
+                return MergeState.UnknownError;
             }
             return MergeState.Success;
             //            try {
