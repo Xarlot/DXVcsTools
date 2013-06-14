@@ -14,6 +14,7 @@ namespace DXVcsTools.Core {
     public class OptionsViewModel {
         public OptionsViewModel() {
             Branches = new List<DXVcsBranch>();
+            Branches.Add(new DXVcsBranch() { Name = "12.1", Path = "$/2012.1/" });
             Branches.Add(new DXVcsBranch() { Name = "12.2", Path = "$/2012.2/" });
             Branches.Add(new DXVcsBranch() { Name = "13.1", Path = "$/2013.1/" });
             Branches.Add(new DXVcsBranch() { Name = "13.2", Path = "$/2013.2/" });

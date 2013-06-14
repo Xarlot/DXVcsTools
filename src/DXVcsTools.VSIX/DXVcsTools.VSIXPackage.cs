@@ -33,24 +33,21 @@ namespace DXVcsTools.VSIX {
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [ProvideBindingPath(SubPath = "Lib")]
+    [ProvideAutoLoad("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
-    public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents {
+    public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents, IVsShellPropertyEvents {
         MenuViewModel Menu { get; set; }
         ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
         uint solutionEventsCookie;
-        readonly string currentDXVersion = "13.2.1.0";
+        uint shellCookie;
 
         public DXVcsTools_VSIXPackage() {
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
-
             Options = new OptionsViewModel();
-
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
-
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
-            
         }
 
         /// <summary>
@@ -65,8 +62,8 @@ namespace DXVcsTools.VSIX {
             //try {
             //    AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-                var window = GetMyToolWindow();
-                window.Initialize(ToolWindowViewModel);
+            var window = GetMyToolWindow();
+            window.Initialize(ToolWindowViewModel);
             //}
             //catch {
             //    AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
@@ -111,6 +108,10 @@ namespace DXVcsTools.VSIX {
             if (solution != null) {
                 solution.AdviseSolutionEvents(this, out solutionEventsCookie);
             }
+
+            var shellService = this.GetService(typeof(SVsShell)) as IVsShell;
+            ErrorHandler.ThrowOnFailure(
+                shellService.AdviseShellPropertyChanges(this, out shellCookie));
         }
 
         void wizardMenu_Click(object sender, EventArgs e) {
@@ -149,6 +150,24 @@ namespace DXVcsTools.VSIX {
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
+            return VSConstants.S_OK;
+        }
+
+        int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var) {
+            if (propid == (int)__VSSPROPID.VSSPROPID_Zombie) {
+                if ((bool)var == false) {
+                    //At this point the environment is fully loaded and initialized
+                    //Lets initialize our services
+                    ToolWindowViewModel.Update();
+
+                    IVsShell shellService = this.GetService(typeof(SVsShell)) as IVsShell;
+                    if (shellService != null) {
+                        ErrorHandler.ThrowOnFailure(
+                            shellService.UnadviseShellPropertyChanges(this.shellCookie));
+                    }
+                    this.shellCookie = 0;
+                }
+            }
             return VSConstants.S_OK;
         }
     }

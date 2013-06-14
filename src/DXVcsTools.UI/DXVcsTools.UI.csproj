@@ -148,9 +148,6 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
-    <Compile Include="CheckInControl.xaml.cs">
-      <DependentUpon>CheckInControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CheckInViewModel.cs" />
     <Compile Include="MVVM\DialogService.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
@@ -226,10 +223,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CheckInControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\CheckInControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

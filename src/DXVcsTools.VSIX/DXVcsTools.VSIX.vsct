@@ -65,7 +65,7 @@
         <Parent guid="guidDXVcsTools_VSIXCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>DXVcsTools</ButtonText>
+          <ButtonText>Show port window</ButtonText>
         </Strings>
       </Button>
 
@@ -74,7 +74,7 @@
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
-          <ButtonText>My Tool Window</ButtonText>
+          <ButtonText>DXVcsTools port window</ButtonText>
         </Strings>
       </Button>
 
