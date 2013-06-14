@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DXVcsTools.DXVcsClient</RootNamespace>
     <AssemblyName>DXVcsTools.DXVcsClient</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\DXVcsTools.Key\StrongKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

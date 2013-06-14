@@ -11,6 +11,7 @@
     <RootNamespace>DXVcsTools.UI</RootNamespace>
     <AssemblyName>DXVcsTools.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\DXVcsTools.Key\StrongKey.snk</AssemblyOriginatorKeyFile>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -85,33 +86,43 @@
   <ItemGroup>
     <Reference Include="DevExpress.Data.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Data.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Core.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Grid.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Grid.v13.2.Core, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.LayoutControl.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Mvvm.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.Seven.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

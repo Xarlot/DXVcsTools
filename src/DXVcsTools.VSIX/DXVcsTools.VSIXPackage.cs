@@ -32,23 +32,16 @@ namespace DXVcsTools.VSIX {
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
+    [ProvideBindingPath(SubPath = "Lib")]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
     public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents {
         MenuViewModel Menu { get; set; }
         ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
         uint solutionEventsCookie;
+        readonly string currentDXVersion = "13.2.1.0";
 
-        /// <summary>
-        ///     Default constructor of the package.
-        ///     Inside this method you can place any initialization code that does not require
-        ///     any Visual Studio service because at this point the package object is created but
-        ///     not sited yet inside Visual Studio environment. The place to do all the other
-        ///     initialization is the Initialize method.
-        /// </summary>
         public DXVcsTools_VSIXPackage() {
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
 
             Options = new OptionsViewModel();
@@ -57,15 +50,7 @@ namespace DXVcsTools.VSIX {
             Menu.DoConnect(dte);
 
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
-        }
-
-        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-                if (assembly.FullName == args.Name)
-                    return assembly;
-            if (args.Name.StartsWith("DevExpress.Xpf"))
-                return Assembly.Load(new AssemblyName(args.Name));
-            return null;
+            
         }
 
         /// <summary>
@@ -77,8 +62,15 @@ namespace DXVcsTools.VSIX {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            var window = GetMyToolWindow();
-            window.Initialize(ToolWindowViewModel);
+            //try {
+            //    AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
+                var window = GetMyToolWindow();
+                window.Initialize(ToolWindowViewModel);
+            //}
+            //catch {
+            //    AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            //}
         }
         MyToolWindow GetMyToolWindow() {
             MyToolWindow window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
@@ -100,7 +92,7 @@ namespace DXVcsTools.VSIX {
         ///     the OleMenuCommandService service and the MenuCommand class.
         /// </summary>
         void MenuItemCallback(object sender, EventArgs e) {
-            Menu.DoPort();
+            ShowToolWindow();
         }
 
         #region Package Members
@@ -109,29 +101,14 @@ namespace DXVcsTools.VSIX {
         ///     where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
         protected override void Initialize() {
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
             base.Initialize();
 
-            //// Add our command handlers for menu (commands must exist in the .vsct file)
-            //var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            //if (null != mcs) {
-            //    // Create the command for the menu item.
-            //    var menuCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidDXVcsToolsRoot);
-            //    var menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-            //    mcs.AddCommand(menuItem);
-            //    // Create the command for the tool window
-            //    var toolwndCommandID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyTool);
-            //    var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-            //    mcs.AddCommand(menuToolWin);
-            //}
             VSDevExpressMenu devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
             VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
             wizardMenu.Click += wizardMenu_Click;
 
-            // Get solution
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
             if (solution != null) {
-                // Register for solution events
                 solution.AdviseSolutionEvents(this, out solutionEventsCookie);
             }
         }

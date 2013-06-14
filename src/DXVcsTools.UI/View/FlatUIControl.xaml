@@ -51,8 +51,16 @@
                     AutoWidth="True"
                     AllowGrouping="False">
                     <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarItemLink x:Name="bCheckIn"/>
-                        <dxb:BarItemLink x:Name="bShowDiff"/>
+                        <dxb:AddBarItemLinkAction>
+                            <dxb:AddBarItemLinkAction.ItemLink>
+                                <dxb:BarButtonItemLink x:Name="bCheckIn"/>
+                            </dxb:AddBarItemLinkAction.ItemLink>
+                        </dxb:AddBarItemLinkAction>
+                        <dxb:AddBarItemLinkAction>
+                            <dxb:AddBarItemLinkAction.ItemLink>
+                                <dxb:BarButtonItemLink x:Name="bShowDiff"/>
+                            </dxb:AddBarItemLinkAction.ItemLink>
+                        </dxb:AddBarItemLinkAction>                        
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

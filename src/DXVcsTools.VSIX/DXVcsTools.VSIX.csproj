@@ -16,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DXVcsTools</RootNamespace>
     <AssemblyName>DXVcsTools.VSIX</AssemblyName>
-    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\DXVcsTools.Key\StrongKey.snk</AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -42,33 +42,43 @@
   <ItemGroup>
     <Reference Include="DevExpress.Data.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Data.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Core.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Grid.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Grid.v13.2.Core, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.LayoutControl.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Mvvm.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DevExpress.Xpf.Themes.Seven.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v13.2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DXVCS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -192,6 +202,46 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\lib\DX\DevExpress.Data.v13.2.dll">
+      <Link>Lib\DevExpress.Data.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Core.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Core.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.Core.dll">
+      <Link>Lib\DevExpress.Xpf.Grid.v13.2.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Grid.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.LayoutControl.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.LayoutControl.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Mvvm.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Themes.MetropolisLight.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Themes.Office2013.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v13.2.dll">
+      <Link>Lib\DevExpress.Xpf.Themes.Seven.v13.2.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
       <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
