@@ -6,8 +6,7 @@
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             dx:ThemeManager.ThemeName="VS2010">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
