@@ -148,11 +148,12 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
-    <Compile Include="CheckInViewModel.cs" />
+    <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\DialogService.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
-    <Compile Include="MergeHelper.cs" />
-    <Compile Include="PortOptionsViewModel.cs" />
+    <Compile Include="ViewModel\MergeHelper.cs" />
+    <Compile Include="ViewModel\OptionsViewModel.cs" />
+    <Compile Include="ViewModel\PortOptionsViewModel.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>
@@ -184,7 +185,7 @@
     <Compile Include="View\OptionsControl.xaml.cs">
       <DependentUpon>OptionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PortViewModel.cs" />
+    <Compile Include="ViewModel\PortViewModel.cs" />
     <Compile Include="PortWindowPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewFactory.cs" />

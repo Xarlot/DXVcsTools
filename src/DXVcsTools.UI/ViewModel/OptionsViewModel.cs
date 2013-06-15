@@ -10,7 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using DXVcsTools.Core;
 
-namespace DXVcsTools.Core {
+namespace DXVcsTools.UI {
     public class OptionsViewModel {
         public OptionsViewModel() {
             Branches = new List<DXVcsBranch>();
