@@ -148,9 +148,11 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
+    <Compile Include="MVVM\BindableBaseEx.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\DialogService.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
+    <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
@@ -158,12 +160,15 @@
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CheckInControlLocator.cs" />
+    <Compile Include="View\ControlLocator.cs" />
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />
     <Compile Include="View\FlatUIControl.xaml.cs">
       <DependentUpon>FlatUIControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManualMergeControl.xaml.cs">
+      <DependentUpon>ManualMergeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MultipleCheckInControl.xaml.cs">
       <DependentUpon>MultipleCheckInControl.xaml</DependentUpon>
@@ -229,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FlatUIControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ManualMergeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

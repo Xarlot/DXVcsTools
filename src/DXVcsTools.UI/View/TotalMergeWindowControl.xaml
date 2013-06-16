@@ -21,7 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
-        <ui:DialogService ThemeName="Seven" ViewLocator="{view:CheckInControlLocator}" />
+        <ui:DialogService ThemeName="Seven" ViewLocator="{view:ControlLocator}" />
     </i:Interaction.Behaviors>
 
     <Grid>

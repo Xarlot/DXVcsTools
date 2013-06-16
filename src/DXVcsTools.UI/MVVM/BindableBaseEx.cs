@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using DevExpress.Xpf.Mvvm;
+
+namespace DXVcsTools.UI.MVVM {
+    public class BindableBaseEx : BindableBase {
+        public new void SetProperty<T>(ref T storage, T value, [CallerMemberName] string name = null) {
+            base.SetProperty(ref storage, value, name);
+        }
+    }
+}

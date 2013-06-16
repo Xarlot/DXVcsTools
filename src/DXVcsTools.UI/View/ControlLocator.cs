@@ -7,12 +7,14 @@ using System.Windows.Markup;
 using DevExpress.Xpf.Mvvm.UI;
 
 namespace DXVcsTools.UI.View {
-    public class CheckInControlLocator : MarkupExtension, IViewLocator  {
+    public class ControlLocator : MarkupExtension, IViewLocator  {
         public object ResolveView(string name) {
             if (name == "CheckInControl")
                 return new CheckInControl();
             if (name == "MultipleCheckInControl")
                 return new MultipleCheckInControl();
+            if (name == "ManualMergeControl")
+                return new ManualMergeControl();
             throw new ArgumentException("name");
         }
         public override object ProvideValue(IServiceProvider serviceProvider) {

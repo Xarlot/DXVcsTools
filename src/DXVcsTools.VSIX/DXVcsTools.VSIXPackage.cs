@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using DXVcsTools.Core;
+using DXVcsTools.UI;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -60,7 +61,6 @@ namespace DXVcsTools.VSIX {
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
             //try {
-            //    AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             var window = GetMyToolWindow();
             window.Initialize(ToolWindowViewModel);

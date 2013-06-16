@@ -68,6 +68,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand UpdateCommand { get; private set; }
         public RelayCommand CheckInCommand { get; private set; }
         public RelayCommand ShowDiffCommand { get; private set; }
+        public RelayCommand ManualMergeCommand { get; private set; }
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(Solution.Path);
@@ -84,6 +85,7 @@ namespace DXVcsTools.VSIX {
             BlameCommand = new RelayCommand(Blame, CanBlame);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             ShowDiffCommand = new RelayCommand(ShowDiff, CanShowDiff);
+            ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
@@ -168,6 +170,12 @@ namespace DXVcsTools.VSIX {
         void ShowDiff() {
             MergeHelper helper = new MergeHelper(Options, PortOptions);
             helper.ShowDiff(SelectedItem.Path);
+        }
+        bool CanManualMerge() {
+            return SelectedItem.MergeState == MergeState.Conflict;
+        }
+        void ManualMerge() {
+            
         }
 
         public IServiceContainer ServiceContainer { get; private set; }
