@@ -78,10 +78,16 @@ namespace DXVcsTools.Core {
             if (checkInViewModel.StaysChecked)
                 repository.CheckOutFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
         }
-        public void ShowDiff(string filePath) {
+        public void CompareWithCurrentVersion(string filePath) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
             string vcsOriginalPath = Port.GetRelativePath(filePath);
             PreviewTarget(repository, vcsOriginalPath, filePath);
+        }
+        public void CompareWithPortVersion(string filePath, DXVcsBranch current) {
+            IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+            string vcsOriginalPath = Port.GetRelativePath(filePath);
+            string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
+            PreviewTarget(repository, vcsOriginalPath, repository.GetFileWorkingPath(vcsTargetPath));
         }
         public MergeState ManualMerge(DXVcsBranch currentBranch, ManualMergeViewModel mergeModel, Func<bool> showManualMergeUIHandler) {
             try {

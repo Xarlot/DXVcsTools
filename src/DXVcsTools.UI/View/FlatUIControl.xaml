@@ -58,7 +58,7 @@
                         </dxb:AddBarItemLinkAction>
                         <dxb:AddBarItemLinkAction>
                             <dxb:AddBarItemLinkAction.ItemLink>
-                                <dxb:BarButtonItemLink x:Name="bShowDiff" />
+                                <dxb:BarButtonItemLink x:Name="bCompareWithCurrentVersion" />
                             </dxb:AddBarItemLinkAction.ItemLink>
                         </dxb:AddBarItemLinkAction>
                     </dxg:TableView.RowCellMenuCustomizations>

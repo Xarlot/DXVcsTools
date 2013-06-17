@@ -93,11 +93,19 @@
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
-                    x:Name="bShowDiff"
+                    x:Name="bCompareWithCurrentVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
-                    Command="{Binding ShowDiffCommand}"
-                    Content="Show Diff"
-                    Hint="Show diff">
+                    Command="{Binding CompareWithCurrentVersionCommand}"
+                    Content="Compare with current version"
+                    Hint="Compare with current version">
+                </dxb:BarButtonItem>
+
+                <dxb:BarButtonItem
+                    x:Name="bCompareWithPortVersion"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Command="{Binding CompareWithPortVersionCommand}"
+                    Content="Compare with port version"
+                    Hint="Compare with port version">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
@@ -115,7 +123,8 @@
                     <dxb:BarItemLink BarItemName="bMerge" />
                     <dxb:BarItemLink BarItemName="bMergeAll" />
                     <dxb:BarItemLink BarItemName="bCheckIn" />
-                    <dxb:BarItemLink BarItemName="bShowDiff" />
+                    <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
+                    <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
                     <dxb:BarItemLink BarItemName="bManualMerge" />
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />

@@ -30,7 +30,8 @@ namespace DXVcsTools.VSIX {
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             BlameCommand = new RelayCommand(Blame, CanBlame);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
-            ShowDiffCommand = new RelayCommand(ShowDiff, CanShowDiff);
+            CompareWithCurrentVersionCommand = new RelayCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
+            CompareWithPortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
             ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
         }
 
@@ -77,8 +78,10 @@ namespace DXVcsTools.VSIX {
         public RelayCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
         public RelayCommand CheckInCommand { get; private set; }
-        public RelayCommand ShowDiffCommand { get; private set; }
+        public RelayCommand CompareWithCurrentVersionCommand { get; private set; }
+        public RelayCommand CompareWithPortVersionCommand { get; private set; }
         public RelayCommand ManualMergeCommand { get; private set; }
+
         public IServiceContainer ServiceContainer { get; private set; }
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
@@ -162,12 +165,19 @@ namespace DXVcsTools.VSIX {
                 SelectedItem.IsChecked = model.StaysChecked;
             }
         }
-        bool CanShowDiff() {
+        bool CanCompareWithCurrentVersion() {
             return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
-        void ShowDiff() {
+        void CompareWithCurrentVersion() {
             var helper = new MergeHelper(Options, PortOptions);
-            helper.ShowDiff(SelectedItem.Path);
+            helper.CompareWithCurrentVersion(SelectedItem.Path);
+        }
+        bool CanCompareWithPortVersion() {
+            return CurrentBranch != null && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+        }
+        void CompareWithPortVersion() {
+            var helper = new MergeHelper(Options, PortOptions);
+            helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch);
         }
         bool CanManualMerge() {
             return SelectedItem.If(x => x.MergeState != MergeState.Success).ReturnSuccess();
