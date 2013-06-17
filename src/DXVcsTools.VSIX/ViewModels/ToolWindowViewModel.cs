@@ -72,6 +72,7 @@ namespace DXVcsTools.VSIX {
             get { return selectedItems; }
             set { SetProperty(ref selectedItems, value, "SelectedItems", CommandManager.InvalidateRequerySuggested); }
         }
+        public UIType UIType { get { return UIType.Flat; } }
         PortOptionsViewModel PortOptions { get; set; }
         public OptionsViewModel Options { get; private set; }
 

@@ -157,6 +157,7 @@
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
+    <Compile Include="ViewModel\UIType.cs" />
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>
     </Compile>
@@ -173,6 +174,7 @@
     <Compile Include="View\MultipleCheckInControl.xaml.cs">
       <DependentUpon>MultipleCheckInControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\OnDemandContentControl.cs" />
     <Compile Include="View\TreeUIControl.xaml.cs">
       <DependentUpon>TreeUIControl.xaml</DependentUpon>
     </Compile>
@@ -197,6 +199,7 @@
     <Compile Include="View\ToolWindowControl.xaml.cs">
       <DependentUpon>ToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\UITypeSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DXVcsTools.Core\DXVcsTools.Core.csproj">
