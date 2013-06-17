@@ -5,7 +5,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011"
                  xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="2631d8dd-813b-41eb-8f9a-fe0fc88ecba9" Version="2.0.2" Language="en-US" Publisher="Xarlot" />
+    <Identity Id="2631d8dd-813b-41eb-8f9a-fe0fc88ecba9" Version="2.0.3" Language="en-US" Publisher="Xarlot" />
     <DisplayName>DXVcsTools.VSIX</DisplayName>
     <Description xml:space="preserve">DXVcsTools add in</Description>
   </Metadata>
