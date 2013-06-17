@@ -27,7 +27,7 @@ namespace DXVcsTools.VSIX {
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [ProvideBindingPath(SubPath = "Lib")]
-    [ProvideAutoLoad("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")]
+    [ProvideAutoLoad(UIContextGuids.NoSolution)]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
     public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents, IVsShellPropertyEvents {
         uint shellCookie;

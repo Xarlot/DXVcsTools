@@ -60,7 +60,7 @@
                 <dxb:BarEditItem
                     x:Name="bCurrentBranch"
                     EditValue="{Binding Path=CurrentBranch}"
-                    EditWidth="150"
+                    EditWidth="100"
                     Content="Port to:">
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings
@@ -121,7 +121,7 @@
 
                 <dxb:BarButtonItem
                     x:Name="bOpenSolution"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
                     Command="{Binding NavigateToSolutionCommand}"
                     Content="Navigate to solution"
                     Hint="Navigate to solution specified by Port combo to perform check in">
