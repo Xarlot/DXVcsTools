@@ -95,17 +95,17 @@
                 <dxb:BarButtonItem
                     x:Name="bCompareWithCurrentVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
-                    Command="{Binding CompareWithCurrentVersionCommand}"
-                    Content="Compare with current version"
-                    Hint="Compare with current version">
+                    Command="{Binding CompareCurrentVersionCommand}"
+                    Content="Compare current version"
+                    Hint="Compare current version from vss (left) and local version (right)">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
                     x:Name="bCompareWithPortVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
-                    Command="{Binding CompareWithPortVersionCommand}"
-                    Content="Compare with port version"
-                    Hint="Compare with port version">
+                    Command="{Binding ComparePortVersionCommand}"
+                    Content="Compare port version"
+                    Hint="Compare port version from vss (left) and local port version (right)">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
@@ -122,10 +122,11 @@
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bMerge" />
                     <dxb:BarItemLink BarItemName="bMergeAll" />
-                    <dxb:BarItemLink BarItemName="bCheckIn" />
+                    <dxb:BarItemLink BarItemName="bManualMerge" />
+                    <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
                     <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
-                    <dxb:BarItemLink BarItemName="bManualMerge" />
+                    <dxb:BarItemLink BarItemName="bCheckIn" />
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
                 </dxb:Bar>

@@ -30,8 +30,8 @@ namespace DXVcsTools.VSIX {
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             BlameCommand = new RelayCommand(Blame, CanBlame);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
-            CompareWithCurrentVersionCommand = new RelayCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
-            CompareWithPortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
+            CompareCurrentVersionCommand = new RelayCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
+            ComparePortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
             ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
         }
 
@@ -78,8 +78,8 @@ namespace DXVcsTools.VSIX {
         public RelayCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
         public RelayCommand CheckInCommand { get; private set; }
-        public RelayCommand CompareWithCurrentVersionCommand { get; private set; }
-        public RelayCommand CompareWithPortVersionCommand { get; private set; }
+        public RelayCommand CompareCurrentVersionCommand { get; private set; }
+        public RelayCommand ComparePortVersionCommand { get; private set; }
         public RelayCommand ManualMergeCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }

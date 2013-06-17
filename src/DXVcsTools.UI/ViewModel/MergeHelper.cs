@@ -85,38 +85,30 @@ namespace DXVcsTools.Core {
         }
         public void CompareWithPortVersion(string filePath, DXVcsBranch current) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
-            string vcsOriginalPath = Port.GetRelativePath(filePath);
             string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
-            PreviewTarget(repository, vcsOriginalPath, repository.GetFileWorkingPath(vcsTargetPath));
+            PreviewTarget(repository, vcsTargetPath, repository.GetFileWorkingPath(vcsTargetPath));
         }
         public MergeState ManualMerge(DXVcsBranch currentBranch, ManualMergeViewModel mergeModel, Func<bool> showManualMergeUIHandler) {
             try {
                 string filePath = mergeModel.OriginalFilePath;
                 string mergePath = mergeModel.TargetFilePath;
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
-                string tmpOriginalFile = Path.GetTempFileName();
 
-                string vcsOriginalPath = Port.GetRelativePath(filePath);
                 string vcsTargetFile = mergePath == null ? GetMergeVcsPathByOriginalPath(filePath, currentBranch) : GetMergeVcsPathByTargetPath(mergePath, currentBranch);
+                string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
+                mergeModel.TargetFilePath = tmpTargetFile;
 
-                try {
-                    repository.GetLatestVersion(vcsOriginalPath, tmpOriginalFile);
+                if (!showManualMergeUIHandler())
+                    return MergeState.None;
 
-                    string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
-                    mergeModel.TargetFilePath = tmpTargetFile;
+                vcsTargetFile = GetMergeVcsPathByTargetPath(mergeModel.TargetFilePath, currentBranch);
+                string tmpOriginalFile = mergeModel.OriginalFilePath;
+                tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
+                if (string.IsNullOrEmpty(tmpTargetFile))
+                    return MergeState.TargetDirectoryError;
 
-                    showManualMergeUIHandler();
-                    vcsTargetFile = GetMergeVcsPathByTargetPath(mergeModel.TargetFilePath, currentBranch);
-                    tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
-                    if (string.IsNullOrEmpty(tmpTargetFile))
-                        return MergeState.TargetDirectoryError;
-
-                    repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
-                    LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
-                }
-                finally {
-                    File.Delete(tmpOriginalFile);
-                }
+                repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
+                LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
             }
             catch {
                 return MergeState.UnknownError;
