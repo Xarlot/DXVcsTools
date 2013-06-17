@@ -21,7 +21,7 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         IEnumerable<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
-        Locker currentBranchLocker = new Locker();
+        readonly Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
             Options = options;
@@ -35,6 +35,7 @@ namespace DXVcsTools.VSIX {
             CompareCurrentVersionCommand = new RelayCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
             ComparePortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
             ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
+            NavigateToSolutionCommand = new RelayCommand(NavigateToSolution, CanNavigateToSolution);
         }
 
         public double MergeProgress {
@@ -84,6 +85,7 @@ namespace DXVcsTools.VSIX {
         public RelayCommand CompareCurrentVersionCommand { get; private set; }
         public RelayCommand ComparePortVersionCommand { get; private set; }
         public RelayCommand ManualMergeCommand { get; private set; }
+        public RelayCommand NavigateToSolutionCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         public void Update() {
@@ -190,6 +192,14 @@ namespace DXVcsTools.VSIX {
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
                 () => GetService<IDialogService>().ShowDialog("ManualMergeControl", manualMerge, "Manual merge").Return(x => x.Value, () => false));
+        }
+        bool CanNavigateToSolution() {
+            return CurrentBranch != null;
+        }
+        void NavigateToSolution() {
+            var helper = new MergeHelper(Options, PortOptions);
+            helper.NavigateToSolution(CurrentBranch, new DteWrapper(dte));
+            Update();
         }
 
         protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {

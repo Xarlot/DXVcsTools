@@ -118,6 +118,14 @@
                     Content="ManualMerge"
                     Hint="Manual merge">
                 </dxb:BarButtonItem>
+
+                <dxb:BarButtonItem
+                    x:Name="bOpenSolution"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Command="{Binding NavigateToSolutionCommand}"
+                    Content="Navigate to solution"
+                    Hint="Navigate to solution specified by Port combo to perform check in">
+                </dxb:BarButtonItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar>
@@ -132,6 +140,7 @@
                     <dxb:BarItemLink BarItemName="bCheckIn" />
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
+                    <dxb:BarItemLink BarItemName="bOpenSolution"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <ui:OnDemandContentControl DelayedContent="{Binding}" ContentTemplateSelector="{StaticResource uiSelector}"/>

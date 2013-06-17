@@ -57,5 +57,8 @@ namespace DXVcsTools.Core {
         IEnumerable<FileItemBase> GetChildrenItems(EnvDTE.ProjectItem projectItem) {
             return projectItem.ProjectItems.Cast<EnvDTE.ProjectItem>().Select(GetItem).Where(item => item != null);
         }
+        public void OpenSolution(string filePath) {
+            dte.Solution.Open(filePath);
+        }
     }
 }

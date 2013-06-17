@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 
@@ -114,6 +115,18 @@ namespace DXVcsTools.Core {
                 return MergeState.UnknownError;
             }
             return MergeState.Success;
+        }
+        public void NavigateToSolution(DXVcsBranch currentBranch, IDteWrapper dte) {
+            try {
+                string filePath = Port.ProjectPath;
+                string vcsFilePath = GetMergeVcsPathByOriginalPath(filePath, currentBranch) + Path.GetFileName(filePath);
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                string targetPath = repository.GetFileWorkingPath(vcsFilePath);
+                dte.OpenSolution(targetPath);
+            }
+            catch {
+                MessageBox.Show("Can`t navigate to solution");
+            }
         }
     }
 }
