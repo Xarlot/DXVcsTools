@@ -146,8 +146,8 @@ namespace DXVcsTools.VSIX {
             }
         }
         void CurrentBranchChanged() {
-            CommandManager.InvalidateRequerySuggested();
             currentBranchLocker.DoLockedAction(Update);
+            CommandManager.InvalidateRequerySuggested();
         }
         void Blame() {
             var helper = new MergeHelper(Options, PortOptions);
