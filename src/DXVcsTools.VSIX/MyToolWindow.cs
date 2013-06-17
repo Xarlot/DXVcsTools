@@ -12,7 +12,6 @@ namespace DXVcsTools.VSIX {
     /// </summary>
     [Guid("c170e42d-6d77-44b1-a643-29d22df9f286")]
     public class MyToolWindow : ToolWindowPane {
-        MyControl Control { get { return base.Content as MyControl; }}
         /// <summary>
         ///     Standard constructor for the tool window.
         /// </summary>
@@ -31,6 +30,9 @@ namespace DXVcsTools.VSIX {
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
             base.Content = new MyControl();
+        }
+        MyControl Control {
+            get { return base.Content as MyControl; }
         }
         public void Initialize(ToolWindowViewModel viewModel) {
             viewModel.Update();

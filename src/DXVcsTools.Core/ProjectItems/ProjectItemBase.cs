@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
 
@@ -17,14 +13,19 @@ namespace DXVcsTools.Core {
     }
 
     public abstract class ProjectItemBase : BindableBase {
-        string name;
-        bool isChecked;
         bool isCheckOut;
-        MergeState mergeState;
-        string path;
+        bool isChecked;
         bool isSaved;
+        MergeState mergeState;
+        string name;
+        string path;
+        protected ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
+            Children = children;
+        }
 
-        public virtual int Priority { get { return 0; } }
+        public virtual int Priority {
+            get { return 0; }
+        }
         public string Path {
             get { return path; }
             set { SetProperty(ref path, value, "Path"); }
@@ -45,16 +46,14 @@ namespace DXVcsTools.Core {
             get { return mergeState; }
             set { SetProperty(ref mergeState, value, "MergeState"); }
         }
-        public bool IsSaved { get { return ItemWrapper.If(x => x.IsSaved).ReturnSuccess(); } }
-        public void Save() {
-            if (!IsSaved)
-                ItemWrapper.Do(x => x.Save());
+        public bool IsSaved {
+            get { return ItemWrapper.If(x => x.IsSaved).ReturnSuccess(); }
         }
         public IEnumerable<ProjectItemBase> Children { get; private set; }
         public IProjectItemWrapper ItemWrapper { get; set; }
-
-        protected ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
-            Children = children;
+        public void Save() {
+            if (!IsSaved)
+                ItemWrapper.Do(x => x.Save());
         }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DXVcsTools.Core {
+﻿namespace DXVcsTools.Core {
     public class FileItem : FileItemBase {
-        public override int Priority { get { return 50; } }
-        public FileItem() : base(null) {}
-
+        public FileItem() : base(null) {
+        }
+        public override int Priority {
+            get { return 50; }
+        }
     }
 }

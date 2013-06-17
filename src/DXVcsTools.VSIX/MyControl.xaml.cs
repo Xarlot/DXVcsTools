@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace DXVcsTools.VSIX {
     /// <summary>

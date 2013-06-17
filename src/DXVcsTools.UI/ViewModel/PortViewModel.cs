@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
@@ -10,14 +9,6 @@ namespace DXVcsTools.UI {
         readonly string vcsServer;
         int selectedBranchIndex;
         string targetVcsFile;
-
-        PortOptionsViewModel PortOptions { get; set; }
-        OptionsViewModel Options { get; set; }
-        public string VcsServer {
-            get { return vcsServer; }
-        }
-
-
         public PortViewModel(PortOptionsViewModel portOptions, OptionsViewModel configuration) {
             PortOptions = portOptions;
             Options = configuration;
@@ -47,6 +38,13 @@ namespace DXVcsTools.UI {
             //    }
             //}
         }
+
+        PortOptionsViewModel PortOptions { get; set; }
+        OptionsViewModel Options { get; set; }
+        public string VcsServer {
+            get { return vcsServer; }
+        }
+
 
         public string SourceFile { get; private set; }
         public string ProjectFile { get; private set; }

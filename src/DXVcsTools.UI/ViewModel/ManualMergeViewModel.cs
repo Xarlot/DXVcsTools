@@ -1,13 +1,18 @@
 ﻿using System.IO;
 using System.Windows.Forms;
 using DXVcsTools.UI.MVVM;
-using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
 
 namespace DXVcsTools.UI {
     public class ManualMergeViewModel : BindableBaseEx {
         string originalFilePath;
         string targetFilePath;
+        public ManualMergeViewModel(string originalFilePath, string targetFilePath = null) {
+            OriginalFilePath = originalFilePath;
+            TargetFilePath = targetFilePath;
+
+            SpecifyTargetCommand = new RelayCommand<string>(SpecifyTarget, parameter => true);
+        }
 
         public RelayCommand<string> SpecifyTargetCommand { get; private set; }
 
@@ -20,16 +25,10 @@ namespace DXVcsTools.UI {
             set { SetProperty(ref targetFilePath, value); }
         }
 
-        public ManualMergeViewModel(string originalFilePath, string targetFilePath = null) {
-            OriginalFilePath = originalFilePath;
-            TargetFilePath = targetFilePath;
-
-            SpecifyTargetCommand = new RelayCommand<string>(SpecifyTarget, parameter => true);
-        }
         void SpecifyTarget(string currentPath) {
-            OpenFileDialog openFile = new OpenFileDialog();
+            var openFile = new OpenFileDialog();
 
-            FileInfo info = new FileInfo(currentPath);
+            var info = new FileInfo(currentPath);
             if (info.Exists) {
                 openFile.InitialDirectory = info.Directory.With(x => x.FullName);
                 openFile.CheckFileExists = true;

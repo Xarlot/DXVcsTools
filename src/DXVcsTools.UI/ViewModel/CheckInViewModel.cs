@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DXVcsTools.UI.MVVM;
-using DevExpress.Xpf.Mvvm;
+﻿using DXVcsTools.UI.MVVM;
 
 namespace DXVcsTools.UI {
     public class CheckInViewModel : BindableBaseEx {
-        string filePath;
         string comment;
+        string filePath;
         bool staysChecked;
+        public CheckInViewModel(string filePath, bool staysChecked) {
+            FilePath = filePath;
+            StaysChecked = staysChecked;
+        }
         public string FilePath {
             get { return filePath; }
             private set { SetProperty(ref filePath, value); }
@@ -22,11 +20,6 @@ namespace DXVcsTools.UI {
         public bool StaysChecked {
             get { return staysChecked; }
             set { SetProperty(ref staysChecked, value); }
-        }
-
-        public CheckInViewModel(string filePath, bool staysChecked) {
-            FilePath = filePath;
-            StaysChecked = staysChecked;
         }
     }
 }

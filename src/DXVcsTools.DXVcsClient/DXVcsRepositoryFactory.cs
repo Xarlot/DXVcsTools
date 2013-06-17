@@ -28,21 +28,21 @@ namespace DXVcsTools.DXVcsClient {
             domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetAssembly(typeof(DXVcsServiceProvider)).Location);
             try {
                 AppDomain domain = AppDomain.CreateDomain("DXVcsServiceProviderDomain", null, domainSetup);
-                AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
                 serviceProvider =
                     (DXVcsServiceProvider)
-                        domain.CreateInstanceAndUnwrap(typeof(DXVcsServiceProvider).Assembly.FullName, typeof(DXVcsServiceProvider).FullName, false, BindingFlags.Public | BindingFlags.Instance, null, null,
-                            null, null, null);
+                        domain.CreateInstanceAndUnwrap(typeof(DXVcsServiceProvider).Assembly.FullName, typeof(DXVcsServiceProvider).FullName, false, BindingFlags.Public | BindingFlags.Instance, null,
+                            null, null, null, null);
             }
             catch {
             }
             finally {
-                AppDomain.CurrentDomain.AssemblyResolve -= new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             }
         }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
                 if (assembly.FullName == args.Name)
                     return assembly;
             }

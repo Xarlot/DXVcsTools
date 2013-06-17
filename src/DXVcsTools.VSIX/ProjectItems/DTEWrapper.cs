@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DevExpress.Xpf.Mvvm.Native;
 using EnvDTE;
 
@@ -14,18 +11,18 @@ namespace DXVcsTools.Core {
             this.dte = dte;
         }
         public SolutionItem BuildTree() {
-            return new SolutionItem(GetProjects(dte.Solution)) { Name = dte.Solution.FullName, Path = dte.Solution.FileName};
+            return new SolutionItem(GetProjects(dte.Solution)) {Name = dte.Solution.FullName, Path = dte.Solution.FileName};
         }
         IEnumerable<ProjectItem> GetProjects(Solution solution) {
             string name = solution.FullName;
-            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) { Name = name, Path = item.FileName });
+            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item)) {Name = name, Path = item.FileName});
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
-            var children = project.ProjectItems;
+            ProjectItems children = project.ProjectItems;
             if (children.If(x => x.Count == 0).ReturnSuccess())
                 yield break;
             foreach (EnvDTE.ProjectItem projectItem in children) {
-                var item = GetItem(projectItem);
+                FileItemBase item = GetItem(projectItem);
                 if (item != null)
                     yield return item;
             }
@@ -44,11 +41,11 @@ namespace DXVcsTools.Core {
             FileItemBase item = null;
             if (File.Exists(fileName)) {
                 var fileInfo = new FileInfo(fileName);
-                item = new FileItem() { Name = fileInfo.Name, Path = fileName };
+                item = new FileItem {Name = fileInfo.Name, Path = fileName};
             }
             if (Directory.Exists(fileName)) {
-                DirectoryInfo info = new DirectoryInfo(fileName);
-                item = new FolderItem(GetChildrenItems(projectItem)) { Name = info.Name, Path = fileName };
+                var info = new DirectoryInfo(fileName);
+                item = new FolderItem(GetChildrenItems(projectItem)) {Name = info.Name, Path = fileName};
             }
             if (item == null)
                 return null;

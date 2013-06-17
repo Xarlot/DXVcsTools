@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
     public class OptionsViewModel {
+        const string DxVcsToolsCategory = "DXVcsTools options";
         public OptionsViewModel() {
             Branches = new List<DXVcsBranch>();
-            Branches.Add(new DXVcsBranch() { Name = "12.1", Path = "$/2012.1/" });
-            Branches.Add(new DXVcsBranch() { Name = "12.2", Path = "$/2012.2/" });
-            Branches.Add(new DXVcsBranch() { Name = "13.1", Path = "$/2013.1/" });
-            Branches.Add(new DXVcsBranch() { Name = "13.2", Path = "$/2013.2/" });
+            Branches.Add(new DXVcsBranch {Name = "12.1", Path = "$/2012.1/"});
+            Branches.Add(new DXVcsBranch {Name = "12.2", Path = "$/2012.2/"});
+            Branches.Add(new DXVcsBranch {Name = "13.1", Path = "$/2013.1/"});
+            Branches.Add(new DXVcsBranch {Name = "13.2", Path = "$/2013.2/"});
             DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
         }
-
-        const string DxVcsToolsCategory = "DXVcsTools options";
 
         [Category(DxVcsToolsCategory)]
         [DisplayName("Review target")]
@@ -57,13 +51,13 @@ namespace DXVcsTools.UI {
         public List<DXVcsBranch> Branches { get; set; }
 
         public void Serialize(string path) {
-            XmlSerializer xml = new XmlSerializer(typeof(OptionsViewModel));
+            var xml = new XmlSerializer(typeof(OptionsViewModel));
             using (XmlWriter writer = new XmlTextWriter(path, Encoding.Unicode)) {
                 xml.Serialize(writer, this);
             }
         }
         public OptionsViewModel Deserialize(string path) {
-            XmlSerializer xml = new XmlSerializer(typeof(OptionsViewModel));
+            var xml = new XmlSerializer(typeof(OptionsViewModel));
             using (XmlReader reader = new XmlTextReader(path)) {
                 return (OptionsViewModel)xml.Deserialize(reader);
             }

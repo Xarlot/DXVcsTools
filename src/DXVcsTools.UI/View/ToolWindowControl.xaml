@@ -1,20 +1,23 @@
 ﻿<UserControl x:Class="DXVcsTools.UI.View.ToolWindowControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
-            <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+            <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <view:TotalMergeWindowControl Visibility="{Binding Path=CanTotalMerge, Converter={StaticResource boolToVisibilityConverter}}">
+        <view:TotalMergeWindowControl
+            Visibility="{Binding Path=CanTotalMerge, Converter={StaticResource boolToVisibilityConverter}}">
         </view:TotalMergeWindowControl>
-        <TextBlock Text="{Binding Path=ErrorHint}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"></TextBlock>
+        <TextBlock Text="{Binding Path=ErrorHint}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Visibility="Collapsed">
+        </TextBlock>
     </Grid>
 </UserControl>

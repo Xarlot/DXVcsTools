@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
-using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
@@ -17,14 +12,27 @@ using EnvDTE;
 namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
         readonly DTE dte;
-        SolutionItem solutionItem;
+        bool canTotalMerge;
+        DXVcsBranch currentBranch;
+        IEnumerable flatSource;
+        DXVcsBranch masterBranch;
+        double mergeProgress;
         ProjectItemBase selectedItem;
         IEnumerable<ProjectItemBase> selectedItems;
-        DXVcsBranch currentBranch;
-        DXVcsBranch masterBranch;
-        bool canTotalMerge;
-        IEnumerable flatSource;
-        double mergeProgress;
+        SolutionItem solutionItem;
+        public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
+            this.dte = dte;
+            Options = options;
+            ServiceContainer = new ServiceContainer(this);
+
+            MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
+            MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
+            UpdateCommand = new DelegateCommand(Update, CanUpdate);
+            BlameCommand = new RelayCommand(Blame, CanBlame);
+            CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
+            ShowDiffCommand = new RelayCommand(ShowDiff, CanShowDiff);
+            ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
+        }
 
         public double MergeProgress {
             get { return mergeProgress; }
@@ -42,7 +50,9 @@ namespace DXVcsTools.VSIX {
             get { return currentBranch; }
             set { SetProperty(ref currentBranch, value, "CurrentBranch", CurrentBranchChanged); }
         }
-        public IEnumerable<DXVcsBranch> AvailableBranches { get { return Options.Branches; } }
+        public IEnumerable<DXVcsBranch> AvailableBranches {
+            get { return Options.Branches; }
+        }
         public SolutionItem Solution {
             get { return solutionItem; }
             set { SetProperty(ref solutionItem, value, "Solution"); }
@@ -69,46 +79,9 @@ namespace DXVcsTools.VSIX {
         public RelayCommand CheckInCommand { get; private set; }
         public RelayCommand ShowDiffCommand { get; private set; }
         public RelayCommand ManualMergeCommand { get; private set; }
-
-        DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
-            string relativePath = portOptions.GetRelativePath(Solution.Path);
-            return Options.Branches.FirstOrDefault(branch => relativePath.StartsWith(branch.Path));
-        }
-        public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
-            this.dte = dte;
-            Options = options;
-            ServiceContainer = new ServiceContainer(this);
-
-            MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
-            MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
-            UpdateCommand = new DelegateCommand(Update, CanUpdate);
-            BlameCommand = new RelayCommand(Blame, CanBlame);
-            CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
-            ShowDiffCommand = new RelayCommand(ShowDiff, CanShowDiff);
-            ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
-        }
-        void Merge(bool? parameter) {
-            bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
-            SelectedItem.MergeState = PerformMerge(SelectedItem, showPreview);
-        }
-        bool CanMerge(bool? parameter) {
-            return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
-        }
-        MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
-            MergeHelper helper = new MergeHelper(Options, PortOptions);
-            return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview);
-        }
-        void MergeAll() {
-            List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
-            foreach (ProjectItemBase item in items) {
-                item.MergeState = PerformMerge(item, false);
-            }
-        }
-        bool CanMergeAll() {
-            return true;
-        }
+        public IServiceContainer ServiceContainer { get; private set; }
         public void Update() {
-            DteWrapper dteWrapper = new DteWrapper(dte);
+            var dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
             var source = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
             source.Filter = item => (item as ProjectItemBase).Return(x => x.IsCheckOut, () => false);
@@ -122,6 +95,31 @@ namespace DXVcsTools.VSIX {
             CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch);
             MergeProgress = 0;
         }
+
+        DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
+            string relativePath = portOptions.GetRelativePath(Solution.Path);
+            return Options.Branches.FirstOrDefault(branch => relativePath.StartsWith(branch.Path));
+        }
+        void Merge(bool? parameter) {
+            bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
+            SelectedItem.MergeState = PerformMerge(SelectedItem, showPreview);
+        }
+        bool CanMerge(bool? parameter) {
+            return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
+        }
+        MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
+            var helper = new MergeHelper(Options, PortOptions);
+            return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview);
+        }
+        void MergeAll() {
+            List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
+            foreach (ProjectItemBase item in items) {
+                item.MergeState = PerformMerge(item, false);
+            }
+        }
+        bool CanMergeAll() {
+            return true;
+        }
         bool CanUpdate() {
             return true;
         }
@@ -133,10 +131,10 @@ namespace DXVcsTools.VSIX {
         IEnumerable<ProjectItemBase> GetChildren(ProjectItemBase root) {
             if (root.Children == null)
                 yield break;
-            foreach (var item in root.Children) {
+            foreach (ProjectItemBase item in root.Children) {
                 if (item is FileItem)
                     yield return item;
-                foreach (var subItem in GetChildren(item)) {
+                foreach (ProjectItemBase subItem in GetChildren(item)) {
                     if (subItem is FileItem)
                         yield return subItem;
                 }
@@ -147,7 +145,7 @@ namespace DXVcsTools.VSIX {
             Update();
         }
         void Blame() {
-            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(Options, PortOptions);
         }
         bool CanBlame() {
             return SelectedItem != null;
@@ -156,10 +154,10 @@ namespace DXVcsTools.VSIX {
             return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CheckIn() {
-            CheckInViewModel model = new CheckInViewModel(SelectedItem.Path, false);
+            var model = new CheckInViewModel(SelectedItem.Path, false);
             bool? result = GetService<IDialogService>().ShowDialog("CheckInControl", model, "Check in");
             if (result != null && (bool)result) {
-                MergeHelper helper = new MergeHelper(Options, PortOptions);
+                var helper = new MergeHelper(Options, PortOptions);
                 helper.CheckIn(model);
                 SelectedItem.IsChecked = model.StaysChecked;
             }
@@ -168,17 +166,19 @@ namespace DXVcsTools.VSIX {
             return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void ShowDiff() {
-            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(Options, PortOptions);
             helper.ShowDiff(SelectedItem.Path);
         }
         bool CanManualMerge() {
-            return SelectedItem.MergeState == MergeState.Conflict;
+            return SelectedItem.If(x => x.MergeState != MergeState.Success).ReturnSuccess();
         }
         void ManualMerge() {
-            
+            var helper = new MergeHelper(Options, PortOptions);
+            var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
+            SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
+                () => GetService<IDialogService>().ShowDialog("ManualMergeControl", manualMerge, "Manual merge").Return(x => x.Value, () => false));
         }
 
-        public IServiceContainer ServiceContainer { get; private set; }
         protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
             return ServiceContainer.GetService<T>(searchMode);
         }

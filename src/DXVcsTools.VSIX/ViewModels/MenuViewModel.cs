@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using System.Windows;
-using DXVcsTools.Core;
-using DXVcsTools.UI;
-using DXVcsTools.UI.Wpf;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using Configuration = System.Configuration.Configuration;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
@@ -27,7 +18,7 @@ namespace DXVcsTools.VSIX {
             //string fileName = null;
             //if (!CanHandleActiveDocument(ref fileName))
             //    return;
-            
+
             //var dxPortConfiguration = new OptionsViewModel();
             //IViewFactory factory = new ViewFactory();
 

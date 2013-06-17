@@ -1,20 +1,20 @@
-﻿<UserControl 
+﻿<UserControl
     x:Class="DXVcsTools.UI.View.TotalMergeWindowControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ui="clr-namespace:DXVcsTools.UI" 
+    xmlns:ui="clr-namespace:DXVcsTools.UI"
     xmlns:view="clr-namespace:DXVcsTools.UI.View"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:i="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    mc:Ignorable="d" 
+    mc:Ignorable="d"
     dx:ThemeManager.ThemeName="Seven"
     d:DesignHeight="300" d:DesignWidth="300">
-        <UserControl.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <system:Boolean x:Key="TrueBoolean">True</system:Boolean>
             <system:Boolean x:Key="FalseBoolean">False</system:Boolean>
@@ -27,17 +27,17 @@
     <Grid>
         <dxb:BarManager AllowCustomization="False">
             <dxb:BarManager.Items>
-                <dxb:BarButtonItem 
-                    x:Name="bUpdate" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png" 
-                    Command="{Binding UpdateCommand}"                    
+                <dxb:BarButtonItem
+                    x:Name="bUpdate"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                    Command="{Binding UpdateCommand}"
                     Hint="Update">
                 </dxb:BarButtonItem>
 
-                <dxb:BarSplitButtonItem 
-                    x:Name="bMerge" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
-                    Command="{Binding MergeCommand}" 
+                <dxb:BarSplitButtonItem
+                    x:Name="bMerge"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
+                    Command="{Binding MergeCommand}"
                     Hint="Merge current item">
                     <dxb:BarSplitButtonItem.PopupControl>
                         <dxb:PopupMenu>
@@ -46,73 +46,82 @@
                         </dxb:PopupMenu>
                     </dxb:BarSplitButtonItem.PopupControl>
                 </dxb:BarSplitButtonItem>
-                
-                <dxb:BarButtonItem 
-                    x:Name="bMergeAll" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
-                    Command="{Binding MergeAllCommand}"                    
+
+                <dxb:BarButtonItem
+                    x:Name="bMergeAll"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
+                    Command="{Binding MergeAllCommand}"
                     Hint="Merge all items">
                 </dxb:BarButtonItem>
-                
-                <dxb:BarEditItem 
-                    x:Name="bCurrentBranch" 
+
+                <dxb:BarEditItem
+                    x:Name="bCurrentBranch"
                     EditValue="{Binding Path=CurrentBranch}"
-                    EditWidth="150" 
+                    EditWidth="150"
                     Content="Port to:">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings 
+                        <dxe:ComboBoxEditSettings
                             ItemsSource="{Binding Path=AvailableBranches}"
                             IsTextEditable="False"
                             DisplayMember="Name">
                         </dxe:ComboBoxEditSettings>
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                
-                <dxb:BarButtonItem 
-                    x:Name="bMergeSubMenuItem" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
-                    Command="{Binding MergeCommand}"                    
+
+                <dxb:BarButtonItem
+                    x:Name="bMergeSubMenuItem"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
+                    Command="{Binding MergeCommand}"
                     CommandParameter="{StaticResource FalseBoolean}"
                     Content="Merge without review">
                 </dxb:BarButtonItem>
-                
-                <dxb:BarButtonItem 
-                    x:Name="bMergeAndReviewTargetSubMenuItem" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
-                    Command="{Binding MergeCommand}"     
+
+                <dxb:BarButtonItem
+                    x:Name="bMergeAndReviewTargetSubMenuItem"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
+                    Command="{Binding MergeCommand}"
                     Content="Merge and review"
                     CommandParameter="{StaticResource TrueBoolean}">
                 </dxb:BarButtonItem>
 
-                <dxb:BarButtonItem 
-                    x:Name="bCheckIn" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
-                    Command="{Binding CheckInCommand}" 
+                <dxb:BarButtonItem
+                    x:Name="bCheckIn"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
+                    Command="{Binding CheckInCommand}"
                     Content="Check In"
                     Hint="Check in">
                 </dxb:BarButtonItem>
 
-                <dxb:BarButtonItem 
-                    x:Name="bShowDiff" 
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png" 
-                    Command="{Binding ShowDiffCommand}"    
+                <dxb:BarButtonItem
+                    x:Name="bShowDiff"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Command="{Binding ShowDiffCommand}"
                     Content="Show Diff"
                     Hint="Show diff">
+                </dxb:BarButtonItem>
+
+                <dxb:BarButtonItem
+                    x:Name="bManualMerge"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Command="{Binding ManualMergeCommand}"
+                    Content="ManualMerge"
+                    Hint="Manual merge">
                 </dxb:BarButtonItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar>
                     <dxb:BarItemLink BarItemName="bUpdate" />
-                    <dxb:BarItemLinkSeparator/>
-                    <dxb:BarItemLink BarItemName="bMerge"/>
+                    <dxb:BarItemLinkSeparator />
+                    <dxb:BarItemLink BarItemName="bMerge" />
                     <dxb:BarItemLink BarItemName="bMergeAll" />
-                    <dxb:BarItemLink BarItemName="bCheckIn"/>
-                    <dxb:BarItemLink BarItemName="bShowDiff"/>
-                    <dxb:BarItemLinkSeparator/>
-                    <dxb:BarItemLink BarItemName="bCurrentBranch"/>
+                    <dxb:BarItemLink BarItemName="bCheckIn" />
+                    <dxb:BarItemLink BarItemName="bShowDiff" />
+                    <dxb:BarItemLink BarItemName="bManualMerge" />
+                    <dxb:BarItemLinkSeparator />
+                    <dxb:BarItemLink BarItemName="bCurrentBranch" />
                 </dxb:Bar>
             </dxb:BarManager.Bars>
-            <view:FlatUIControl/>
+            <view:FlatUIControl />
         </dxb:BarManager>
     </Grid>
 </UserControl>

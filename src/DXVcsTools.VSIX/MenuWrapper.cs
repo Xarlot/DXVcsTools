@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using EnvDTE;
 using Microsoft.VisualStudio.CommandBars;
+using stdole;
 
 namespace DXVcsTools.VSIX {
     public class VSDevExpressMenuItem {
         #region props
-        private string headerCore = string.Empty;
-        private string toolTipCore = string.Empty;
-        private Image iconCore = null;
-        private object VSSourceCore = null;
+        object VSSourceCore;
+        string headerCore = string.Empty;
+        Image iconCore;
+        public List<VSDevExpressMenuItem> itemsInternal = new List<VSDevExpressMenuItem>();
+        string toolTipCore = string.Empty;
 
         public VSDevExpressMenuItem Parent { get; protected set; }
 
@@ -26,7 +26,6 @@ namespace DXVcsTools.VSIX {
                 string oldValue = headerCore;
                 headerCore = value;
                 OnHeaderChanged(oldValue);
-
             }
         }
         public string ToolTip {
@@ -47,7 +46,6 @@ namespace DXVcsTools.VSIX {
                 Image oldValue = iconCore;
                 iconCore = value;
                 OnIconChanged(oldValue);
-
             }
         }
         protected object VSSource {
@@ -58,10 +56,8 @@ namespace DXVcsTools.VSIX {
                 object oldValue = VSSourceCore;
                 VSSourceCore = value;
                 OnVSSourceChanged(oldValue);
-
             }
         }
-        public List<VSDevExpressMenuItem> itemsInternal = new List<VSDevExpressMenuItem>();
         IEnumerable<VSDevExpressMenuItem> Items {
             get {
                 foreach (VSDevExpressMenuItem childItem in itemsInternal) {
@@ -72,6 +68,7 @@ namespace DXVcsTools.VSIX {
         }
         public event EventHandler Click;
         #endregion
+
         public VSDevExpressMenuItem() {
         }
         protected internal VSDevExpressMenuItem(CommandBarControl source) {
@@ -87,7 +84,7 @@ namespace DXVcsTools.VSIX {
         public VSDevExpressMenuItem CreateItem() {
             if (VSSource == null)
                 return null;
-            CommandBarControl commandBarControl = (CommandBarControl)VSSource;
+            var commandBarControl = (CommandBarControl)VSSource;
             if (commandBarControl.Type != MsoControlType.msoControlPopup) {
                 CommandBar parentCommandBar = commandBarControl.Parent;
                 if (parentCommandBar == null)
@@ -96,20 +93,20 @@ namespace DXVcsTools.VSIX {
                 VSSource = parentCommandBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, savedIndex, Type.Missing) as CommandBarPopup;
                 commandBarControl.Delete();
             }
-            CommandBarPopup commandBarPopup = (CommandBarPopup)VSSource;
-            VSDevExpressMenuItem childItem = new VSDevExpressMenuItem();
+            var commandBarPopup = (CommandBarPopup)VSSource;
+            var childItem = new VSDevExpressMenuItem();
             childItem.VSSource = ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             itemsInternal.Add(childItem);
             childItem.Parent = this;
             return childItem;
         }
         protected void CreateChildrenFromSource() {
-            CommandBarPopup commandBarPopup = VSSource as CommandBarPopup;
+            var commandBarPopup = VSSource as CommandBarPopup;
             if (commandBarPopup == null)
                 return;
             foreach (CommandBarControl control in commandBarPopup.Controls) {
                 if (control.Type == MsoControlType.msoControlButton || control.Type == MsoControlType.msoControlPopup) {
-                    VSDevExpressMenuItem item = new VSDevExpressMenuItem(control);
+                    var item = new VSDevExpressMenuItem(control);
                     item.Parent = this;
                     itemsInternal.Add(item);
                 }
@@ -140,7 +137,7 @@ namespace DXVcsTools.VSIX {
             UpdateHeader();
         }
         protected virtual void OnVSSourceChanged(object oldValue) {
-            CommandBarControl commandBarControl = oldValue as CommandBarControl;
+            var commandBarControl = oldValue as CommandBarControl;
             if (commandBarControl != null) {
                 if (commandBarControl.Type == MsoControlType.msoControlButton)
                     ((CommandBarButton)commandBarControl).Click -= OnButtonClick;
@@ -184,13 +181,13 @@ namespace DXVcsTools.VSIX {
         const string DevExpressMenuName = "DXVcsTools";
         public VSDevExpressMenu(DTE dte) {
             Header = DevExpressMenuName;
-            CommandBars commandBars = dte.CommandBars as CommandBars;
+            var commandBars = dte.CommandBars as CommandBars;
             CommandBar mainMenuBar = commandBars["MenuBar"];
             CommandBarPopup devExpressMenu = null;
 
             foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {
                 if (commandBarControl.Type == MsoControlType.msoControlPopup) {
-                    CommandBarPopup commandBarPopup = (CommandBarPopup)commandBarControl;
+                    var commandBarPopup = (CommandBarPopup)commandBarControl;
                     if (commandBarPopup.CommandBar.Name == DevExpressMenuName) {
                         devExpressMenu = commandBarPopup;
                         break;
@@ -203,15 +200,17 @@ namespace DXVcsTools.VSIX {
             CreateChildrenFromSource();
         }
     }
-    public class MenuItemPictureHelper : System.Windows.Forms.AxHost {
-        public MenuItemPictureHelper() : base("") { }
 
-        static public stdole.StdPicture LoadImageFromResources(string imageName) {
+    public class MenuItemPictureHelper : AxHost {
+        public MenuItemPictureHelper() : base("") {
+        }
+
+        public static StdPicture LoadImageFromResources(string imageName) {
             Image image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("DevExpress.Xpf.CreateLayoutWizard.Images." + imageName + ".png"));
             return ConvertImageToPicture(image);
         }
-        static public stdole.StdPicture ConvertImageToPicture(Image image) {
-            return (stdole.StdPicture)GetIPictureDispFromPicture(image);
+        public static StdPicture ConvertImageToPicture(Image image) {
+            return (StdPicture)GetIPictureDispFromPicture(image);
         }
     }
 }

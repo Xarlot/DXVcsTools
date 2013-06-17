@@ -1,12 +1,5 @@
 ﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using DXVcsTools.Core;
 using DXVcsTools.UI;
 using EnvDTE;
 using Microsoft.VisualStudio;
@@ -37,20 +30,68 @@ namespace DXVcsTools.VSIX {
     [ProvideAutoLoad("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
     public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents, IVsShellPropertyEvents {
-        MenuViewModel Menu { get; set; }
-        ToolWindowViewModel ToolWindowViewModel { get; set; }
-        OptionsViewModel Options { get; set; }
-        uint solutionEventsCookie;
         uint shellCookie;
-
+        uint solutionEventsCookie;
         public DXVcsTools_VSIXPackage() {
-            DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            var dte = GetGlobalService(typeof(DTE)) as DTE;
             Options = new OptionsViewModel();
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
         }
+        MenuViewModel Menu { get; set; }
+        ToolWindowViewModel ToolWindowViewModel { get; set; }
+        OptionsViewModel Options { get; set; }
+        int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var) {
+            if (propid == (int)__VSSPROPID.VSSPROPID_Zombie) {
+                if ((bool)var == false) {
+                    //At this point the environment is fully loaded and initialized
+                    //Lets initialize our services
+                    ToolWindowViewModel.Update();
 
+                    var shellService = GetService(typeof(SVsShell)) as IVsShell;
+                    if (shellService != null) {
+                        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(shellCookie));
+                    }
+                    shellCookie = 0;
+                }
+            }
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
+            MyToolWindow window = GetMyToolWindow();
+            window.Initialize(ToolWindowViewModel);
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved) {
+            ToolWindowViewModel.Update();
+            return VSConstants.S_OK;
+        }
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
+            return VSConstants.S_OK;
+        }
         /// <summary>
         ///     This function is called when the user clicks the menu item that shows the
         ///     tool window. See the Initialize method to see how the menu item is associated to
@@ -62,7 +103,7 @@ namespace DXVcsTools.VSIX {
             // The last flag is set to true so that if the tool window does not exists it will be created.
             //try {
 
-            var window = GetMyToolWindow();
+            MyToolWindow window = GetMyToolWindow();
             window.Initialize(ToolWindowViewModel);
             //}
             //catch {
@@ -70,7 +111,7 @@ namespace DXVcsTools.VSIX {
             //}
         }
         MyToolWindow GetMyToolWindow() {
-            MyToolWindow window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
+            var window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
             if ((null == window) || (null == window.Frame)) {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
@@ -100,7 +141,7 @@ namespace DXVcsTools.VSIX {
         protected override void Initialize() {
             base.Initialize();
 
-            VSDevExpressMenu devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
+            var devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
             VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
             wizardMenu.Click += wizardMenu_Click;
 
@@ -109,66 +150,13 @@ namespace DXVcsTools.VSIX {
                 solution.AdviseSolutionEvents(this, out solutionEventsCookie);
             }
 
-            var shellService = this.GetService(typeof(SVsShell)) as IVsShell;
-            ErrorHandler.ThrowOnFailure(
-                shellService.AdviseShellPropertyChanges(this, out shellCookie));
+            var shellService = GetService(typeof(SVsShell)) as IVsShell;
+            ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out shellCookie));
         }
 
         void wizardMenu_Click(object sender, EventArgs e) {
             ShowToolWindow();
         }
         #endregion
-
-        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
-            var window = GetMyToolWindow();
-            window.Initialize(ToolWindowViewModel);
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved) {
-            ToolWindowViewModel.Update();
-            return VSConstants.S_OK;
-        }
-        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
-            return VSConstants.S_OK;
-        }
-
-        int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var) {
-            if (propid == (int)__VSSPROPID.VSSPROPID_Zombie) {
-                if ((bool)var == false) {
-                    //At this point the environment is fully loaded and initialized
-                    //Lets initialize our services
-                    ToolWindowViewModel.Update();
-
-                    IVsShell shellService = this.GetService(typeof(SVsShell)) as IVsShell;
-                    if (shellService != null) {
-                        ErrorHandler.ThrowOnFailure(
-                            shellService.UnadviseShellPropertyChanges(this.shellCookie));
-                    }
-                    this.shellCookie = 0;
-                }
-            }
-            return VSConstants.S_OK;
-        }
     }
 }

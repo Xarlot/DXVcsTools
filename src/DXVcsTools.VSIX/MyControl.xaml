@@ -10,6 +10,6 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow" DataContext="{x:Null}">
     <Grid>
-        <view:ToolWindowControl x:Name="control"/>
+        <view:ToolWindowControl x:Name="control" />
     </Grid>
 </UserControl>

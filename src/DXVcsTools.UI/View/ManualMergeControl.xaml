@@ -1,28 +1,31 @@
 ﻿<UserControl x:Class="DXVcsTools.UI.View.ManualMergeControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <dxlc:LayoutControl Orientation="Vertical">
-            <dxlc:LayoutItem Label="Comment: ">
-                <dxe:TextEdit EditValue="{Binding Path=OriginalFilePath}"/>
+            <dxlc:LayoutItem Label="Original: ">
+                <dxe:TextEdit EditValue="{Binding Path=OriginalFilePath}" />
             </dxlc:LayoutItem>
-            <dxlc:LayoutItem Label="From: ">
-                <dxe:ButtonEdit EditValue="{Binding Path=TargetFilePath, Mode=TwoWay}" x:Name="target" >
+            <dxlc:LayoutItem Label="Target: ">
+                <dxe:ButtonEdit
+                    EditValue="{Binding Path=TargetFilePath, Mode=TwoWay}"
+                    x:Name="target"
+                    AllowDefaultButton="False">
                     <dxe:ButtonEdit.Buttons>
-                        <dxe:ButtonInfo 
-                            Content="..." 
-                            Command="{Binding Path=SpecifyTargetCommand}" 
+                        <dxe:ButtonInfo
+                            Content="..."
+                            Command="{Binding Path=SpecifyTargetCommand}"
                             CommandParameter="{Binding Path=EditValue, ElementName=target, UpdateSourceTrigger=PropertyChanged}"
                             ToolTip="Load file dialog...">
                         </dxe:ButtonInfo>
                     </dxe:ButtonEdit.Buttons>
-                </dxe:ButtonEdit>            
+                </dxe:ButtonEdit>
             </dxlc:LayoutItem>
         </dxlc:LayoutControl>
     </Grid>
