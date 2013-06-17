@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
+using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
 using EnvDTE;
@@ -20,6 +21,7 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         IEnumerable<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
+        Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
             Options = options;
@@ -95,7 +97,7 @@ namespace DXVcsTools.VSIX {
             CanTotalMerge = MasterBranch != null;
             PortOptions.MasterBranch = MasterBranch;
 
-            CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch);
+            currentBranchLocker.DoIfNotLocked(() => CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch));
             MergeProgress = 0;
         }
 
@@ -145,7 +147,7 @@ namespace DXVcsTools.VSIX {
         }
         void CurrentBranchChanged() {
             CommandManager.InvalidateRequerySuggested();
-            Update();
+            currentBranchLocker.DoLockedAction(Update);
         }
         void Blame() {
             var helper = new MergeHelper(Options, PortOptions);
