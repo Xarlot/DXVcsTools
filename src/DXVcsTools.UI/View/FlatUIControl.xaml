@@ -13,6 +13,7 @@
         <dxg:GridControl
             Grid.Row="1"
             ItemsSource="{Binding Path=Source}"
+            SelectionMode="Row"
             SelectedItems="{Binding Path=SelectedItems}">
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Name" Width="200" FixedWidth="True" />
@@ -58,16 +59,16 @@
                     AutoWidth="True"
                     AllowGrouping="False">
                     <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:AddBarItemLinkAction>
-                            <dxb:AddBarItemLinkAction.ItemLink>
-                                <dxb:BarButtonItemLink x:Name="bCheckIn" />
-                            </dxb:AddBarItemLinkAction.ItemLink>
-                        </dxb:AddBarItemLinkAction>
-                        <dxb:AddBarItemLinkAction>
-                            <dxb:AddBarItemLinkAction.ItemLink>
-                                <dxb:BarButtonItemLink x:Name="bCompareWithCurrentVersion" />
-                            </dxb:AddBarItemLinkAction.ItemLink>
-                        </dxb:AddBarItemLinkAction>
+                        <dxb:BarItemLink BarItemName="bManualMerge" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarButtonItemLink BarItemName="bMergeSubMenuItem" />
+                        <dxb:BarButtonItemLink BarItemName="bMergeAndReviewTargetSubMenuItem" />
+                        <dxb:BarItemLink BarItemName="bMergeAll" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
+                        <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bCheckIn" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

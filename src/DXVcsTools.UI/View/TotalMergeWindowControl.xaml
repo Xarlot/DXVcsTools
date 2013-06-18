@@ -34,7 +34,8 @@
                     x:Name="bUpdate"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
                     Command="{Binding UpdateCommand}"
-                    Hint="Update">
+                    Content="Update"
+                    Hint="Reload ">
                 </dxb:BarButtonItem>
 
                 <dxb:BarSplitButtonItem
@@ -54,7 +55,8 @@
                     x:Name="bMergeAll"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
                     Command="{Binding MergeAllCommand}"
-                    Hint="Merge all items">
+                    Content="Merge all item"
+                    Hint="Merge all items in solution">
                 </dxb:BarButtonItem>
 
                 <dxb:BarEditItem
@@ -97,7 +99,7 @@
 
                 <dxb:BarButtonItem
                     x:Name="bCompareWithCurrentVersion"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/comparecurrent_16x16.png"
                     Command="{Binding CompareCurrentVersionCommand}"
                     Content="Compare current version"
                     Hint="Compare current version from vss (left) and local version (right)">
@@ -105,7 +107,7 @@
 
                 <dxb:BarButtonItem
                     x:Name="bCompareWithPortVersion"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png"
                     Command="{Binding ComparePortVersionCommand}"
                     Content="Compare port version"
                     Hint="Compare port version from vss (left) and local port version (right)">
@@ -115,8 +117,8 @@
                     x:Name="bManualMerge"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
                     Command="{Binding ManualMergeCommand}"
-                    Content="ManualMerge"
-                    Hint="Manual merge">
+                    Content="manual merge"
+                    Hint="Manual merge current file (left) and port file (right)">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem

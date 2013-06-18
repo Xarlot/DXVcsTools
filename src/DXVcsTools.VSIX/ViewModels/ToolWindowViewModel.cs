@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -19,7 +22,7 @@ namespace DXVcsTools.VSIX {
         DXVcsBranch masterBranch;
         double mergeProgress;
         ProjectItemBase selectedItem;
-        IEnumerable<ProjectItemBase> selectedItems;
+        ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
         readonly Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
@@ -69,13 +72,24 @@ namespace DXVcsTools.VSIX {
             get { return selectedItem; }
             set { SetProperty(ref selectedItem, value, "SelectedItem", CommandManager.InvalidateRequerySuggested); }
         }
-        public IEnumerable<ProjectItemBase> SelectedItems {
+        public ObservableCollection<ProjectItemBase> SelectedItems {
             get { return selectedItems; }
-            set { SetProperty(ref selectedItems, value, "SelectedItems", CommandManager.InvalidateRequerySuggested); }
+            set {
+                selectedItems.Do(x => x.CollectionChanged -= SelectedItemsCollectionChanged);
+                SetProperty(ref selectedItems, value, "SelectedItems", SelectedItemsChanged);
+                selectedItems.Do(x => x.CollectionChanged += SelectedItemsCollectionChanged);
+            }
+        }
+        void SelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+            CommandManager.InvalidateRequerySuggested();
+        }
+        void SelectedItemsChanged() {
+            CommandManager.InvalidateRequerySuggested();
         }
         public UIType UIType { get { return UIType.Flat; } }
         PortOptionsViewModel PortOptions { get; set; }
         public OptionsViewModel Options { get; private set; }
+        public bool IsSingleSelection { get { return SelectedItems.If(x => x.Count <= 1).ReturnSuccess(); } }
 
         public RelayCommand<bool?> MergeCommand { get; private set; }
         public RelayCommand MergeAllCommand { get; private set; }
@@ -91,8 +105,9 @@ namespace DXVcsTools.VSIX {
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
-            var source = new ListCollectionView(GetFlatItemsSource().Cast<object>().ToList());
-            source.Filter = item => (item as ProjectItemBase).Return(x => x.IsCheckOut, () => false);
+            //since grid bugs we must initialize startup collection
+            SelectedItems = new ObservableCollection<ProjectItemBase>();
+            var source = GetFlatItemsSource().Where(item => item.IsCheckOut);
             Source = source;
 
             PortOptions = new PortOptionsViewModel(Solution.Path, Options);
@@ -110,10 +125,16 @@ namespace DXVcsTools.VSIX {
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
-            SelectedItem.MergeState = PerformMerge(SelectedItem, showPreview);
+            var items = IsSingleSelection ? (IEnumerable)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
+            foreach (ProjectItemBase item in items) {
+                item.MergeState = PerformMerge(item, showPreview);
+            }
         }
         bool CanMerge(bool? parameter) {
-            return SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false);
+            return IsSingleSelection
+                ? SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false)
+                : SelectedItems.Return(x => x.Select(item => item.IsCheckOut && item.MergeState == MergeState.None).Any(), () => false);
+
         }
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
             var helper = new MergeHelper(Options, PortOptions);
@@ -131,9 +152,9 @@ namespace DXVcsTools.VSIX {
         bool CanUpdate() {
             return true;
         }
-        IEnumerable GetFlatItemsSource() {
+        IEnumerable<ProjectItemBase> GetFlatItemsSource() {
             if (Solution == null)
-                return new List<object>();
+                return new List<ProjectItemBase>();
             return GetChildren(Solution);
         }
         IEnumerable<ProjectItemBase> GetChildren(ProjectItemBase root) {
@@ -171,21 +192,23 @@ namespace DXVcsTools.VSIX {
             }
         }
         bool CanCompareWithCurrentVersion() {
-            return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CompareWithCurrentVersion() {
             var helper = new MergeHelper(Options, PortOptions);
             helper.CompareWithCurrentVersion(SelectedItem.Path);
         }
         bool CanCompareWithPortVersion() {
-            return CurrentBranch != null && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            if (CurrentBranch == null)
+                return false;
+            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CompareWithPortVersion() {
             var helper = new MergeHelper(Options, PortOptions);
             helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch);
         }
         bool CanManualMerge() {
-            return SelectedItem.If(x => x.MergeState != MergeState.Success).ReturnSuccess();
+            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void ManualMerge() {
             var helper = new MergeHelper(Options, PortOptions);
