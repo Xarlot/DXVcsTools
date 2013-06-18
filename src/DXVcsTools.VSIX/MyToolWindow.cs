@@ -39,7 +39,8 @@ namespace DXVcsTools.VSIX {
         }
 
         void MycontrolLoaded(object sender, System.Windows.RoutedEventArgs e) {
-            model.Do(x => x.Update());
+            if (model.If(x => x.Options.UpdateOnShowing).ReturnSuccess())
+                model.Do(x => x.Update());
         }
         MyControl Control {
             get { return base.Content as MyControl; }

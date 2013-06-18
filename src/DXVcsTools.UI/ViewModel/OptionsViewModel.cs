@@ -49,6 +49,7 @@ namespace DXVcsTools.UI {
         [DisplayName("Branches")]
         [Description("Branches")]
         public List<DXVcsBranch> Branches { get; set; }
+        public bool UpdateOnShowing { get; set; }
 
         public void Serialize(string path) {
             var xml = new XmlSerializer(typeof(OptionsViewModel));
