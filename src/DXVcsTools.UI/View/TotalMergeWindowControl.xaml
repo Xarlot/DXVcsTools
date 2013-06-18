@@ -78,14 +78,15 @@
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
                     Command="{Binding MergeCommand}"
                     CommandParameter="{StaticResource FalseBoolean}"
-                    Content="Merge without review">
+                    Content="Merge without review"
+                    Hint="Merge without review">
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
                     x:Name="bMergeAndReviewTargetSubMenuItem"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
                     Command="{Binding MergeCommand}"
-                    Content="Merge and review"
+                    Content="Merge and review..."
                     CommandParameter="{StaticResource TrueBoolean}">
                 </dxb:BarButtonItem>
 
@@ -93,7 +94,7 @@
                     x:Name="bCheckIn"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
                     Command="{Binding CheckInCommand}"
-                    Content="Check In"
+                    Content="Check in..."
                     Hint="Check in">
                 </dxb:BarButtonItem>
 
@@ -101,7 +102,7 @@
                     x:Name="bCompareWithCurrentVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/comparecurrent_16x16.png"
                     Command="{Binding CompareCurrentVersionCommand}"
-                    Content="Compare current version"
+                    Content="Compare current version..."
                     Hint="Compare current version from vss (left) and local version (right)">
                 </dxb:BarButtonItem>
 
@@ -109,7 +110,7 @@
                     x:Name="bCompareWithPortVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png"
                     Command="{Binding ComparePortVersionCommand}"
-                    Content="Compare port version"
+                    Content="Compare port version..."
                     Hint="Compare port version from vss (left) and local port version (right)">
                 </dxb:BarButtonItem>
 
@@ -117,7 +118,7 @@
                     x:Name="bManualMerge"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
                     Command="{Binding ManualMergeCommand}"
-                    Content="manual merge"
+                    Content="Manual merge..."
                     Hint="Manual merge current file (left) and port file (right)">
                 </dxb:BarButtonItem>
 
