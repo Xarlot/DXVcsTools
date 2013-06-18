@@ -8,7 +8,7 @@ namespace DXVcsTools.Core {
         Success,
         Conflict,
         InProgress,
-        TargetDirectoryError,
+        TargetFileError,
         UnknownError,
     }
 

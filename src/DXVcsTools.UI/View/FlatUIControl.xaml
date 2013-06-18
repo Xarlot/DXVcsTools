@@ -31,7 +31,14 @@
                                     <Setter Property="Background" Value="LightGreen" TargetName="back" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Value}" Value="Conflict">
-                                    <Setter Property="Background" Value="LightPink" TargetName="back" />
+                                    <Setter Property="Background" Value="MediumVioletRed" TargetName="back" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="TargetFileError">
+                                    <Setter Property="Background" Value="MediumOrchid" TargetName="back" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="UnknownError">
+                                    <Setter Property="Background" Value="DarkRed" TargetName="back" />
+                                    <Setter Property="Foreground" Value="White" TargetName="PART_Editor"/>
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>

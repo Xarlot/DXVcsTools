@@ -26,9 +26,13 @@ namespace DXVcsTools.Core {
 
                     string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
                     if (string.IsNullOrEmpty(tmpTargetFile))
-                        return MergeState.TargetDirectoryError;
-                    repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
-
+                        return MergeState.TargetFileError;
+                    try {
+                        repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
+                    }
+                    catch {
+                        return MergeState.TargetFileError;
+                    }
 
                     var diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
@@ -106,7 +110,7 @@ namespace DXVcsTools.Core {
                 string tmpOriginalFile = mergeModel.OriginalFilePath;
                 tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
                 if (string.IsNullOrEmpty(tmpTargetFile))
-                    return MergeState.TargetDirectoryError;
+                    return MergeState.TargetFileError;
 
                 repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                 LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
