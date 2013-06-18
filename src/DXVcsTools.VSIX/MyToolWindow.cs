@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using DXVcsTools.Version;
+using DevExpress.Xpf.Mvvm.Native;
 using Microsoft.VisualStudio.Shell;
 
 namespace DXVcsTools.VSIX {
@@ -12,10 +14,12 @@ namespace DXVcsTools.VSIX {
     /// </summary>
     [Guid("c170e42d-6d77-44b1-a643-29d22df9f286")]
     public class MyToolWindow : ToolWindowPane {
+        ToolWindowViewModel model;
         /// <summary>
         ///     Standard constructor for the tool window.
         /// </summary>
-        public MyToolWindow() : base(null) {
+        public MyToolWindow()
+            : base(null) {
             // Set the window title reading it from the resources.
             Caption = Resources.ToolWindowTitle + " - " + VersionInfo.FullVersion;
             // Set the image that will appear on the tab of the window frame
@@ -29,12 +33,19 @@ namespace DXVcsTools.VSIX {
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
-            Content = new MyControl();
+            var mycontrol = new MyControl();
+            mycontrol.Loaded += MycontrolLoaded;
+            Content = mycontrol;
+        }
+
+        void MycontrolLoaded(object sender, System.Windows.RoutedEventArgs e) {
+            model.Do(x => x.Update());
         }
         MyControl Control {
             get { return base.Content as MyControl; }
         }
         public void Initialize(ToolWindowViewModel viewModel) {
+            model = viewModel;
             viewModel.Update();
             Control.DataContext = viewModel;
         }

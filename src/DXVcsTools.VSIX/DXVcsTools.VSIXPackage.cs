@@ -78,8 +78,8 @@ namespace DXVcsTools.VSIX {
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
-            MyToolWindow window = GetMyToolWindow();
-            window.Initialize(ToolWindowViewModel);
+            //MyToolWindow window = GetMyToolWindow();
+            ToolWindowViewModel.Update();
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
@@ -105,10 +105,6 @@ namespace DXVcsTools.VSIX {
 
             MyToolWindow window = GetMyToolWindow();
             window.Initialize(ToolWindowViewModel);
-            //}
-            //catch {
-            //    AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-            //}
         }
         MyToolWindow GetMyToolWindow() {
             var window = (MyToolWindow)FindToolWindow(typeof(MyToolWindow), 0, true);
