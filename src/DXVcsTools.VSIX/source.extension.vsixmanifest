@@ -8,6 +8,8 @@
     <Identity Id="2631d8dd-813b-41eb-8f9a-fe0fc88ecba9" Version="2.0.6" Language="en-US" Publisher="Xarlot" />
     <DisplayName>DXVcsTools.VSIX</DisplayName>
     <Description xml:space="preserve">DXVcsTools add in</Description>
+    <Icon>Resources\Package.ico</Icon>
+    <PreviewImage>Resources\Package.ico</PreviewImage>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
