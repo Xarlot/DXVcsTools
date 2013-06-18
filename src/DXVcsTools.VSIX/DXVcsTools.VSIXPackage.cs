@@ -47,7 +47,7 @@ namespace DXVcsTools.VSIX {
                 if ((bool)var == false) {
                     //At this point the environment is fully loaded and initialized
                     //Lets initialize our services
-                    ToolWindowViewModel.Update();
+                    InitializeToolWindow();
 
                     var shellService = GetService(typeof(SVsShell)) as IVsShell;
                     if (shellService != null) {
@@ -78,18 +78,17 @@ namespace DXVcsTools.VSIX {
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
-            //MyToolWindow window = GetMyToolWindow();
-            ToolWindowViewModel.Update();
+            InitializeToolWindow();
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved) {
-            ToolWindowViewModel.Update();
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
+            InitializeToolWindow();
             return VSConstants.S_OK;
         }
         /// <summary>
@@ -97,11 +96,10 @@ namespace DXVcsTools.VSIX {
         ///     tool window. See the Initialize method to see how the menu item is associated to
         ///     this function using the OleMenuCommandService service and the MenuCommand class.
         /// </summary>
-        void ShowToolWindow() {
+        void InitializeToolWindow() {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            //try {
 
             MyToolWindow window = GetMyToolWindow();
             window.Initialize(ToolWindowViewModel);
@@ -111,9 +109,12 @@ namespace DXVcsTools.VSIX {
             if ((null == window) || (null == window.Frame)) {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
-            var windowFrame = (IVsWindowFrame)window.Frame;
-            ErrorHandler.ThrowOnFailure(windowFrame.Show());
             return window;
+        }
+        void ShowToolWindow() {
+            var windowFrame = (IVsWindowFrame)GetMyToolWindow().Frame;
+            InitializeToolWindow();
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
 
