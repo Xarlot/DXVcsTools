@@ -13,7 +13,7 @@ namespace DXVcsTools.VSIX {
     ///     implementation of the IVsUIElementPane interface.
     /// </summary>
     [Guid("c170e42d-6d77-44b1-a643-29d22df9f286")]
-    public class MyToolWindow : ToolWindowPane {
+    public sealed class MyToolWindow : ToolWindowPane {
         ToolWindowViewModel model;
         /// <summary>
         ///     Standard constructor for the tool window.
