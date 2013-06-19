@@ -107,7 +107,7 @@ namespace DXVcsTools.VSIX {
             Solution = dteWrapper.BuildTree();
             //since grid bugs we must initialize startup collection
             SelectedItems = new ObservableCollection<ProjectItemBase>();
-            var source = GetFlatItemsSource().Where(item => item.IsCheckOut);
+            var source = GetFlatItemsSource().Where(item => item.IsCheckOut).ToList();
             Source = source;
 
             PortOptions = new PortOptionsViewModel(Solution.Path, Options);
