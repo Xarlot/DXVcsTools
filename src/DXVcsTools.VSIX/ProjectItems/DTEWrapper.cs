@@ -41,7 +41,7 @@ namespace DXVcsTools.Core {
             FileItemBase item = null;
             if (File.Exists(fileName)) {
                 var fileInfo = new FileInfo(fileName);
-                item = new FileItem {Name = fileInfo.Name, Path = fileName};
+                item = new FileItem(GetChildrenItems(projectItem)) { Name = fileInfo.Name, Path = fileName };
             }
             if (Directory.Exists(fileName)) {
                 var info = new DirectoryInfo(fileName);
