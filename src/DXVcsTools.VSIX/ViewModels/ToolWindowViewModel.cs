@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -183,12 +184,25 @@ namespace DXVcsTools.VSIX {
             return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CheckIn() {
-            var model = new CheckInViewModel(SelectedItem.Path, false);
-            bool? result = GetService<IDialogService>().ShowDialog("CheckInControl", model, "Check in");
-            if (result != null && (bool)result) {
-                var helper = new MergeHelper(Options, PortOptions);
-                helper.CheckIn(model);
-                SelectedItem.IsChecked = model.StaysChecked;
+            if (IsSingleSelection) {
+                var model = new CheckInViewModel(SelectedItem.Path, false);
+                bool? result = GetService<IDialogService>().ShowDialog("CheckInControl", model, "Check in");
+                if (result != null && (bool)result) {
+                    var helper = new MergeHelper(Options, PortOptions);
+                    helper.CheckIn(model);
+                    SelectedItem.IsChecked = model.StaysChecked;
+                }
+            }
+            else {
+                var model = new CheckInViewModel(Solution.Path, false);
+                bool? result = GetService<IDialogService>().ShowDialog("MultipleCheckInControl", model, "Multiple Check in");
+                if (result != null && (bool)result) {
+                    var helper = new MergeHelper(Options, PortOptions);
+                    foreach (var item in SelectedItems) {
+                        helper.CheckIn(model);
+                        item.IsChecked = model.StaysChecked;
+                    }
+                }
             }
         }
         bool CanCompareWithCurrentVersion() {

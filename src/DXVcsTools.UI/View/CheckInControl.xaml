@@ -22,6 +22,5 @@
                 <dxe:CheckEdit EditValue="{Binding Path=StaysChecked}" Content="Keep checked out" />
             </dxlc:LayoutItem>
         </dxlc:LayoutControl>
-
     </Grid>
 </UserControl>

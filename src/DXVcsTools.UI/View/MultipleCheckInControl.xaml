@@ -8,17 +8,18 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <dxlc:LayoutControl>
+        <dxlc:LayoutControl Orientation="Vertical">
             <dxlc:LayoutItem Label="Comment: ">
-                <dxe:TextEdit EditValue="{Binding Path=Comment}" Height="300" AcceptsReturn="True"
-                              TextTrimming="WordEllipsis" />
+                <dxe:TextEdit EditValue="{Binding Path=Comment}" Height="100" AcceptsReturn="True"
+                              TextTrimming="WordEllipsis" VerticalContentAlignment="Top" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="From: ">
                 <dxe:TextEdit EditValue="{Binding Path=FilePath}" />
             </dxlc:LayoutItem>
-            <dxlc:LayoutItem>
-                <dxe:CheckEdit EditValue="{Binding Path=StaysChecked}" />
+            <dxlc:LayoutItem Label=" ">
+                <dxe:CheckEdit EditValue="{Binding Path=StaysChecked}" Content="Keep checked out" />
             </dxlc:LayoutItem>
         </dxlc:LayoutControl>
     </Grid>
+
 </UserControl>
