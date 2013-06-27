@@ -40,6 +40,7 @@ namespace DXVcsTools.VSIX {
             ComparePortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
             ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
             NavigateToSolutionCommand = new RelayCommand(NavigateToSolution, CanNavigateToSolution);
+            UndoCheckoutCommand = new RelayCommand(UndoCheckout, CanUndoCheckout);
         }
 
         public double MergeProgress {
@@ -101,6 +102,7 @@ namespace DXVcsTools.VSIX {
         public RelayCommand ComparePortVersionCommand { get; private set; }
         public RelayCommand ManualMergeCommand { get; private set; }
         public RelayCommand NavigateToSolutionCommand { get; private set; }
+        public RelayCommand UndoCheckoutCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         public void Update() {
@@ -238,6 +240,23 @@ namespace DXVcsTools.VSIX {
             helper.NavigateToSolution(CurrentBranch, new DteWrapper(dte));
             Update();
         }
+        bool CanUndoCheckout() {
+            return IsSingleSelection ? SelectedItem != null : SelectedItems.Count > 0;
+        }
+        void UndoCheckout() {
+            var helper = new MergeHelper(Options, PortOptions);
+            if (IsSingleSelection) {
+                SelectedItem.IsCheckOut = helper.UndoCheckout(SelectedItem.Path);
+                SelectedItem.Save();
+            }
+            else {
+                foreach (var item in SelectedItems) {
+                    item.IsCheckOut = helper.UndoCheckout(item.Path);
+                    item.Save();
+                }
+            }
+        }
+
 
         protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
             return ServiceContainer.GetService<T>(searchMode);

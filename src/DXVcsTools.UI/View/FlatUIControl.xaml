@@ -45,7 +45,7 @@
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsCheckOut" FixedWidth="True" Width="70">
+                <dxg:GridColumn FieldName="IsCheckOut" Header="Checked Out"  FixedWidth="True" Width="80">
                     <dxg:GridColumn.EditSettings>
                         <dxe:CheckEditSettings />
                     </dxg:GridColumn.EditSettings>
@@ -69,6 +69,7 @@
                         <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
                         <dxb:BarItemLinkSeparator/>
                         <dxb:BarItemLink BarItemName="bCheckIn" />
+                        <dxb:BarItemLink BarItemName="bUndoCheckout" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

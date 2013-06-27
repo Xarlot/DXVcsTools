@@ -42,7 +42,7 @@
                     x:Name="bMerge"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
                     Command="{Binding MergeCommand}"
-                    Hint="Merge current item">
+                    Hint="Merge selected item(s)">
                     <dxb:BarSplitButtonItem.PopupControl>
                         <dxb:PopupMenu>
                             <dxb:BarButtonItemLink BarItemName="bMergeSubMenuItem" />
@@ -99,6 +99,15 @@
                 </dxb:BarButtonItem>
 
                 <dxb:BarButtonItem
+                    x:Name="bUndoCheckout"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png"
+                    Command="{Binding UndoCheckoutCommand}"
+                    Content="Undo check out..."
+                    Hint="Undo check out">
+                </dxb:BarButtonItem>
+
+
+                <dxb:BarButtonItem
                     x:Name="bCompareWithCurrentVersion"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/comparecurrent_16x16.png"
                     Command="{Binding CompareCurrentVersionCommand}"
@@ -141,6 +150,7 @@
                     <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
                     <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
                     <dxb:BarItemLink BarItemName="bCheckIn" />
+                    <dxb:BarItemLink BarItemName="bUndoCheckout" />
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
                     <dxb:BarItemLink BarItemName="bOpenSolution"/>

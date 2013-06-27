@@ -129,5 +129,15 @@ namespace DXVcsTools.DXVcsClient {
 
             return _service.GetWorkingFolder(Environment.MachineName, vcsProject);
         }
+        public void UndoCheckout(string vcsFile, string localFile) {
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("vcsFile");
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("localFile");
+
+            if (!_service.GetFile(vcsFile).CheckedOutMe)
+                throw new InvalidOperationException("Can't undo check out: the file is not checked out: " + vcsFile);
+            _service.UndoCheckOut(new[] {vcsFile}, new[] {false});
+        }
     }
 }

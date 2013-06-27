@@ -9,6 +9,7 @@ namespace DXVcsTools.DXVcsClient {
         void Get(string vcsFile, string fileName, int version);
         void CheckOutFile(string vcsFile, string localFile, string comment);
         void CheckInFile(string vcsFile, string localFile, string comment);
+        void UndoCheckout(string vcsFile, string localFile);
         string GetFileWorkingPath(string vcsFile);
     }
 }

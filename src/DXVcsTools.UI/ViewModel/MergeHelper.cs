@@ -132,5 +132,19 @@ namespace DXVcsTools.Core {
                 MessageBox.Show("Can`t navigate to solution");
             }
         }
+        public bool UndoCheckout(string filePath) {
+            string vcsFilePath = Port.GetRelativePath(filePath);
+            try {
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                repository.UndoCheckout(vcsFilePath, filePath);
+                repository.GetLatestVersion(vcsFilePath, filePath);
+                FileInfo info = new FileInfo(filePath);
+                info.IsReadOnly = true;
+            }
+            catch {
+                return true;
+            }
+            return false;
+        }
     }
 }
