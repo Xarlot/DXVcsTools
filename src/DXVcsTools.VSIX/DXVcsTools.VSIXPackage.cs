@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 using DXVcsTools.UI;
 using EnvDTE;
 using Microsoft.VisualStudio;
@@ -116,7 +117,9 @@ namespace DXVcsTools.VSIX {
             InitializeToolWindow();
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-
+        void ShowBlameWindow() {
+            MessageBox.Show("In development...");
+        }
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -141,6 +144,8 @@ namespace DXVcsTools.VSIX {
             var devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
             VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
             wizardMenu.Click += wizardMenu_Click;
+            VSDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
+            blameMenu.Click += blameMenu_Click;
 
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
             if (solution != null) {
@@ -153,6 +158,9 @@ namespace DXVcsTools.VSIX {
 
         void wizardMenu_Click(object sender, EventArgs e) {
             ShowToolWindow();
+        }
+        void blameMenu_Click(object sender, EventArgs e) {
+            ShowBlameWindow();
         }
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -10,10 +11,15 @@ namespace DXVcsTools.UI {
         const string DxVcsToolsCategory = "DXVcsTools options";
         public OptionsViewModel() {
             Branches = new List<DXVcsBranch>();
-            Branches.Add(new DXVcsBranch {Name = "12.1", Path = "$/2012.1/"});
-            Branches.Add(new DXVcsBranch {Name = "12.2", Path = "$/2012.2/"});
-            Branches.Add(new DXVcsBranch {Name = "13.1", Path = "$/2013.1/"});
-            Branches.Add(new DXVcsBranch {Name = "13.2", Path = "$/2013.2/"});
+            if (Debugger.IsAttached) {
+                Branches.Add(new DXVcsBranch { Name = "test13.1", Path = "$/Sandbox/litvinov/13.1/" });
+                Branches.Add(new DXVcsBranch { Name = "test13.2", Path = "$/Sandbox/litvinov/13.2/" });
+            }
+            Branches.Add(new DXVcsBranch { Name = "12.1", Path = "$/2012.1/" });
+            Branches.Add(new DXVcsBranch { Name = "12.2", Path = "$/2012.2/" });
+            Branches.Add(new DXVcsBranch { Name = "13.1", Path = "$/2013.1/" });
+            Branches.Add(new DXVcsBranch { Name = "13.2", Path = "$/2013.2/" });
+
             DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
         }
 

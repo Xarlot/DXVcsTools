@@ -124,7 +124,7 @@ namespace DXVcsTools.VSIX {
 
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(Solution.Path);
-            return Options.Branches.FirstOrDefault(branch => relativePath.StartsWith(branch.Path));
+            return Options.Branches.FirstOrDefault(branch => relativePath.StartsWith(branch.Path, StringComparison.OrdinalIgnoreCase));
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
