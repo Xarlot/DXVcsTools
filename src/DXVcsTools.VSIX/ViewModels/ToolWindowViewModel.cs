@@ -13,6 +13,7 @@ using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
 using EnvDTE;
+using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
@@ -201,11 +202,21 @@ namespace DXVcsTools.VSIX {
                 if (result != null && (bool)result) {
                     var helper = new MergeHelper(Options, PortOptions);
                     foreach (var item in SelectedItems) {
-                        helper.CheckIn(model);
-                        item.IsChecked = model.StaysChecked;
+                        var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) {Comment = model.Comment};
+                        bool success = helper.CheckIn(currentFileModel);
+                        item.IsChecked = success && model.StaysChecked;
                     }
                 }
             }
+        }
+        string FindProjectPath(ProjectItemBase item) {
+            ProjectItemBase parent = item.Parent;
+            while (parent != null) {
+                if (parent is ProjectItem)
+                    return parent.Path;
+                parent = parent.Parent;
+            }
+            return Solution.Path;
         }
         bool CanCompareWithCurrentVersion() {
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
@@ -260,6 +271,9 @@ namespace DXVcsTools.VSIX {
 
         protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
             return ServiceContainer.GetService<T>(searchMode);
+        }
+        void ReloadProject() {
+            dte.ExecuteCommand("Project.ReloadProject");
         }
     }
 }

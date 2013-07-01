@@ -12,8 +12,8 @@ namespace DXVcsTools.UI {
         public OptionsViewModel() {
             Branches = new List<DXVcsBranch>();
             if (Debugger.IsAttached) {
-                Branches.Add(new DXVcsBranch { Name = "test13.1", Path = "$/Sandbox/litvinov/13.1/" });
-                Branches.Add(new DXVcsBranch { Name = "test13.2", Path = "$/Sandbox/litvinov/13.2/" });
+                Branches.Add(new DXVcsBranch { Name = "test13.1", Path = "$/Sandbox/litvinov/13.1/".ToLower() });
+                Branches.Add(new DXVcsBranch { Name = "test13.2", Path = "$/Sandbox/litvinov/13.2/".ToLower() });
             }
             Branches.Add(new DXVcsBranch { Name = "12.1", Path = "$/2012.1/" });
             Branches.Add(new DXVcsBranch { Name = "12.2", Path = "$/2012.2/" });

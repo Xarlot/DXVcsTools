@@ -9,6 +9,7 @@ namespace DXVcsTools.Core {
         Conflict,
         InProgress,
         TargetFileError,
+        CheckOutFileError,
         UnknownError,
     }
 
@@ -21,8 +22,13 @@ namespace DXVcsTools.Core {
         string path;
         protected ProjectItemBase(IEnumerable<ProjectItemBase> children = null) {
             Children = children;
+            if (Children != null) {
+                foreach (var child in Children)
+                    child.Parent = this;
+            }
         }
 
+        public ProjectItemBase Parent { get; internal set; }
         public virtual int Priority {
             get { return 0; }
         }

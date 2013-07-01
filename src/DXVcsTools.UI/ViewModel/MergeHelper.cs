@@ -23,15 +23,21 @@ namespace DXVcsTools.Core {
 
                 try {
                     repository.GetLatestVersion(vcsOriginalPath, tmpOriginalFile);
-
-                    string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
+                    string tmpTargetFile = string.Empty;
+                    try {
+                        tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
+                    }
+                    catch {
+                        return MergeState.TargetFileError;
+                    }
                     if (string.IsNullOrEmpty(tmpTargetFile))
                         return MergeState.TargetFileError;
+
                     try {
                         repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                     }
                     catch {
-                        return MergeState.TargetFileError;
+                        return MergeState.CheckOutFileError;
                     }
 
                     var diff = new FileDiff();
@@ -76,7 +82,7 @@ namespace DXVcsTools.Core {
         string GetMergeVcsPathByTargetPath(string filePath, DXVcsBranch currentBranch) {
             return Port.GetRelativePath(filePath, currentBranch);
         }
-        public void CheckIn(CheckInViewModel checkInViewModel) {
+        public bool CheckIn(CheckInViewModel checkInViewModel) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string vcsOriginalPath = Port.GetRelativePath(checkInViewModel.FilePath);
@@ -85,8 +91,9 @@ namespace DXVcsTools.Core {
                     repository.CheckOutFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
             }
             catch {
-
+                return false;
             }
+            return true;
         }
         public void CompareWithCurrentVersion(string filePath) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
