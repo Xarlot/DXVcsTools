@@ -182,20 +182,13 @@
     <Compile Include="View\TotalMergeWindowControl.xaml.cs">
       <DependentUpon>TotalMergeWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DXPortWindow.xaml.cs">
-      <DependentUpon>DXPortWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="IBlameWindowView.cs" />
     <Compile Include="IDXBlameUI.cs" />
-    <Compile Include="IPortWindowView.cs" />
-    <Compile Include="IViewFactory.cs" />
     <Compile Include="View\OptionsControl.xaml.cs">
       <DependentUpon>OptionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\PortViewModel.cs" />
-    <Compile Include="PortWindowPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewFactory.cs" />
     <Compile Include="View\ToolWindowControl.xaml.cs">
       <DependentUpon>ToolWindowControl.xaml</DependentUpon>
     </Compile>
@@ -249,10 +242,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TotalMergeWindowControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\DXPortWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

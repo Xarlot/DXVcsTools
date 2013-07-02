@@ -109,6 +109,9 @@ namespace DXVcsTools.VSIX {
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
+            if (string.IsNullOrEmpty(Solution.Path))
+                return;
+
             //since grid bugs we must initialize startup collection
             SelectedItems = new ObservableCollection<ProjectItemBase>();
             var source = GetFlatItemsSource().Where(item => item.IsCheckOut).ToList();

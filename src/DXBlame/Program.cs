@@ -85,11 +85,11 @@ namespace DXBlame {
         }
 
         static void ShowNative(string file, string fileSource, int lineNumber, bool direct) {
-            var model = new BlameWindowModel(file, fileSource, lineNumber, direct);
-            IBlameWindowView ui = new ViewFactory().CreateBlameWindow();
+            //var model = new BlameWindowModel(file, fileSource, lineNumber, direct);
+            //IBlameWindowView ui = new ViewFactory().CreateBlameWindow();
 
-            var presenter = new BlameWindowPresenter(ui, model);
-            presenter.Show();
+            //var presenter = new BlameWindowPresenter(ui, model);
+            //presenter.Show();
         }
 
         static void PrintUsage() {
