@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.20617.1 PREVIEW
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DXVcsTools.DXVcsClient", "DXVcsTools.DXVcsClient\DXVcsTools.DXVcsClient.csproj", "{12AFF108-FD20-4C7D-89C4-020D2CB87B35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DXVcsTools.Core", "DXVcsTools.Core\DXVcsTools.Core.csproj", "{FF2054C1-BA2D-4A2B-A61C-ED8E5EF50860}"
