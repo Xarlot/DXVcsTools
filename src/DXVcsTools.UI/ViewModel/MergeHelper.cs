@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using DevExpress.Xpf.Core;
 using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 
@@ -101,9 +102,14 @@ namespace DXVcsTools.Core {
             PreviewTarget(repository, vcsOriginalPath, filePath);
         }
         public void CompareWithPortVersion(string filePath, DXVcsBranch current) {
-            IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
-            string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
-            PreviewTarget(repository, vcsTargetPath, repository.GetFileWorkingPath(vcsTargetPath));
+            try {
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
+                PreviewTarget(repository, vcsTargetPath, repository.GetFileWorkingPath(vcsTargetPath));
+            }
+            catch (Exception e) {
+                DXMessageBox.Show(e.Message);
+            }
         }
         public MergeState ManualMerge(DXVcsBranch currentBranch, ManualMergeViewModel mergeModel, Func<bool> showManualMergeUIHandler) {
             try {
@@ -134,7 +140,7 @@ namespace DXVcsTools.Core {
         }
         public void NavigateToSolution(DXVcsBranch currentBranch, IDteWrapper dte) {
             try {
-                string filePath = Port.ProjectPath;
+                string filePath = Port.ProjectFilePath;
                 string vcsFilePath = GetMergeVcsPathByOriginalPath(filePath, currentBranch) + Path.GetFileName(filePath);
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string targetPath = repository.GetFileWorkingPath(vcsFilePath);

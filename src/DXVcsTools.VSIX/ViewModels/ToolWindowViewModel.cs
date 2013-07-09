@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
+using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
@@ -106,6 +107,7 @@ namespace DXVcsTools.VSIX {
         public RelayCommand UndoCheckoutCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
+        bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
             Solution = dteWrapper.BuildTree();
@@ -117,7 +119,11 @@ namespace DXVcsTools.VSIX {
             var source = GetFlatItemsSource().Where(item => item.IsCheckOut).ToList();
             Source = source;
 
-            PortOptions = new PortOptionsViewModel(Solution.Path, Options);
+            PortOptions = new PortOptionsViewModel(Solution, Options);
+            if (!PortOptions.IsAttached) {
+                CanTotalMerge = false;  
+                return;
+            }
             MasterBranch = FindMasterBranch(PortOptions);
             CanTotalMerge = MasterBranch != null;
             PortOptions.MasterBranch = MasterBranch;
@@ -125,9 +131,8 @@ namespace DXVcsTools.VSIX {
             currentBranchLocker.DoIfNotLocked(() => CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch));
             MergeProgress = 0;
         }
-
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
-            string relativePath = portOptions.GetRelativePath(Solution.Path);
+            string relativePath = portOptions.GetRelativePath(PortOptions.ProjectFilePath);
             return Options.Branches.FirstOrDefault(branch => relativePath.StartsWith(branch.Path, StringComparison.OrdinalIgnoreCase));
         }
         void Merge(bool? parameter) {
@@ -154,10 +159,10 @@ namespace DXVcsTools.VSIX {
             }
         }
         bool CanMergeAll() {
-            return true;
+            return IsCorrectlyLoaded;
         }
         bool CanUpdate() {
-            return true;
+            return IsCorrectlyLoaded;
         }
         IEnumerable<ProjectItemBase> GetFlatItemsSource() {
             if (Solution == null)
@@ -184,10 +189,10 @@ namespace DXVcsTools.VSIX {
             var helper = new MergeHelper(Options, PortOptions);
         }
         bool CanBlame() {
-            return SelectedItem != null;
+            return IsCorrectlyLoaded && SelectedItem != null;
         }
         bool CanCheckIn() {
-            return SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            return IsCorrectlyLoaded && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CheckIn() {
             if (IsSingleSelection) {
@@ -229,6 +234,8 @@ namespace DXVcsTools.VSIX {
             helper.CompareWithCurrentVersion(SelectedItem.Path);
         }
         bool CanCompareWithPortVersion() {
+            if (!IsCorrectlyLoaded)
+                return false;
             if (CurrentBranch == null)
                 return false;
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
@@ -238,7 +245,7 @@ namespace DXVcsTools.VSIX {
             helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch);
         }
         bool CanManualMerge() {
-            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            return IsCorrectlyLoaded && IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void ManualMerge() {
             var helper = new MergeHelper(Options, PortOptions);
@@ -247,7 +254,7 @@ namespace DXVcsTools.VSIX {
                 () => GetService<IDialogService>().ShowDialog("ManualMergeControl", manualMerge, "Manual merge").Return(x => x.Value, () => false));
         }
         bool CanNavigateToSolution() {
-            return CurrentBranch != null;
+            return IsCorrectlyLoaded && CurrentBranch != null;
         }
         void NavigateToSolution() {
             var helper = new MergeHelper(Options, PortOptions);
@@ -255,7 +262,7 @@ namespace DXVcsTools.VSIX {
             Update();
         }
         bool CanUndoCheckout() {
-            return IsSingleSelection ? SelectedItem != null : SelectedItems.Count > 0;
+            return IsCorrectlyLoaded && (IsSingleSelection ? SelectedItem != null : SelectedItems.Count > 0);
         }
         void UndoCheckout() {
             var helper = new MergeHelper(Options, PortOptions);
@@ -276,7 +283,7 @@ namespace DXVcsTools.VSIX {
             return ServiceContainer.GetService<T>(searchMode);
         }
         void ReloadProject() {
-            dte.ExecuteCommand("Project.ReloadProject");
+//            dte.ExecuteCommand("Project.ReloadProject");
         }
     }
 }
