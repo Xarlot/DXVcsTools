@@ -27,6 +27,7 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
+        string theme;
         readonly Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
@@ -45,6 +46,10 @@ namespace DXVcsTools.VSIX {
             UndoCheckoutCommand = new RelayCommand(UndoCheckout, CanUndoCheckout);
         }
 
+        public string Theme {
+            get { return theme; }
+            private set { SetProperty(ref theme, value, () => Theme); }
+        }
         public double MergeProgress {
             get { return mergeProgress; }
             set { SetProperty(ref mergeProgress, value, "MergeProgress"); }
@@ -110,6 +115,7 @@ namespace DXVcsTools.VSIX {
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
+            Theme = dteWrapper.GetVSTheme();
             Solution = dteWrapper.BuildTree();
             if (string.IsNullOrEmpty(Solution.Path))
                 return;

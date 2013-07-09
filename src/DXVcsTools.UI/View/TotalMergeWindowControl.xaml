@@ -12,7 +12,6 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:i="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     mc:Ignorable="d"
-    dx:ThemeManager.ThemeName="Seven"
     d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>

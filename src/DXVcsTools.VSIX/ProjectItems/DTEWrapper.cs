@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm.Native;
 using EnvDTE;
 
@@ -59,6 +60,23 @@ namespace DXVcsTools.Core {
         }
         public void OpenSolution(string filePath) {
             dte.Solution.Open(filePath);
+        }
+        const string CategoryTextGeneral = "General";
+        const string PropertyNameCurrentTheme = "CurrentTheme";
+        const string ThemeLight = "de3dbbcd-f642-433c-8353-8f1df4370aba";
+        const string ThemeDark = "1ded0138-47ce-435e-84ef-9ec1f439b749";
+        string GetThemeId() {
+            return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
+        }
+        public string GetVSTheme() {
+            switch (GetThemeId()) {
+                case ThemeDark:
+                    return Theme.MetropolisDarkName;
+                case ThemeLight:
+                    return Theme.SevenName;
+                default:
+                    return Theme.SevenName;
+            }
         }
     }
 }
