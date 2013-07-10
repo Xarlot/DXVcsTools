@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
@@ -18,6 +19,9 @@ using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
+        const string Checkinwindow = "CheckInWindow";
+        const string MultipleCheckinWindow = "MultipleCheckInWindow";
+        const string ManualMergeWindow = "ManualMergeWindow";
         readonly DTE dte;
         bool canTotalMerge;
         DXVcsBranch currentBranch;
@@ -27,7 +31,6 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
-        string theme;
         readonly Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
             this.dte = dte;
@@ -46,10 +49,6 @@ namespace DXVcsTools.VSIX {
             UndoCheckoutCommand = new RelayCommand(UndoCheckout, CanUndoCheckout);
         }
 
-        public string Theme {
-            get { return theme; }
-            private set { SetProperty(ref theme, value, () => Theme); }
-        }
         public double MergeProgress {
             get { return mergeProgress; }
             set { SetProperty(ref mergeProgress, value, "MergeProgress"); }
@@ -115,7 +114,7 @@ namespace DXVcsTools.VSIX {
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
         public void Update() {
             var dteWrapper = new DteWrapper(dte);
-            Theme = dteWrapper.GetVSTheme();
+            ThemeProvider.Instance.ThemeName = dteWrapper.GetVSTheme();
             Solution = dteWrapper.BuildTree();
             if (string.IsNullOrEmpty(Solution.Path))
                 return;
@@ -203,8 +202,8 @@ namespace DXVcsTools.VSIX {
         void CheckIn() {
             if (IsSingleSelection) {
                 var model = new CheckInViewModel(SelectedItem.Path, false);
-                bool? result = GetService<IDialogService>().ShowDialog("CheckInControl", model, "Check in");
-                if (result != null && (bool)result) {
+                MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
+                if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
                     helper.CheckIn(model);
                     SelectedItem.IsChecked = model.StaysChecked;
@@ -212,8 +211,8 @@ namespace DXVcsTools.VSIX {
             }
             else {
                 var model = new CheckInViewModel(Solution.Path, false);
-                bool? result = GetService<IDialogService>().ShowDialog("MultipleCheckInControl", model, "Multiple Check in");
-                if (result != null && (bool)result) {
+                var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageBoxButton.OKCancel, "Multiple Check in", model);
+                if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
                     foreach (var item in SelectedItems) {
                         var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) {Comment = model.Comment};
@@ -257,7 +256,7 @@ namespace DXVcsTools.VSIX {
             var helper = new MergeHelper(Options, PortOptions);
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
-                () => GetService<IDialogService>().ShowDialog("ManualMergeControl", manualMerge, "Manual merge").Return(x => x.Value, () => false));
+                () => GetService<IDialogService>(ManualMergeWindow).ShowDialog(MessageBoxButton.OKCancel, "Manual merge", manualMerge) == MessageBoxResult.OK);
         }
         bool CanNavigateToSolution() {
             return IsCorrectlyLoaded && CurrentBranch != null;
@@ -285,8 +284,8 @@ namespace DXVcsTools.VSIX {
         }
 
 
-        protected virtual T GetService<T>(ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
-            return ServiceContainer.GetService<T>(searchMode);
+        protected virtual T GetService<T>(string key, ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
+            return ServiceContainer.GetService<T>(key, searchMode);
         }
         void ReloadProject() {
 //            dte.ExecuteCommand("Project.ReloadProject");

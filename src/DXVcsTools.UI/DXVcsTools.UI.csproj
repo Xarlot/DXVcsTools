@@ -157,6 +157,7 @@
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
+    <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>

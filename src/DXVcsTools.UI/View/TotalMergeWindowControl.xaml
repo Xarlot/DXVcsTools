@@ -21,10 +21,37 @@
                 <view:FlatUIControl DataContext="{TemplateBinding DataContext}"/>
             </DataTemplate>
             <view:UITypeSelector x:Key="uiSelector"/>
+            <Style x:Key="windowStyle" TargetType="dx:DXDialog">
+                <Setter Property="dx:ThemeManager.ThemeName" Value="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}"/>
+                <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+                <Setter Property="ResizeMode" Value="NoResize"/>
+                <Setter Property="WindowStyle" Value="ToolWindow"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
-        <ui:DialogService ThemeName="Seven" ViewLocator="{view:ControlLocator}" />
+        <dx:DialogService x:Name="CheckInWindow" DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <view:CheckInControl/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+        </dx:DialogService>
+        <dx:DialogService x:Name="MultipleCheckInWindow"  DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <view:MultipleCheckInControl/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+        </dx:DialogService>
+        <dx:DialogService x:Name="ManualMergeWindow" DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <view:ManualMergeControl/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+        </dx:DialogService>
+
     </i:Interaction.Behaviors>
     <Grid>
         <dxb:BarManager AllowCustomization="False">

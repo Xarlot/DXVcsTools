@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
+             xmlns:ui="clr-namespace:DXVcsTools.UI"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             dx:ThemeManager.ThemeName="{Binding Path=Theme}">
+             dx:ThemeManager.ThemeName="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
