@@ -1,33 +1,38 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Threading;
 using DXVCS;
 
 namespace DXVcsTools.DXVcsClient {
+    [ServiceContract]
     class DXVcsServiceProvider : MarshalByRefObject {
-        static bool channelRegistered;
+        static bool isServiceRegistered;
         IDXVCSService service;
-
-        static void RegisterChannel() {
-            var properties = new Hashtable();
-            properties.Add("timeout", 200000);
-            properties.Add("secure", true);
-
-            var clientSinkProvider = new BinaryClientFormatterSinkProvider();
-            clientSinkProvider.Next = new CompressedClientFormatterSinkProvider(false);
-
-            var clientChannel = new TcpChannel(properties, clientSinkProvider, null);
-            ChannelServices.RegisterChannel(clientChannel, false);
-        }
-
-        public IDXVCSService CreateService(string serviceUrl) {
-            if (!channelRegistered) {
-                RegisterChannel();
-                channelRegistered = true;
+        object serviceBase;
+        class Factory : ChannelFactory<IDXVCSService> {
+            public Factory(ServiceEndpoint endpoint) : base(endpoint) { }
+            protected override void ApplyConfiguration(string configurationName) {
             }
-
-            service = new ServiceWrapper((IDXVCSService)Activator.GetObject(typeof(IDXVCSService), serviceUrl));
+        }
+        public IDXVCSService CreateService(string serviceUrl) {
+            if (isServiceRegistered)
+                return service;
+            EndpointAddress myEndpointAddress = new EndpointAddress(new Uri(serviceUrl), new SpnEndpointIdentity(String.Empty));
+            ServiceEndpoint point = GZipMessageEncodingBindingElement.CreateEndpoint(myEndpointAddress);
+            ChannelFactory<IDXVCSService> factory = new Factory(point);
+            factory.Credentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Identification;
+            IDXVCSService newService = factory.CreateChannel();
+            IContextChannel newChannel = (IContextChannel)newService;
+            newChannel.OperationTimeout = TimeSpan.MaxValue;
+            newChannel.Open();
+            service = newService;
+            isServiceRegistered = true;
+            service = new ServiceWrapper(newService);
             return service;
         }
 
