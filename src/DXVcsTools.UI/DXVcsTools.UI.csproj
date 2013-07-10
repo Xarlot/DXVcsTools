@@ -149,6 +149,7 @@
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
     <Compile Include="MVVM\BindableBaseEx.cs" />
+    <Compile Include="ViewModel\BlameHelper.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
