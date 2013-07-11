@@ -6,20 +6,21 @@
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
              xmlns:ui="clr-namespace:DXVcsTools.UI"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              dx:ThemeManager.ThemeName="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
+            <system:Boolean x:Key="falseBoolean">False</system:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        
         <view:TotalMergeWindowControl
+            
             Visibility="{Binding Path=CanTotalMerge, Converter={StaticResource boolToVisibilityConverter}}">
         </view:TotalMergeWindowControl>
-        <TextBlock Text="{Binding Path=ErrorHint}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Visibility="Collapsed">
-        </TextBlock>
     </Grid>
 </UserControl>

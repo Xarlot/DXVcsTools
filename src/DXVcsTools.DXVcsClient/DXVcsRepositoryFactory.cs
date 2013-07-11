@@ -34,7 +34,8 @@ namespace DXVcsTools.DXVcsClient {
                         domain.CreateInstanceAndUnwrap(typeof(DXVcsServiceProvider).Assembly.FullName, typeof(DXVcsServiceProvider).FullName, false, BindingFlags.Public | BindingFlags.Instance, null,
                             null, null, null, null);
             }
-            catch {
+            catch (Exception e) {
+                throw e;
             }
             finally {
                 AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
