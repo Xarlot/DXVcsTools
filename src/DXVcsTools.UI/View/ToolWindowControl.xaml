@@ -6,7 +6,6 @@
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:view="clr-namespace:DXVcsTools.UI.View"
              xmlns:ui="clr-namespace:DXVcsTools.UI"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              dx:ThemeManager.ThemeName="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}">
