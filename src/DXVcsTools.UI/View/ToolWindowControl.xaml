@@ -13,13 +13,11 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <dx:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
-            <system:Boolean x:Key="falseBoolean">False</system:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         
         <view:TotalMergeWindowControl
-            
             Visibility="{Binding Path=CanTotalMerge, Converter={StaticResource boolToVisibilityConverter}}">
         </view:TotalMergeWindowControl>
     </Grid>
