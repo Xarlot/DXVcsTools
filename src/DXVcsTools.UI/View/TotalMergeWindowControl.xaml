@@ -166,7 +166,7 @@
                 </dxb:BarButtonItem>
                 <dxb:BarButtonItem
                     x:Name="bShowLog"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_log_16x16.png"
                     Command="{Binding ShowLogCommand}"
                     Content="Show error log"
                     Hint="Show error log">
@@ -187,6 +187,7 @@
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
                     <dxb:BarItemLink BarItemName="bOpenSolution"/>
+                    <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bShowLog"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
