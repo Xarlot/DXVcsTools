@@ -14,6 +14,8 @@ using DXVcsTools.UI;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
+using DXVcsTools.UI.Logger;
+using DXVcsTools.UI.ViewModel;
 using EnvDTE;
 using ProjectItem = DXVcsTools.Core.ProjectItem;
 
@@ -47,8 +49,15 @@ namespace DXVcsTools.VSIX {
             ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
             NavigateToSolutionCommand = new RelayCommand(NavigateToSolution, CanNavigateToSolution);
             UndoCheckoutCommand = new RelayCommand(UndoCheckout, CanUndoCheckout);
+            ShowLogCommand = new RelayCommand(ShowLog, CanShowLog);
         }
-
+        void ShowLog() {
+            string log = Logger.GetLog();
+            ShowLogHelper.ShowLog(log);
+        }
+        bool CanShowLog() {
+            return true;
+        }
         public double MergeProgress {
             get { return mergeProgress; }
             set { SetProperty(ref mergeProgress, value, "MergeProgress"); }
@@ -109,15 +118,21 @@ namespace DXVcsTools.VSIX {
         public RelayCommand ManualMergeCommand { get; private set; }
         public RelayCommand NavigateToSolutionCommand { get; private set; }
         public RelayCommand UndoCheckoutCommand { get; private set; }
+        public RelayCommand ShowLogCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
         public void Update() {
+            Logger.AddInfo("UpdateCommand. Start");
+
             var dteWrapper = new DteWrapper(dte);
             ThemeProvider.Instance.ThemeName = dteWrapper.GetVSTheme();
             Solution = dteWrapper.BuildTree();
-            if (string.IsNullOrEmpty(Solution.Path))
+            if (string.IsNullOrEmpty(Solution.Path)) {
+                CanTotalMerge = false;
+                Logger.AddInfo("UpdateCommand. End - cant merge since solution is empty or not under vss");
                 return;
+            }
 
             //since grid bugs we must initialize startup collection
             SelectedItems = new ObservableCollection<ProjectItemBase>();
@@ -126,6 +141,7 @@ namespace DXVcsTools.VSIX {
 
             PortOptions = new PortOptionsViewModel(Solution, Options);
             if (!PortOptions.IsAttached) {
+                Logger.AddInfo("UpdateCommand. End - cant merge since port is not initialized");
                 CanTotalMerge = false;  
                 return;
             }
@@ -135,6 +151,8 @@ namespace DXVcsTools.VSIX {
 
             currentBranchLocker.DoIfNotLocked(() => CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch));
             MergeProgress = 0;
+
+            Logger.AddInfo("UpdateCommand. End - successful initialized");
         }
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(PortOptions.ProjectFilePath);
@@ -201,6 +219,8 @@ namespace DXVcsTools.VSIX {
         }
         void CheckIn() {
             if (IsSingleSelection) {
+                Logger.AddInfo("CheckInCommand. Start single check in.");
+
                 var model = new CheckInViewModel(SelectedItem.Path, false);
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
@@ -208,8 +228,11 @@ namespace DXVcsTools.VSIX {
                     helper.CheckIn(model);
                     SelectedItem.IsChecked = model.StaysChecked;
                 }
+                Logger.AddInfo("CheckInCommand. End single check in.");
             }
             else {
+                Logger.AddInfo("CheckInCommand. Start multiple check in.");
+
                 var model = new CheckInViewModel(Solution.Path, false);
                 var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageBoxButton.OKCancel, "Multiple Check in", model);
                 if (result == MessageBoxResult.OK) {
@@ -220,16 +243,10 @@ namespace DXVcsTools.VSIX {
                         item.IsChecked = success && model.StaysChecked;
                     }
                 }
+
+                Logger.AddInfo("CheckInCommand. End multiple check in.");
             }
-        }
-        string FindProjectPath(ProjectItemBase item) {
-            ProjectItemBase parent = item.Parent;
-            while (parent != null) {
-                if (parent is ProjectItem)
-                    return parent.Path;
-                parent = parent.Parent;
-            }
-            return Solution.Path;
+            ReloadProject();
         }
         bool CanCompareWithCurrentVersion() {
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
@@ -281,6 +298,7 @@ namespace DXVcsTools.VSIX {
                     item.Save();
                 }
             }
+            ReloadProject();
         }
 
 

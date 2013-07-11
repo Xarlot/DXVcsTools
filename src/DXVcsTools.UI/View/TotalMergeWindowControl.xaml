@@ -164,6 +164,13 @@
                     Content="Navigate to solution"
                     Hint="Navigate to solution specified by Port combo to perform check in">
                 </dxb:BarButtonItem>
+                <dxb:BarButtonItem
+                    x:Name="bShowLog"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
+                    Command="{Binding ShowLogCommand}"
+                    Content="Show error log"
+                    Hint="Show error log">
+                </dxb:BarButtonItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar>
@@ -180,6 +187,7 @@
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
                     <dxb:BarItemLink BarItemName="bOpenSolution"/>
+                    <dxb:BarItemLink BarItemName="bShowLog"/>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <ui:OnDemandContentControl DelayedContent="{Binding}" ContentTemplateSelector="{StaticResource uiSelector}"/>

@@ -5,6 +5,7 @@ using System.Windows;
 using DevExpress.Xpf.Core;
 using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
+using DXVcsTools.UI.Logger;
 
 namespace DXVcsTools.Core {
     public class MergeHelper {
@@ -28,18 +29,23 @@ namespace DXVcsTools.Core {
                     try {
                         tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
                     }
-                    catch {
+                    catch (Exception e) {
+                        Logger.AddError("MergeCommand. Target file error.", e);
                         return MergeState.TargetFileError;
                     }
-                    if (string.IsNullOrEmpty(tmpTargetFile))
+                    if (string.IsNullOrEmpty(tmpTargetFile)) {
+                        Logger.AddError("MergeCommand. Target file path is empty.");
                         return MergeState.TargetFileError;
+                    }
 
                     try {
                         repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                     }
-                    catch {
+                    catch (Exception e) {
+                        Logger.AddError("MergeCommand. Check out file error.", e);
                         return MergeState.CheckOutFileError;
                     }
+
 
                     var diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
