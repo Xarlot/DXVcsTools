@@ -270,10 +270,13 @@ namespace DXVcsTools.VSIX {
             return IsCorrectlyLoaded && IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void ManualMerge() {
+            Logger.AddInfo("ManualMergeCommand. Merge start.");
+            
             var helper = new MergeHelper(Options, PortOptions);
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
                 () => GetService<IDialogService>(ManualMergeWindow).ShowDialog(MessageBoxButton.OKCancel, "Manual merge", manualMerge) == MessageBoxResult.OK);
+            Logger.AddInfo("ManualMergeCommand. Merge end.");
         }
         bool CanNavigateToSolution() {
             return IsCorrectlyLoaded && CurrentBranch != null;

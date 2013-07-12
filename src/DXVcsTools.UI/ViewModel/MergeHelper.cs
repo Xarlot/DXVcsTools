@@ -127,21 +127,28 @@ namespace DXVcsTools.Core {
                 string tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
                 mergeModel.TargetFilePath = tmpTargetFile;
 
-                if (!showManualMergeUIHandler())
+                if (!showManualMergeUIHandler()) {
+                    Logger.AddInfo("ManualMergeCommand. Result = MergeState.None.");
                     return MergeState.None;
+                }
 
                 vcsTargetFile = GetMergeVcsPathByTargetPath(mergeModel.TargetFilePath, currentBranch);
                 string tmpOriginalFile = mergeModel.OriginalFilePath;
                 tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
-                if (string.IsNullOrEmpty(tmpTargetFile))
+                if (string.IsNullOrEmpty(tmpTargetFile)) {
+                    Logger.AddInfo("ManualMergeCommand. Result = MergeState.TargetFileError.");
                     return MergeState.TargetFileError;
+                }
 
                 repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                 LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
             }
-            catch {
+            catch(Exception e) {
+                Logger.AddError("ManualMergeCommand. Unknown error.", e);
+                Logger.AddInfo("ManualMergeCommand. Result = MergeState.UnknownError.");
                 return MergeState.UnknownError;
             }
+            Logger.AddInfo("ManualMergeCommand. Result = MergeState.Success");
             return MergeState.Success;
         }
         public void NavigateToSolution(DXVcsBranch currentBranch, IDteWrapper dte) {

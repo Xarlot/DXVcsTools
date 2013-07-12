@@ -83,6 +83,9 @@
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DXVCS">
+      <HintPath>..\..\lib\DXVcs\DXVCS.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
