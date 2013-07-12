@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace DXVcsTools.DXVcsClient {
@@ -21,33 +23,31 @@ namespace DXVcsTools.DXVcsClient {
                 }
             }
 
-            return new DXVcsRepository(serviceProvider.CreateService(serviceUrl));
+            return ProcessWithAssemblyLoadingGuard<IDXVcsRepository>(() => new DXVcsRepository(serviceProvider.CreateService(serviceUrl)));
         }
         static void CreateServiceProvider() {
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetAssembly(typeof(DXVcsServiceProvider)).Location);
-            try {
                 AppDomain domain = AppDomain.CreateDomain("DXVcsServiceProviderDomain", null, domainSetup);
-                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-                serviceProvider =
-                    (DXVcsServiceProvider)
-                        domain.CreateInstanceAndUnwrap(typeof(DXVcsServiceProvider).Assembly.FullName, typeof(DXVcsServiceProvider).FullName, false, BindingFlags.Public | BindingFlags.Instance, null,
-                            null, null, null, null);
-            }
-            catch (Exception e) {
-                throw e;
+                serviceProvider = ProcessWithAssemblyLoadingGuard(() => (DXVcsServiceProvider)domain.CreateInstanceAndUnwrap(
+                    typeof(DXVcsServiceProvider).Assembly.FullName, 
+                    typeof(DXVcsServiceProvider).FullName, 
+                    false, 
+                    BindingFlags.Public | BindingFlags.Instance, 
+                    null, null, null, null, null));
+        }
+        static T ProcessWithAssemblyLoadingGuard<T>(Func<T> handler) {
+            try {
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
+                return handler();
             }
             finally {
-                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomainAssemblyResolve;
             }
         }
 
-        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                if (assembly.FullName == args.Name)
-                    return assembly;
-            }
-            return null;
+        static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args) {
+            return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.FullName == args.Name);
         }
     }
 }
