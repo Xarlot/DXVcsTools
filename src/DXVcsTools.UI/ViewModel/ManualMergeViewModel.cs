@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Forms;
+using DevExpress.Xpf.Mvvm;
 using DXVcsTools.UI.MVVM;
 using DevExpress.Xpf.Mvvm.Native;
 
@@ -11,10 +12,10 @@ namespace DXVcsTools.UI {
             OriginalFilePath = originalFilePath;
             TargetFilePath = targetFilePath;
 
-            SpecifyTargetCommand = new RelayCommand<string>(SpecifyTarget, parameter => true);
+            SpecifyTargetCommand = new DelegateCommand<string>(SpecifyTarget);
         }
 
-        public RelayCommand<string> SpecifyTargetCommand { get; private set; }
+        public DelegateCommand<string> SpecifyTargetCommand { get; private set; }
 
         public string OriginalFilePath {
             get { return originalFilePath; }

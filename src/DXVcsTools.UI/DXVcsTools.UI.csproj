@@ -161,7 +161,6 @@
     <Compile Include="ViewModel\MergeHelper.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
-    <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="ViewModel\ShowLogHelper.cs" />
     <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />

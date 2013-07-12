@@ -39,17 +39,17 @@ namespace DXVcsTools.VSIX {
             Options = options;
             ServiceContainer = new ServiceContainer(this);
 
-            MergeCommand = new RelayCommand<bool?>(Merge, CanMerge);
-            MergeAllCommand = new RelayCommand(MergeAll, CanMergeAll);
+            MergeCommand = new DelegateCommand<bool?>(Merge, CanMerge);
+            MergeAllCommand = new DelegateCommand(MergeAll, CanMergeAll);
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
-            BlameCommand = new RelayCommand(Blame, CanBlame);
-            CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
-            CompareCurrentVersionCommand = new RelayCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
-            ComparePortVersionCommand = new RelayCommand(CompareWithPortVersion, CanCompareWithPortVersion);
-            ManualMergeCommand = new RelayCommand(ManualMerge, CanManualMerge);
-            NavigateToSolutionCommand = new RelayCommand(NavigateToSolution, CanNavigateToSolution);
-            UndoCheckoutCommand = new RelayCommand(UndoCheckout, CanUndoCheckout);
-            ShowLogCommand = new RelayCommand(ShowLog, CanShowLog);
+            BlameCommand = new DelegateCommand(Blame, CanBlame);
+            CheckInCommand = new DelegateCommand(CheckIn, CanCheckIn);
+            CompareCurrentVersionCommand = new DelegateCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
+            ComparePortVersionCommand = new DelegateCommand(CompareWithPortVersion, CanCompareWithPortVersion);
+            ManualMergeCommand = new DelegateCommand(ManualMerge, CanManualMerge);
+            NavigateToSolutionCommand = new DelegateCommand(NavigateToSolution, CanNavigateToSolution);
+            UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
+            ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
         }
         void ShowLog() {
             string log = Logger.GetLog();
@@ -108,17 +108,17 @@ namespace DXVcsTools.VSIX {
         public OptionsViewModel Options { get; private set; }
         public bool IsSingleSelection { get { return SelectedItems.If(x => x.Count <= 1).ReturnSuccess(); } }
 
-        public RelayCommand<bool?> MergeCommand { get; private set; }
-        public RelayCommand MergeAllCommand { get; private set; }
-        public RelayCommand BlameCommand { get; private set; }
+        public DelegateCommand<bool?> MergeCommand { get; private set; }
+        public DelegateCommand MergeAllCommand { get; private set; }
+        public DelegateCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
-        public RelayCommand CheckInCommand { get; private set; }
-        public RelayCommand CompareCurrentVersionCommand { get; private set; }
-        public RelayCommand ComparePortVersionCommand { get; private set; }
-        public RelayCommand ManualMergeCommand { get; private set; }
-        public RelayCommand NavigateToSolutionCommand { get; private set; }
-        public RelayCommand UndoCheckoutCommand { get; private set; }
-        public RelayCommand ShowLogCommand { get; private set; }
+        public DelegateCommand CheckInCommand { get; private set; }
+        public DelegateCommand CompareCurrentVersionCommand { get; private set; }
+        public DelegateCommand ComparePortVersionCommand { get; private set; }
+        public DelegateCommand ManualMergeCommand { get; private set; }
+        public DelegateCommand NavigateToSolutionCommand { get; private set; }
+        public DelegateCommand UndoCheckoutCommand { get; private set; }
+        public DelegateCommand ShowLogCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
