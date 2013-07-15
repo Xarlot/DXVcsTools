@@ -84,19 +84,24 @@ namespace DXVcsTools.Core {
         }
         string GetMergeVcsPathByOriginalPath(string filePath, DXVcsBranch currentBranch) {
             string relativePath = Port.GetRelativePath(filePath);
-            return relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
+            string result = relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
+            string ext = Path.GetExtension(filePath);
+            if (ext == ".sln" || ext == ".csproj")
+                return result + Path.GetFileName(filePath);
+            return result;
         }
         string GetMergeVcsPathByTargetPath(string filePath, DXVcsBranch currentBranch) {
             return Port.GetRelativePath(filePath, currentBranch);
         }
-        public bool CheckIn(CheckInViewModel checkInViewModel) {
-            Logger.AddInfo("CheckInCommand. Start checkin file: " + checkInViewModel.FilePath);
+        public bool CheckIn(CheckInViewModel checkInViewModel, DXVcsBranch targetBranch) {
+            Logger.AddInfo("CheckInCommand. Perform checkin file: " + checkInViewModel.FilePath);
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
-                string vcsOriginalPath = Port.GetRelativePath(checkInViewModel.FilePath);
-                repository.CheckInFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
+                string filePath = GetFilePathForBranch(checkInViewModel.FilePath, targetBranch);
+                string vcsOriginalPath = GetMergeVcsPathByTargetPath(filePath, targetBranch);
+                repository.CheckInFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
                 if (checkInViewModel.StaysChecked)
-                    repository.CheckOutFile(vcsOriginalPath, checkInViewModel.FilePath, checkInViewModel.Comment);
+                    repository.CheckOutFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
             }
             catch(Exception e) {
                 Logger.AddError("CheckInCommand. CheckIn failed.", e);
@@ -179,14 +184,14 @@ namespace DXVcsTools.Core {
             }
             return false;
         }
-        public string GetRelativePath(string path, DXVcsBranch currentBranch) {
+        public string GetFilePathForBranch(string path, DXVcsBranch currentBranch) {
             try {
                 string relativePath = GetMergeVcsPathByOriginalPath(path, currentBranch);
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 return repository.GetFileWorkingPath(relativePath);
             }
             catch(Exception e) {
-                Logger.AddError("GetRelativePath failed.", e);
+                Logger.AddError("GetFilePathForBranch failed.", e);
             }
             return string.Empty;
         }

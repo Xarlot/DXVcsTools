@@ -230,7 +230,7 @@ namespace DXVcsTools.VSIX {
                     return selectedItemPath;
                 case CheckInTarget.Port:
                     MergeHelper helper = new MergeHelper(Options, PortOptions);
-                    return helper.GetRelativePath(selectedItemPath, CurrentBranch);
+                    return helper.GetFilePathForBranch(selectedItemPath, CurrentBranch);
                 default:
                     throw new ArgumentException("target");
             }
@@ -243,9 +243,10 @@ namespace DXVcsTools.VSIX {
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
-                    helper.CheckIn(model);
+                    helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment}, GetCheckInBranch(target));
                     SelectedItem.IsChecked = model.StaysChecked;
                 }
+
                 Logger.AddInfo("CheckInCommand. End single check in.");
             }
             else {
@@ -256,8 +257,8 @@ namespace DXVcsTools.VSIX {
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
                     foreach (var item in SelectedItems) {
-                        var currentFileModel = new CheckInViewModel(GetCheckInPath(target, item.Path), model.StaysChecked) { Comment = model.Comment };
-                        bool success = helper.CheckIn(currentFileModel);
+                        var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) { Comment = model.Comment };
+                        bool success = helper.CheckIn(currentFileModel, GetCheckInBranch(target));
                         item.IsChecked = success && model.StaysChecked;
                     }
                 }
@@ -265,6 +266,9 @@ namespace DXVcsTools.VSIX {
                 Logger.AddInfo("CheckInCommand. End multiple check in.");
             }
             ReloadProject();
+        }
+        DXVcsBranch GetCheckInBranch(CheckInTarget target) {
+            return target == CheckInTarget.Master ? MasterBranch : CurrentBranch;
         }
         bool CanCompareWithCurrentVersion() {
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
