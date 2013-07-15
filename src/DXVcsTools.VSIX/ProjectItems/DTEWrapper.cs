@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm.Native;
+using DXVcsTools.UI;
 using EnvDTE;
 
 namespace DXVcsTools.Core {
@@ -68,14 +68,14 @@ namespace DXVcsTools.Core {
         string GetThemeId() {
             return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
         }
-        public string GetVSTheme() {
+        public string GetVSTheme(OptionsViewModel model) {
             switch (GetThemeId()) {
                 case ThemeDark:
-                    return Theme.MetropolisDarkName;
+                    return model.DarkThemeName;
                 case ThemeLight:
-                    return Theme.SevenName;
+                    return model.LightThemeName;
                 default:
-                    return Theme.SevenName;
+                    return model.LightThemeName;
             }
         }
     }

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using DevExpress.Xpf.Mvvm.UI;
 using DXVcsTools.Core;
 using DXVcsTools.DXVcsClient;
 
@@ -46,7 +45,6 @@ namespace DXVcsTools.UI {
         public bool IsAttached { get { return VcsServer != null; }}
         public OptionsViewModel Options { get; private set; }
         public IEnumerable<string> Branches { get; private set; }
-        //public string ProjectPath { get; private set; }
         public string ProjectFilePath { get; private set; }
         DXVcsFileLocator Locator { get; set; }
         public DXVcsBranch MasterBranch { get; set; }

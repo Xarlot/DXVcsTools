@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
-using log4net.Repository;
 using log4net.Repository.Hierarchy;
 
 namespace DXVcsTools.UI.Logger {

@@ -128,6 +128,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\json.net\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -161,6 +164,7 @@
     <Compile Include="ViewModel\MergeHelper.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
+    <Compile Include="ViewModel\SerializeSettingsHelper.cs" />
     <Compile Include="ViewModel\ShowLogHelper.cs" />
     <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />

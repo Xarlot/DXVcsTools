@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Windows.Controls;
 using DXVcsTools.Version;
 using DevExpress.Xpf.Mvvm.Native;
 using Microsoft.VisualStudio.Shell;

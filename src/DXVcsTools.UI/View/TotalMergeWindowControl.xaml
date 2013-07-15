@@ -116,14 +116,43 @@
                     CommandParameter="{StaticResource TrueBoolean}">
                 </dxb:BarButtonItem>
 
-                <dxb:BarButtonItem
+                <!--<dxb:BarButtonItem
                     x:Name="bCheckIn"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
                     Command="{Binding CheckInCommand}"
                     Content="Check in..."
                     Hint="Check in">
+                </dxb:BarButtonItem>-->
+                <dxb:BarSplitButtonItem
+                    x:Name="bCheckIn"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
+                    Command="{Binding CheckInCommand}"
+                    Content="Check in..."
+                    Hint="Check in">
+                    <dxb:BarSplitButtonItem.PopupControl>
+                        <dxb:PopupMenu>
+                            <dxb:BarButtonItemLink BarItemName="bCheckInMasterSubMenuItem" />
+                            <dxb:BarButtonItemLink BarItemName="bCheckInPortSubMenuItem" />
+                        </dxb:PopupMenu>
+                    </dxb:BarSplitButtonItem.PopupControl>
+                </dxb:BarSplitButtonItem>
+                <dxb:BarButtonItem
+                    x:Name="bCheckInMasterSubMenuItem"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
+                    Command="{Binding CheckInCommand}"
+                    CommandParameter="Master"
+                    Content="Check in current version..."
+                    Hint="Check in current version">
                 </dxb:BarButtonItem>
-
+                <dxb:BarButtonItem
+                    x:Name="bCheckInPortSubMenuItem"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
+                    Command="{Binding CheckInCommand}"
+                    CommandParameter="Port"
+                    Content="Check in port version..."
+                    Hint="Check in version version, note you use it at your own risk ;)">
+                </dxb:BarButtonItem>
+                
                 <dxb:BarButtonItem
                     x:Name="bUndoCheckout"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png"

@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using DXVcsTools.Core;
-using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
@@ -17,7 +14,6 @@ using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI.Logger;
 using DXVcsTools.UI.ViewModel;
 using EnvDTE;
-using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
@@ -43,7 +39,7 @@ namespace DXVcsTools.VSIX {
             MergeAllCommand = new DelegateCommand(MergeAll, CanMergeAll);
             UpdateCommand = new DelegateCommand(Update, CanUpdate);
             BlameCommand = new DelegateCommand(Blame, CanBlame);
-            CheckInCommand = new DelegateCommand(CheckIn, CanCheckIn);
+            CheckInCommand = new DelegateCommand<CheckInTarget>(CheckIn, CanCheckIn);
             CompareCurrentVersionCommand = new DelegateCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
             ComparePortVersionCommand = new DelegateCommand(CompareWithPortVersion, CanCompareWithPortVersion);
             ManualMergeCommand = new DelegateCommand(ManualMerge, CanManualMerge);
@@ -112,7 +108,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand MergeAllCommand { get; private set; }
         public DelegateCommand BlameCommand { get; private set; }
         public DelegateCommand UpdateCommand { get; private set; }
-        public DelegateCommand CheckInCommand { get; private set; }
+        public DelegateCommand<CheckInTarget> CheckInCommand { get; private set; }
         public DelegateCommand CompareCurrentVersionCommand { get; private set; }
         public DelegateCommand ComparePortVersionCommand { get; private set; }
         public DelegateCommand ManualMergeCommand { get; private set; }
@@ -121,12 +117,12 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand ShowLogCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
-        bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); }}
+        bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); } }
         public void Update() {
             Logger.AddInfo("UpdateCommand. Start");
 
             var dteWrapper = new DteWrapper(dte);
-            ThemeProvider.Instance.ThemeName = dteWrapper.GetVSTheme();
+            ThemeProvider.Instance.ThemeName = dteWrapper.GetVSTheme(Options);
             Solution = dteWrapper.BuildTree();
             if (string.IsNullOrEmpty(Solution.Path)) {
                 CanTotalMerge = false;
@@ -142,7 +138,7 @@ namespace DXVcsTools.VSIX {
             PortOptions = new PortOptionsViewModel(Solution, Options);
             if (!PortOptions.IsAttached) {
                 Logger.AddInfo("UpdateCommand. End - cant merge since port is not initialized");
-                CanTotalMerge = false;  
+                CanTotalMerge = false;
                 return;
             }
             MasterBranch = FindMasterBranch(PortOptions);
@@ -214,14 +210,36 @@ namespace DXVcsTools.VSIX {
         bool CanBlame() {
             return IsCorrectlyLoaded && SelectedItem != null;
         }
-        bool CanCheckIn() {
-            return IsCorrectlyLoaded && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+        bool CanCheckIn(CheckInTarget target) {
+            if (!IsCorrectlyLoaded)
+                return false;
+            if (IsSingleSelection) 
+                return CanCheckInItem(target, SelectedItem);
+            return SelectedItems.All(item => CanCheckInItem(target, item));
         }
-        void CheckIn() {
+        bool CanCheckInItem(CheckInTarget target, ProjectItemBase item) {
+            bool canCheckInMaster = IsCorrectlyLoaded && item.If(x => x.IsCheckOut).ReturnSuccess();
+            if (target == CheckInTarget.Master)
+                return canCheckInMaster;
+            else
+                return canCheckInMaster && item.If(x => x.MergeState == MergeState.Success).ReturnSuccess();
+        }
+        string GetCheckInPath(CheckInTarget target, string selectedItemPath) {
+            switch (target) {
+                case CheckInTarget.Master:
+                    return selectedItemPath;
+                case CheckInTarget.Port:
+                    MergeHelper helper = new MergeHelper(Options, PortOptions);
+                    return helper.GetRelativePath(selectedItemPath, CurrentBranch);
+                default:
+                    throw new ArgumentException("target");
+            }
+        }
+        void CheckIn(CheckInTarget target) {
             if (IsSingleSelection) {
                 Logger.AddInfo("CheckInCommand. Start single check in.");
 
-                var model = new CheckInViewModel(SelectedItem.Path, false);
+                var model = new CheckInViewModel(GetCheckInPath(target, SelectedItem.Path), false);
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
@@ -233,12 +251,12 @@ namespace DXVcsTools.VSIX {
             else {
                 Logger.AddInfo("CheckInCommand. Start multiple check in.");
 
-                var model = new CheckInViewModel(Solution.Path, false);
+                var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);
                 var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageBoxButton.OKCancel, "Multiple Check in", model);
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
                     foreach (var item in SelectedItems) {
-                        var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) {Comment = model.Comment};
+                        var currentFileModel = new CheckInViewModel(GetCheckInPath(target, item.Path), model.StaysChecked) { Comment = model.Comment };
                         bool success = helper.CheckIn(currentFileModel);
                         item.IsChecked = success && model.StaysChecked;
                     }
@@ -271,7 +289,7 @@ namespace DXVcsTools.VSIX {
         }
         void ManualMerge() {
             Logger.AddInfo("ManualMergeCommand. Merge start.");
-            
+
             var helper = new MergeHelper(Options, PortOptions);
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
@@ -309,7 +327,12 @@ namespace DXVcsTools.VSIX {
             return ServiceContainer.GetService<T>(key, searchMode);
         }
         void ReloadProject() {
-//            dte.ExecuteCommand("Project.ReloadProject");
+            //            dte.ExecuteCommand("Project.ReloadProject");
         }
+    }
+
+    public enum CheckInTarget {
+        Master,
+        Port
     }
 }

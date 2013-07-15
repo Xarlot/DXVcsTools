@@ -35,7 +35,7 @@ namespace DXVcsTools.VSIX {
         uint solutionEventsCookie;
         public DXVcsTools_VSIXPackage() {
             var dte = GetGlobalService(typeof(DTE)) as DTE;
-            Options = new OptionsViewModel();
+            Options = SerializeSettingsHelper.DeSerializeSettings();
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
