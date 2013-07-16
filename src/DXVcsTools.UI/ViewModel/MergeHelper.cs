@@ -99,6 +99,7 @@ namespace DXVcsTools.Core {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string filePath = GetFilePathForBranch(checkInViewModel.FilePath, targetBranch);
                 string vcsOriginalPath = GetMergeVcsPathByTargetPath(filePath, targetBranch);
+
                 repository.CheckInFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
                 if (checkInViewModel.StaysChecked)
                     repository.CheckOutFile(vcsOriginalPath, filePath, checkInViewModel.Comment);

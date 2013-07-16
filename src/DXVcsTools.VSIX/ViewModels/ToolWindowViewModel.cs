@@ -20,7 +20,7 @@ namespace DXVcsTools.VSIX {
         const string Checkinwindow = "CheckInWindow";
         const string MultipleCheckinWindow = "MultipleCheckInWindow";
         const string ManualMergeWindow = "ManualMergeWindow";
-        readonly DTE dte;
+        readonly IDteWrapper dte;
         bool canTotalMerge;
         DXVcsBranch currentBranch;
         IEnumerable flatSource;
@@ -31,7 +31,7 @@ namespace DXVcsTools.VSIX {
         SolutionItem solutionItem;
         readonly Locker currentBranchLocker = new Locker();
         public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
-            this.dte = dte;
+            this.dte = new DteWrapper(dte);
             Options = options;
             ServiceContainer = new ServiceContainer(this);
 
@@ -118,12 +118,25 @@ namespace DXVcsTools.VSIX {
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); } }
+        string CalcVsTheme(VSTheme theme) {
+            switch (theme) {
+                case VSTheme.Light:
+                    return Options.LightThemeName;
+                case VSTheme.Dark:
+                    return Options.DarkThemeName;
+                case VSTheme.Blue:
+                    return Options.BlueThemeName;
+                case VSTheme.Unknown:
+                    return Options.LightThemeName;
+                default:
+                    return Options.LightThemeName;
+            }
+        }
         public void Update() {
             Logger.AddInfo("UpdateCommand. Start");
 
-            var dteWrapper = new DteWrapper(dte);
-            ThemeProvider.Instance.ThemeName = dteWrapper.GetVSTheme(Options);
-            Solution = dteWrapper.BuildTree();
+            ThemeProvider.Instance.ThemeName = dte.GetVSTheme(CalcVsTheme);
+            Solution = dte.BuildTree();
             if (string.IsNullOrEmpty(Solution.Path)) {
                 CanTotalMerge = false;
                 Logger.AddInfo("UpdateCommand. End - cant merge since solution is empty or not under vss");
@@ -213,7 +226,7 @@ namespace DXVcsTools.VSIX {
         bool CanCheckIn(CheckInTarget target) {
             if (!IsCorrectlyLoaded)
                 return false;
-            if (IsSingleSelection) 
+            if (IsSingleSelection)
                 return CanCheckInItem(target, SelectedItem);
             return SelectedItems.All(item => CanCheckInItem(target, item));
         }
@@ -243,7 +256,7 @@ namespace DXVcsTools.VSIX {
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
-                    helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment}, GetCheckInBranch(target));
+                    helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment }, GetCheckInBranch(target));
                     SelectedItem.IsChecked = model.StaysChecked;
                 }
 
@@ -305,7 +318,7 @@ namespace DXVcsTools.VSIX {
         }
         void NavigateToSolution() {
             var helper = new MergeHelper(Options, PortOptions);
-            helper.NavigateToSolution(CurrentBranch, new DteWrapper(dte));
+            helper.NavigateToSolution(CurrentBranch, dte);
             Update();
         }
         bool CanUndoCheckout() {
@@ -331,7 +344,8 @@ namespace DXVcsTools.VSIX {
             return ServiceContainer.GetService<T>(key, searchMode);
         }
         void ReloadProject() {
-            //            dte.ExecuteCommand("Project.ReloadProject");
+            dte.ReloadProject();
+            Update();
         }
     }
 

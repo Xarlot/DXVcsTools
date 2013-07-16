@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI;
+using DXVcsTools.UI.Logger;
 using EnvDTE;
+using EnvDTE80;
 
 namespace DXVcsTools.Core {
     public class DteWrapper : IDteWrapper {
-        readonly DTE dte;
+        readonly DTE2 dte;
         public DteWrapper(DTE dte) {
-            this.dte = dte;
+            this.dte = (DTE2)dte;
         }
         public SolutionItem BuildTree() {
             return new SolutionItem(GetProjects(dte.Solution).ToList()) {Name = dte.Solution.FullName, Path = dte.Solution.FileName};
@@ -68,15 +71,29 @@ namespace DXVcsTools.Core {
         string GetThemeId() {
             return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
         }
-        public string GetVSTheme(OptionsViewModel model) {
+        public string GetVSTheme(Func<VSTheme,string> getThemeFunc) {
             switch (GetThemeId()) {
                 case ThemeDark:
-                    return model.DarkThemeName;
+                    return getThemeFunc(VSTheme.Dark);
                 case ThemeLight:
-                    return model.LightThemeName;
+                    return getThemeFunc(VSTheme.Light);
                 default:
-                    return model.LightThemeName;
+                    return getThemeFunc(VSTheme.Unknown);
             }
+        }
+        public void ReloadProject() {
+            Logger.AddInfo("ReloadProjectCommand. Start.");
+            try {
+                var solExp = dte.ToolWindows.SolutionExplorer;
+                solExp.Parent.Activate();
+                dte.ExecuteCommand("View.Refresh", string.Empty);
+            }
+            catch (Exception e) {
+                Logger.AddError("ReloadProjectCommand. Failed.", e);
+            }
+            Logger.AddInfo("ReloadProjectCommand. End.");
+        }
+        public void NavigateToFile(ProjectItemBase item) {
         }
     }
 }

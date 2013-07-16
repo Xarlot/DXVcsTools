@@ -15,8 +15,14 @@ namespace DXVcsTools.DXVcsClient {
             }
         }
         public IDXVCSService CreateService(string serviceUrl) {
-            if (isServiceRegistered)
-                return service;
+            if (isServiceRegistered) {
+                try {
+                    int version = service.GetServiceVersion();
+                    return service;
+                }
+                catch {
+                }
+            }
             EndpointAddress myEndpointAddress = new EndpointAddress(new Uri(serviceUrl), new SpnEndpointIdentity(String.Empty));
             ServiceEndpoint point = GZipMessageEncodingBindingElement.CreateEndpoint(myEndpointAddress);
             ChannelFactory<IDXVCSService> factory = new Factory(point);
