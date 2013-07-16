@@ -94,6 +94,12 @@ namespace DXVcsTools.Core {
             Logger.AddInfo("ReloadProjectCommand. End.");
         }
         public void NavigateToFile(ProjectItemBase item) {
+            //var solExp = dte.ToolWindows.SolutionExplorer;
+            //solExp.Parent.Activate();
+            item.Open();
+            //UIHierarchy solExplorerHierarchy = (UIHierarchy)solExp.Parent.Object;
+            //var targetItem = solExplorerHierarchy.GetItem(item.Path);
+            //targetItem.Select(vsUISelectionType.vsUISelectionTypeSelect);
         }
     }
 }

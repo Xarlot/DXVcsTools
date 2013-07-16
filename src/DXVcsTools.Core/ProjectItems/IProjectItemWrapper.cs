@@ -2,5 +2,6 @@
     public interface IProjectItemWrapper {
         bool IsSaved { get; }
         void Save();
+        void Open();
     }
 }

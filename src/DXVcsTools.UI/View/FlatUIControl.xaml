@@ -58,8 +58,9 @@
                     AutoWidth="True"
                     AllowGrouping="False">
                     <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarItemLink BarItemName="bManualMerge" />
+                        <dxb:BarItemLink BarItemName="bOpenFile" />
                         <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bManualMerge" />
                         <dxb:BarButtonItemLink BarItemName="bMergeSubMenuItem" />
                         <dxb:BarButtonItemLink BarItemName="bMergeAndReviewTargetSubMenuItem" />
                         <dxb:BarItemLink BarItemName="bMergeAll" />

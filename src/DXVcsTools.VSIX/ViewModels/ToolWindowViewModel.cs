@@ -46,6 +46,13 @@ namespace DXVcsTools.VSIX {
             NavigateToSolutionCommand = new DelegateCommand(NavigateToSolution, CanNavigateToSolution);
             UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
             ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
+            NavigateToFileCommand = new DelegateCommand(NavigateToItem, CanNavigateToItem);
+        }
+        void NavigateToItem() {
+            dte.NavigateToFile(SelectedItem);
+        }
+        bool CanNavigateToItem() {
+            return IsCorrectlyLoaded && SelectedItem != null;
         }
         void ShowLog() {
             string log = Logger.GetLog();
@@ -115,6 +122,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand NavigateToSolutionCommand { get; private set; }
         public DelegateCommand UndoCheckoutCommand { get; private set; }
         public DelegateCommand ShowLogCommand { get; private set; }
+        public DelegateCommand NavigateToFileCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); } }
@@ -338,8 +346,6 @@ namespace DXVcsTools.VSIX {
             }
             ReloadProject();
         }
-
-
         protected virtual T GetService<T>(string key, ServiceSearchMode searchMode = ServiceSearchMode.PreferLocal) where T : class {
             return ServiceContainer.GetService<T>(key, searchMode);
         }

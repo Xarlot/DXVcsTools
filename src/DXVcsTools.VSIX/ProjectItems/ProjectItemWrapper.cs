@@ -11,5 +11,14 @@
             if (!IsSaved)
                 Item.Save();
         }
+        public void Open() {
+            if (Item.IsOpen)
+                Item.Document.Activate();
+            else {
+                var win = Item.Open(EnvDTE.Constants.vsViewKindCode);
+                win.Visible = true;
+                win.SetFocus();
+            }
+        }
     }
 }

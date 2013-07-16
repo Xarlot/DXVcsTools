@@ -194,6 +194,13 @@
                     Hint="Navigate to solution specified by Port combo to perform check in">
                 </dxb:BarButtonItem>
                 <dxb:BarButtonItem
+                    x:Name="bOpenFile"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
+                    Command="{Binding NavigateToFileCommand}"
+                    Content="Navigate to file"
+                    Hint="Navigate to selected file">
+                </dxb:BarButtonItem>
+                <dxb:BarButtonItem
                     x:Name="bShowLog"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_log_16x16.png"
                     Command="{Binding ShowLogCommand}"
@@ -216,6 +223,7 @@
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bCurrentBranch" />
                     <dxb:BarItemLink BarItemName="bOpenSolution"/>
+                    <dxb:BarItemLink BarItemName="bOpenFile"/>
                     <dxb:BarItemLinkSeparator />
                     <dxb:BarItemLink BarItemName="bShowLog"/>
                 </dxb:Bar>

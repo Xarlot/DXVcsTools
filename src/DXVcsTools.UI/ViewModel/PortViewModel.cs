@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
     public class PortViewModel {
@@ -12,31 +11,6 @@ namespace DXVcsTools.UI {
         public PortViewModel(PortOptionsViewModel portOptions, OptionsViewModel configuration) {
             PortOptions = portOptions;
             Options = configuration;
-            //if (string.IsNullOrEmpty(sourceFile))
-            //    throw new ArgumentException("sourceFile");
-
-            //if (string.IsNullOrEmpty(projectFile))
-            //    throw new ArgumentException("projectFile");
-
-            //if (configuration == null)
-            //    throw new ArgumentNullException("configuration");
-
-            //SourceFile = sourceFile;
-            //ProjectFile = projectFile;
-            //this.configuration = configuration;
-
-            //var locator = new DXVcsFileLocator(new DXVcsBindingInfo());
-            //OriginalVcsFile = locator.GetVcsLocation(sourceFile, projectFile, out vcsServer);
-            //TargetVcsFile = OriginalVcsFile;
-
-            //branches = new ReadOnlyCollection<string>(GetBranchesList());
-
-            //for (int i = 0; i < branches.Count; i++) {
-            //    if (targetVcsFile.StartsWith(branches[i])) {
-            //        selectedBranchIndex = i;
-            //        break;
-            //    }
-            //}
         }
 
         PortOptionsViewModel PortOptions { get; set; }
@@ -83,20 +57,11 @@ namespace DXVcsTools.UI {
                 targetVcsFile = value;
             }
         }
-
-        // public bool IsKnownTargetVcsFileBranch() - proposed rename
         public bool TargetVcsFileStartsWithBranch() {
             foreach (string branch in branches)
                 if (TargetVcsFile.StartsWith(branch))
                     return true;
             return false;
-        }
-
-        IList<string> GetBranchesList() {
-            IList<string> branchesList = new List<string>();
-            foreach (DXVcsBranch branch in configuration.Branches)
-                branchesList.Add(branch.Path);
-            return branchesList;
         }
     }
 }

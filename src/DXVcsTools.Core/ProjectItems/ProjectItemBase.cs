@@ -61,5 +61,8 @@ namespace DXVcsTools.Core {
             if (!IsSaved)
                 ItemWrapper.Do(x => x.Save());
         }
+        public void Open() {
+            ItemWrapper.Do(x => x.Open());
+        }
     }
 }
