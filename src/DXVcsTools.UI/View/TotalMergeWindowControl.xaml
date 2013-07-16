@@ -195,7 +195,7 @@
                 </dxb:BarButtonItem>
                 <dxb:BarButtonItem
                     x:Name="bOpenFile"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
+                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_file_16x16.png"
                     Command="{Binding NavigateToFileCommand}"
                     Content="Navigate to file"
                     Hint="Navigate to selected file">
