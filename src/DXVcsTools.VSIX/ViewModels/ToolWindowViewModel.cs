@@ -46,13 +46,14 @@ namespace DXVcsTools.VSIX {
             NavigateToSolutionCommand = new DelegateCommand(NavigateToSolution, CanNavigateToSolution);
             UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
             ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
-            NavigateToFileCommand = new DelegateCommand(NavigateToItem, CanNavigateToItem);
+            NavigateToFileCommand = new DelegateCommand<ProjectItemBase>(NavigateToItem, CanNavigateToItem);
         }
-        void NavigateToItem() {
-            dte.NavigateToFile(SelectedItem);
+        void NavigateToItem(ProjectItemBase parameter) {
+            var item = parameter ?? SelectedItem;
+            dte.NavigateToFile(item);
         }
-        bool CanNavigateToItem() {
-            return IsCorrectlyLoaded && SelectedItem != null;
+        bool CanNavigateToItem(ProjectItemBase parameter) {
+            return IsCorrectlyLoaded && parameter != null;
         }
         void ShowLog() {
             string log = Logger.GetLog();
@@ -122,7 +123,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand NavigateToSolutionCommand { get; private set; }
         public DelegateCommand UndoCheckoutCommand { get; private set; }
         public DelegateCommand ShowLogCommand { get; private set; }
-        public DelegateCommand NavigateToFileCommand { get; private set; }
+        public DelegateCommand<ProjectItemBase> NavigateToFileCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); } }

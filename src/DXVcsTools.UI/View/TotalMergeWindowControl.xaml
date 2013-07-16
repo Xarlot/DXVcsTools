@@ -116,13 +116,6 @@
                     CommandParameter="{StaticResource TrueBoolean}">
                 </dxb:BarButtonItem>
 
-                <!--<dxb:BarButtonItem
-                    x:Name="bCheckIn"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
-                    Command="{Binding CheckInCommand}"
-                    Content="Check in..."
-                    Hint="Check in">
-                </dxb:BarButtonItem>-->
                 <dxb:BarSplitButtonItem
                     x:Name="bCheckIn"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
@@ -197,6 +190,7 @@
                     x:Name="bOpenFile"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_file_16x16.png"
                     Command="{Binding NavigateToFileCommand}"
+                    CommandParameter="{Binding Path=SelectedItem}"
                     Content="Navigate to file..."
                     Hint="Open selected file for editing...">
                 </dxb:BarButtonItem>

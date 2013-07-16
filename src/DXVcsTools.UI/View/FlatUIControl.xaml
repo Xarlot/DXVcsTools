@@ -7,6 +7,8 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -14,6 +16,13 @@
             ItemsSource="{Binding Path=Source}"
             SelectionMode="Row"
             SelectedItems="{Binding Path=SelectedItems}">
+            <dxmvvm:Interaction.Triggers>
+                <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding NavigateToFileCommand}" EventName="MouseDoubleClick">
+                    <dxmvvm:EventToCommand.EventArgsConverter>
+                        <dx:RoutedEventArgsToDataRowConverter />
+                    </dxmvvm:EventToCommand.EventArgsConverter>
+                </dxmvvm:EventToCommand>
+            </dxmvvm:Interaction.Triggers>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Name" Width="200" FixedWidth="True" />
                 <dxg:GridColumn FieldName="Path" />
