@@ -51,6 +51,13 @@
                 </DataTemplate>
             </dx:DialogService.ViewTemplate>
         </dx:DialogService>
+        <dx:DialogService x:Name="NavigationConfigWindow" DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <view:NavigationConfigUserControl/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+        </dx:DialogService>
 
     </i:Interaction.Behaviors>
     <Grid>

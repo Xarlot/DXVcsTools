@@ -7,11 +7,45 @@ using DXVcsTools.UI;
 using Newtonsoft.Json;
 
 namespace DXVcsTools {
-    public static class SerializeSettingsHelper {
+    public static class SerializeHelper {
         static readonly string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DXVcsTools\\";
         const string SettingsFile = "settings.txt";
-        static string SettingsFilePath { get { return SettingsPath + SettingsFile; } }
+        const string NavigationConfigFile = "navigationconfig.txt";
+        static string SettingsFilePath {
+            get { return SettingsPath + SettingsFile; }
+        }
+        public static string NavigationConfigFilePath { get { return SettingsPath + NavigationConfigFile; } }
 
+        public static void SerializeNavigationConfig(string config) {
+            SerializeNavigationConfigInternal(() => config);
+        }
+        public static void SerializeNavigationConfig(NavigationConfigViewModel config) {
+            SerializeNavigationConfigInternal(() => JsonConvert.SerializeObject(config, Formatting.Indented));
+        }       
+        static void SerializeNavigationConfigInternal(Func<string> getConfigStringHandler) {
+            string path = NavigationConfigFilePath;
+            if (File.Exists(path))
+                StoreFile(path);
+            EnsureDirectory(path);
+            using (StreamWriter writer = File.CreateText(path)) {
+                var json = getConfigStringHandler();
+                writer.Write(json);
+            }
+        }
+        public static NavigationConfigViewModel DeSerializeNavigationConfig() {
+            string path = NavigationConfigFilePath;
+
+            if (File.Exists(path)) {
+                using (StreamReader reader = File.OpenText(path)) {
+                    string json = reader.ReadToEnd();
+                    return JsonConvert.DeserializeObject<NavigationConfigViewModel>(json, new JsonSerializerSettings());
+                }
+            }
+            return CreateDefaultNavigationConfig();
+        }
+        static NavigationConfigViewModel CreateDefaultNavigationConfig() {
+            return new NavigationConfigViewModel() {ReplacePath = "$"};
+        }
         public static void SerializeSettings(OptionsViewModel model) {
             string path = SettingsFilePath;
             if (File.Exists(path))
@@ -58,7 +92,22 @@ namespace DXVcsTools {
         }
         static void StoreFile(string path) {
             string fileName = Path.GetFileName(path);
-            File.Move(fileName, Path.GetFileNameWithoutExtension(fileName) + ".bak");
+            string bakPath = SettingsPath + Path.GetFileNameWithoutExtension(fileName) + ".bak";
+            if (File.Exists(bakPath))
+                File.Delete(bakPath);
+
+            File.Move(path, bakPath);
+        }
+        public static string DeSerializeNavigationConfigToString() {
+            string path = NavigationConfigFilePath;
+
+            if (File.Exists(path)) {
+                using (StreamReader reader = File.OpenText(path)) {
+                    string json = reader.ReadToEnd();
+                    return json;
+                }
+            }
+            return string.Empty;
         }
     }
 }

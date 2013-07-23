@@ -81,7 +81,11 @@ namespace DXVcsTools.VSIX {
             }
             CreateChildrenFromSource();
         }
-        public VSDevExpressMenuItem CreateItem() {
+        public void DeleteItem() {
+            var commandBarControl = (CommandBarControl)VSSource;
+            commandBarControl.Delete();
+        }
+        public VSDevExpressMenuItem CreateItem(bool isPopup) {
             if (VSSource == null)
                 return null;
             var commandBarControl = (CommandBarControl)VSSource;
@@ -93,9 +97,10 @@ namespace DXVcsTools.VSIX {
                 VSSource = parentCommandBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, savedIndex, Type.Missing) as CommandBarPopup;
                 commandBarControl.Delete();
             }
-            var commandBarPopup = (CommandBarPopup)VSSource;
             var childItem = new VSDevExpressMenuItem();
-            childItem.VSSource = ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            childItem.VSSource = isPopup
+                ? ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing)
+                : ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             itemsInternal.Add(childItem);
             childItem.Parent = this;
             return childItem;
@@ -119,11 +124,11 @@ namespace DXVcsTools.VSIX {
             }
             return null;
         }
-        public VSDevExpressMenuItem CreateOrGetItem(string header) {
+        public VSDevExpressMenuItem CreateOrGetItem(string header, bool isPopup = false) {
             VSDevExpressMenuItem childItem = GetItemByHeader(header);
             if (childItem != null)
                 return childItem;
-            childItem = CreateItem();
+            childItem = CreateItem(isPopup);
             childItem.Header = header;
             return childItem;
         }
@@ -179,8 +184,8 @@ namespace DXVcsTools.VSIX {
 
     public class VSDevExpressMenu : VSDevExpressMenuItem {
         const string DevExpressMenuName = "DXVcsTools";
-        public VSDevExpressMenu(DTE dte) {
-            Header = DevExpressMenuName;
+        public VSDevExpressMenu(DTE dte, string menuName = DevExpressMenuName) {
+            Header = menuName;
             var commandBars = dte.CommandBars as CommandBars;
             CommandBar mainMenuBar = commandBars["MenuBar"];
             CommandBarPopup devExpressMenu = null;
@@ -188,7 +193,7 @@ namespace DXVcsTools.VSIX {
             foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {
                 if (commandBarControl.Type == MsoControlType.msoControlPopup) {
                     var commandBarPopup = (CommandBarPopup)commandBarControl;
-                    if (commandBarPopup.CommandBar.Name == DevExpressMenuName) {
+                    if (commandBarPopup.CommandBar.Name == menuName) {
                         devExpressMenu = commandBarPopup;
                         break;
                     }

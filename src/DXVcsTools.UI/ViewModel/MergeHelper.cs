@@ -171,6 +171,17 @@ namespace DXVcsTools.Core {
                 MessageBox.Show("Can`t navigate to solution");
             }
         }
+        public void NavigateToSolution(string path, IDteWrapper dte) {
+            Logger.AddInfo("NavigateToSolutionCommand. Start Navigate to: " + path);
+            try {
+                dte.OpenSolution(path);
+            }
+            catch(Exception e) {
+                Logger.AddError("Can`t navigate to solution", e);
+                MessageBox.Show("Can`t navigate to solution");
+            }
+            Logger.AddInfo("NavigateToSolutionCommand. End navigate");
+        }
         public bool UndoCheckout(string filePath) {
             string vcsFilePath = Port.GetRelativePath(filePath);
             try {

@@ -13,6 +13,7 @@ using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI.Logger;
 using DXVcsTools.UI.ViewModel;
+using DXVcsTools.ViewModels;
 using EnvDTE;
 
 namespace DXVcsTools.VSIX {
@@ -20,6 +21,7 @@ namespace DXVcsTools.VSIX {
         const string Checkinwindow = "CheckInWindow";
         const string MultipleCheckinWindow = "MultipleCheckInWindow";
         const string ManualMergeWindow = "ManualMergeWindow";
+        const string NavigationConfigWindow = "NavigationConfigWindow";
         readonly IDteWrapper dte;
         bool canTotalMerge;
         DXVcsBranch currentBranch;
@@ -30,8 +32,10 @@ namespace DXVcsTools.VSIX {
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
         readonly Locker currentBranchLocker = new Locker();
-        public ToolWindowViewModel(DTE dte, OptionsViewModel options) {
-            this.dte = new DteWrapper(dte);
+        GenerateMenuItemsHelper generateMenuItemsHelper;
+        public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper) {
+            this.generateMenuItemsHelper = generateMenuHelper;
+            this.dte = new DteWrapper(dte); 
             Options = options;
             ServiceContainer = new ServiceContainer(this);
 
@@ -330,6 +334,10 @@ namespace DXVcsTools.VSIX {
             helper.NavigateToSolution(CurrentBranch, dte);
             Update();
         }
+        public void NavigateToSolution(string path) {
+            var helper = new MergeHelper(Options, PortOptions);
+            helper.NavigateToSolution(path, dte);
+        }
         bool CanUndoCheckout() {
             return IsCorrectlyLoaded && (IsSingleSelection ? SelectedItem != null : SelectedItems.Count > 0);
         }
@@ -353,6 +361,13 @@ namespace DXVcsTools.VSIX {
         void ReloadProject() {
             dte.ReloadProject();
             Update();
+        }
+        public void ShowNavigationConfig() {
+            NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig() ?? new NavigationConfigViewModel();
+            GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OK, "Navigation config", model);
+            generateMenuItemsHelper.Release();
+            generateMenuItemsHelper.GenerateDefault();
+            generateMenuItemsHelper.GenerateNavigation();
         }
     }
 

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using DXVcsTools.UI;
+using DXVcsTools.UI.Navigator;
+using DXVcsTools.ViewModels;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -35,14 +39,16 @@ namespace DXVcsTools.VSIX {
         uint solutionEventsCookie;
         public DXVcsTools_VSIXPackage() {
             var dte = GetGlobalService(typeof(DTE)) as DTE;
-            Options = SerializeSettingsHelper.DeSerializeSettings();
+            Options = SerializeHelper.DeSerializeSettings();
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
-            ToolWindowViewModel = new ToolWindowViewModel(dte, Options);
+            GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
+            ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper);
         }
         MenuViewModel Menu { get; set; }
-        ToolWindowViewModel ToolWindowViewModel { get; set; }
+        public ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
+        GenerateMenuItemsHelper GenerateMenuHelper { get; set; }
         int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var) {
             if (propid == (int)__VSSPROPID.VSSPROPID_Zombie) {
                 if ((bool)var == false) {
@@ -112,12 +118,12 @@ namespace DXVcsTools.VSIX {
             }
             return window;
         }
-        void ShowToolWindow() {
+        public void ShowToolWindow() {
             var windowFrame = (IVsWindowFrame)GetMyToolWindow().Frame;
             InitializeToolWindow();
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-        void ShowBlameWindow() {
+        public void ShowBlameWindow() {
             MessageBox.Show("In development...");
         }
 
@@ -140,12 +146,11 @@ namespace DXVcsTools.VSIX {
         /// </summary>
         protected override void Initialize() {
             base.Initialize();
-
-            var devExpressMenu = new VSDevExpressMenu(GetService(typeof(DTE)) as DTE);
-            VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
-            wizardMenu.Click += wizardMenu_Click;
-            VSDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
-            blameMenu.Click += blameMenu_Click;
+            var dte = (DTE)GetService(typeof(DTE));
+            GenerateMenuItemsHelper generateMenuHelper = new GenerateMenuItemsHelper(this, dte);
+            generateMenuHelper.GenerateDefault();
+            generateMenuHelper.GenerateNavigation();
+            //GenerateMenu(navigateMenu, root);
 
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
             if (solution != null) {
@@ -154,13 +159,6 @@ namespace DXVcsTools.VSIX {
 
             var shellService = GetService(typeof(SVsShell)) as IVsShell;
             ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out shellCookie));
-        }
-
-        void wizardMenu_Click(object sender, EventArgs e) {
-            ShowToolWindow();
-        }
-        void blameMenu_Click(object sender, EventArgs e) {
-            ShowBlameWindow();
         }
         #endregion
     }
