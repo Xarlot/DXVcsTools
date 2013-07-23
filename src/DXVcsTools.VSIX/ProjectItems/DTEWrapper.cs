@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevExpress.Xpf.Mvvm.Native;
-using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
 using EnvDTE;
 using EnvDTE80;

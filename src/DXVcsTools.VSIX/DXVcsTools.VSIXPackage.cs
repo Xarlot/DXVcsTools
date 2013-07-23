@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using DXVcsTools.UI;
-using DXVcsTools.UI.Navigator;
 using DXVcsTools.ViewModels;
 using EnvDTE;
 using Microsoft.VisualStudio;

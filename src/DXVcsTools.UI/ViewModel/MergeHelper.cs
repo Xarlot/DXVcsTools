@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using DevExpress.Xpf.Core;
 using DXVcsTools.DXVcsClient;
@@ -206,6 +208,16 @@ namespace DXVcsTools.Core {
                 Logger.AddError("GetFilePathForBranch failed.", e);
             }
             return string.Empty;
+        }
+        public IEnumerable<string> FindWorkingFolders(List<DXVcsBranch> branches) {
+            try {
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                return branches.Select(branch => repository.GetFileWorkingPath(branch.Path)).ToList();
+            }
+            catch (Exception e) {
+                Logger.AddError("GetFilePathForBranch failed.", e);
+            }
+            return null;
         }
     }
 }

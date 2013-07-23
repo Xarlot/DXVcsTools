@@ -8,13 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" MinWidth="1024">
     <dxlc:LayoutControl Orientation="Vertical">
-        <dxlc:LayoutItem Label="Root path: ">
-            <dxe:ButtonEdit EditValue="{Binding Path=RootPath}" />
-        </dxlc:LayoutItem>
-        <dxlc:LayoutItem Label="Replace path: ">
-            <dxe:ButtonEdit EditValue="{Binding Path=ReplacePath}" />
-        </dxlc:LayoutItem>
-        <dxlc:LayoutItem Label="Content: ">
+       <dxlc:LayoutItem Label="Content: ">
             <dxe:TextEdit AcceptsReturn="True" EditValue="{Binding Path=Content}" Height="800"/>
         </dxlc:LayoutItem>
         <dxlc:LayoutGroup Orientation="Horizontal">

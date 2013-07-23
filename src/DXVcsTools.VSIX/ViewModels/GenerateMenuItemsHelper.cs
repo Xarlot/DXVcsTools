@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
+using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
 using DXVcsTools.VSIX;
 using EnvDTE;
@@ -17,6 +14,7 @@ namespace DXVcsTools.ViewModels {
         readonly DXVcsTools_VSIXPackage package;
         readonly Dictionary<VSDevExpressMenuItem, NavigateItem> menuCache = new Dictionary<VSDevExpressMenuItem, NavigateItem>();
         readonly Dictionary<string, VSDevExpressMenu> menuHierarchy = new Dictionary<string, VSDevExpressMenu>();
+        OptionsViewModel Options { get { return package.ToolWindowViewModel.Options; }}
         public GenerateMenuItemsHelper(DXVcsTools_VSIXPackage package, DTE dte) {
             this.dte = dte;
             this.package = package;
@@ -28,14 +26,16 @@ namespace DXVcsTools.ViewModels {
             devExpressMenu = null;
         }
         public void GenerateDefault() {
-            devExpressMenu = new VSDevExpressMenu(dte, "DXVcsTools");
+            devExpressMenu = new VSDevExpressMenu(dte);
             menuHierarchy[string.Empty] = devExpressMenu;
             VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
             wizardMenu.Click += WizardMenuClick;
             VSDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
             blameMenu.Click += BlameMenuClick;
-            VSDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
-            navigateMenu.Click += NavigateMenuClick;
+            if (Options.UseNavigateMenu) {
+                VSDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
+                navigateMenu.Click += NavigateMenuClick;
+            }
         }
         void NavigateMenuClick(object sender, EventArgs e) {
             package.ToolWindowViewModel.ShowNavigationConfig();
@@ -47,7 +47,13 @@ namespace DXVcsTools.ViewModels {
             package.ShowToolWindow();
         }
         public void GenerateNavigation() {
-            Task.Run(new Action(GenerateNavigateMenuAsync));
+            if (!Options.UseNavigateMenu)
+                return;
+            if (Options.UpdateNavigateMenuAsync) 
+                Task.Run(new Action(GenerateNavigateMenuAsync));
+            else {
+                GenerateNavigateMenuAsync();
+            }
         }
         void GenerateNavigateMenuAsync() {
             var model = SerializeHelper.DeSerializeNavigationConfig();
@@ -65,6 +71,7 @@ namespace DXVcsTools.ViewModels {
             if (index < 0)
                 return;
             string menuName = GetRootMenuName(relativePath);
+            relativePath = relativePath.Substring(index, relativePath.Length - index);
             var rootMenu = GetRootMenu(menuName);
             GenerateMenuItemContent(rootMenu, item, relativePath);
         }
@@ -110,5 +117,8 @@ namespace DXVcsTools.ViewModels {
             return menu;
         }
 
+        public void Save() {
+            throw new NotImplementedException();
+        }
     }
 }

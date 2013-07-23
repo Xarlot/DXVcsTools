@@ -363,11 +363,22 @@ namespace DXVcsTools.VSIX {
             Update();
         }
         public void ShowNavigationConfig() {
-            NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig() ?? new NavigationConfigViewModel();
-            GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OK, "Navigation config", model);
-            generateMenuItemsHelper.Release();
-            generateMenuItemsHelper.GenerateDefault();
-            generateMenuItemsHelper.GenerateNavigation();
+            Logger.AddInfo("ShowNavigationConfigCommand. Start.");
+
+            NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig();
+            if (PortOptions != null) {
+                MergeHelper helper = new MergeHelper(Options, PortOptions);
+                IEnumerable<string> roots = helper.FindWorkingFolders(Options.Branches);
+                model.Roots = roots;
+            }
+            if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OKCancel, "Navigation config", model) == MessageBoxResult.OK) {
+                model.Save();
+                generateMenuItemsHelper.Release();
+                generateMenuItemsHelper.GenerateDefault();
+                generateMenuItemsHelper.GenerateNavigation();
+            }
+
+            Logger.AddInfo("ShowNavigationConfigCommand. End.");
         }
     }
 

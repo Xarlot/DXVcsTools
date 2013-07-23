@@ -31,5 +31,7 @@ namespace DXVcsTools.UI {
         public string DarkThemeName { get; set; }
         [XmlElement]
         public string BlueThemeName { get; set; }
+        public bool UseNavigateMenu { get; set; }
+        public bool UpdateNavigateMenuAsync { get; set; }
     }
 }

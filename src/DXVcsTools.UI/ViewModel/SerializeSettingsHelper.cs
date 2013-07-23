@@ -44,7 +44,7 @@ namespace DXVcsTools {
             return CreateDefaultNavigationConfig();
         }
         static NavigationConfigViewModel CreateDefaultNavigationConfig() {
-            return new NavigationConfigViewModel() {ReplacePath = "$"};
+            return new NavigationConfigViewModel();
         }
         public static void SerializeSettings(OptionsViewModel model) {
             string path = SettingsFilePath;
@@ -86,6 +86,8 @@ namespace DXVcsTools {
             options.LightThemeName = "Seven";
             options.DarkThemeName = "MetropolisDark";
             options.BlueThemeName = "VS2010";
+            options.UseNavigateMenu = true;
+            options.UpdateNavigateMenuAsync = true;
 
             options.DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
             return options;
@@ -108,6 +110,9 @@ namespace DXVcsTools {
                 }
             }
             return string.Empty;
+        }
+        public static string SerializeNavigationConfigToString(NavigationConfigViewModel model) {
+            return JsonConvert.SerializeObject(model, Formatting.Indented);
         }
     }
 }

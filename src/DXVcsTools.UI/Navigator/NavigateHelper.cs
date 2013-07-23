@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DXVcsTools.UI.Navigator {
     public static class NavigateHelper {
-        public static IEnumerable<NavigateItem> Scan(string path, string replace) {
+        public static IEnumerable<NavigateItem> Scan(IEnumerable<string> roots) {
+            return roots.SelectMany(ScanRoot);
+        }
+        static IEnumerable<NavigateItem> ScanRoot(string path) {
             if (!Directory.Exists(path))
                 yield break;
-            string dir = Path.HasExtension(path) ? Path.GetDirectoryName(path) : path;
-            foreach (var fileInfo in Directory.EnumerateFiles(dir, "*.sln", SearchOption.AllDirectories)) {
+            foreach (var fileInfo in Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories)) {
                 NavigateItem item = new NavigateItem();
                 item.Path = fileInfo;
                 item.Name = Path.GetFileName(fileInfo);
