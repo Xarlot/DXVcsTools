@@ -2,7 +2,7 @@
     public sealed class VersionInfo {
         public const string Major = "2";
         public const string Minor = "0";
-        public const string Build = "23";
+        public const string Build = "24";
         public const string Revision = "0";
 
         public const string FullVersion = Major + "." + Minor + "." + Build + "." + Revision;
