@@ -13,5 +13,6 @@ namespace DXVcsTools.Core {
         void ReloadProject();
         string GetVSTheme(Func<VSTheme, string> getThemeFunc);
         void NavigateToFile(ProjectItemBase item);
+        string GetActiveDocument();
     }
 }

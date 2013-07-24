@@ -15,7 +15,7 @@ namespace DXVcsTools.Core.Tests {
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void BasePathArgumentValidation([Values(null, "")] string basePath) {
-            PathHelper.ResolvePath(basePath, "foobar");
+            SerializeHelper.ResolvePath(basePath, "foobar");
         }
         [Test]
         [ExpectedException(typeof(ArgumentException))]

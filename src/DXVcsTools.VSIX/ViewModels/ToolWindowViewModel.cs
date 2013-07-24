@@ -380,6 +380,13 @@ namespace DXVcsTools.VSIX {
 
             Logger.AddInfo("ShowNavigationConfigCommand. End.");
         }
+        public void ShowBlame() {
+            string path = dte.GetActiveDocument();
+            if (string.IsNullOrEmpty(path))
+                return;
+            BlameHelper helper = new BlameHelper(Options, PortOptions);
+            helper.ShowExternalBlame(path);
+        }
     }
 
     public enum CheckInTarget {

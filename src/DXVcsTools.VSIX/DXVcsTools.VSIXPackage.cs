@@ -121,7 +121,7 @@ namespace DXVcsTools.VSIX {
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
         public void ShowBlameWindow() {
-            MessageBox.Show("In development...");
+            ToolWindowViewModel.ShowBlame();
         }
 
         /////////////////////////////////////////////////////////////////////////////

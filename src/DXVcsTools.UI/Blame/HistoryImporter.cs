@@ -16,8 +16,8 @@ namespace DXVcsTools.Core {
             if (string.IsNullOrEmpty(workingCopy))
                 throw new ArgumentException("workingCopy");
 
-            this.svnRepository = new Uri(PathHelper.ResolvePath(svnRepository));
-            this.workingCopy = PathHelper.ResolvePath(workingCopy);
+            this.svnRepository = new Uri(SerializeHelper.ResolveSettingsPath(svnRepository));
+            this.workingCopy = SerializeHelper.ResolveSettingsPath(workingCopy);
         }
 
         public Uri ImportFile(string file, string projectFile) {
@@ -68,12 +68,23 @@ namespace DXVcsTools.Core {
         }
 
         Uri CreateTempRepositoryDirectory(SvnClient client) {
-            var tempDirectory = new Uri(client.GetRepositoryRoot(svnRepository), string.Concat(Guid.NewGuid(), "/"));
+            var baseUri = GetSvnRoot(client);
+            var tempDirectory = new Uri(baseUri, string.Concat(Guid.NewGuid(), "/"));
+//            var tempDirectory = new Uri(svnRepository, string.Concat(Guid.NewGuid(), "/"));
 
             if (!client.RemoteCreateDirectory(tempDirectory, new SvnCreateDirectoryArgs {LogMessage = string.Empty}))
                 throw new ApplicationException(string.Format("Can't create remote directory {0}", tempDirectory));
 
             return tempDirectory;
+        }
+        Uri GetSvnRoot(SvnClient client) {
+            Uri uri = client.GetRepositoryRoot(svnRepository);
+            if (uri == null) {
+                using (SvnRepositoryClient repository = new SvnRepositoryClient()) {
+                    repository.CreateRepository(SerializeHelper.ResolveSettingsPath("svnrepo"), new SvnCreateRepositoryArgs());
+                }
+            }
+            return client.GetRepositoryRoot(svnRepository);
         }
 
         void CreateWorkingCopy(SvnClient client, SvnUriTarget target, string path) {

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using Newtonsoft.Json;
 
 namespace DXVcsTools {
     public static class SerializeHelper {
+        static readonly string AppPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         static readonly string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DXVcsTools\\";
         const string SettingsFile = "settings.txt";
         const string NavigationConfigFile = "navigationconfig.txt";
@@ -21,7 +23,7 @@ namespace DXVcsTools {
         }
         public static void SerializeNavigationConfig(NavigationConfigViewModel config) {
             SerializeNavigationConfigInternal(() => JsonConvert.SerializeObject(config, Formatting.Indented));
-        }       
+        }
         static void SerializeNavigationConfigInternal(Func<string> getConfigStringHandler) {
             string path = NavigationConfigFilePath;
             if (File.Exists(path))
@@ -88,6 +90,9 @@ namespace DXVcsTools {
             options.BlueThemeName = "VS2010";
             options.UseNavigateMenu = true;
             options.UpdateNavigateMenuAsync = true;
+            options.SvnRepository = "svnrepo";
+            options.TempSvnDirectory = "TempCopy";
+            options.TortoiseProc = @"/Lib/TortoiseSvn/bin/TortoiseProc.exe";
 
             options.DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
             return options;
@@ -114,5 +119,24 @@ namespace DXVcsTools {
         public static string SerializeNavigationConfigToString(NavigationConfigViewModel model) {
             return JsonConvert.SerializeObject(model, Formatting.Indented);
         }
+        public static string ResolveSettingsPath(string path) {
+            return ResolvePath(SettingsPath, path);
+        }
+        public static string ResolveAppPath(string path) {
+            return ResolvePath(AppPath, path);
+        }
+        static string ResolvePath(string basePath, string path) {
+            if (!Path.IsPathRooted(basePath))
+                throw new ArgumentException("basePath must be rooted");
+
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("path");
+
+            if (Path.IsPathRooted(path))
+                return path;
+
+            return Path.Combine(basePath, path);
+        }
+
     }
 }

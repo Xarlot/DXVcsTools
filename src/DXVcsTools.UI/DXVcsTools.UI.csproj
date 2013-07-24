@@ -133,6 +133,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SharpSvn, Version=1.6002.1279.38042, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
+      <HintPath>..\..\lib\SharpSvn\SharpSvn.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -155,17 +158,20 @@
   <ItemGroup>
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
+    <Compile Include="Blame\BlameHelper.cs" />
+    <Compile Include="Blame\HistoryImporter.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="MVVM\BindableBaseEx.cs" />
     <Compile Include="Navigator\NavigateHelper.cs" />
     <Compile Include="Navigator\NavigateItem.cs" />
-    <Compile Include="ViewModel\BlameHelper.cs" />
+    <Compile Include="Tests\PathHelperTests.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
     <Compile Include="ViewModel\NavigationConfigViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
+    <Compile Include="ViewModel\PathHelper.cs" />
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
     <Compile Include="ViewModel\SerializeSettingsHelper.cs" />
     <Compile Include="ViewModel\ShowLogHelper.cs" />

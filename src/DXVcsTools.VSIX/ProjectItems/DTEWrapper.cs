@@ -102,5 +102,11 @@ namespace DXVcsTools.Core {
             }
             Logger.AddInfo("NavigateToFileCommand. Ehd.");
         }
+        public string GetActiveDocument() {
+            if (dte.ActiveDocument == null)
+                return string.Empty;
+            var projectItem = dte.ActiveDocument.ProjectItem;
+            return projectItem.FileCount > 0 ? projectItem.FileNames[0] : string.Empty;
+        }
     }
 }

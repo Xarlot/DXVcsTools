@@ -8,30 +8,20 @@ namespace DXVcsTools.UI {
         public OptionsViewModel() {
         }
 
-        [XmlElement]
-        [DefaultValue(false)]
         public bool ReviewTarget { get; set; }
-        [XmlElement]
-        [DefaultValue(false)]
         public bool CheckInTarget { get; set; }
-        [XmlElement]
-        [DefaultValue(false)]
         public bool CloseAfterMerge { get; set; }
-        [XmlElement]
         public string DiffTool { get; set; }
-        [XmlElement]
         public DXBlameType BlameType { get; set; }
-        [XmlElement]
         public List<DXVcsBranch> Branches { get; set; }
-        [XmlElement]
         public bool UpdateOnShowing { get; set; }
-        [XmlElement]
         public string LightThemeName { get; set; }
-        [XmlElement]
         public string DarkThemeName { get; set; }
-        [XmlElement]
         public string BlueThemeName { get; set; }
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
+        public string SvnRepository { get; set; }
+        public string TempSvnDirectory { get; set; }
+        public string TortoiseProc { get; set; }
     }
 }

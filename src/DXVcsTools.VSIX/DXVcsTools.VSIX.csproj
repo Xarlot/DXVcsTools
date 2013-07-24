@@ -309,7 +309,282 @@
       <Link>Lib\SharpSvn\SharpSvn.wxs</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\autolist.txt">
+      <Link>Lib\TortoiseSvn\bin\autolist.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\apr License.txt">
+      <Link>Lib\TortoiseSvn\apr License.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\CrashRpt.dll">
+      <Link>Lib\TortoiseSvn\bin\CrashRpt.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\intl3_tsvn.dll">
+      <Link>Lib\TortoiseSvn\bin\intl3_tsvn.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\libaprutil_tsvn.dll">
+      <Link>Lib\TortoiseSvn\bin\libaprutil_tsvn.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\libapr_tsvn.dll">
+      <Link>Lib\TortoiseSvn\bin\libapr_tsvn.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\libsasl.dll">
+      <Link>Lib\TortoiseSvn\bin\libsasl.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslANONYMOUS.dll">
+      <Link>Lib\TortoiseSvn\bin\saslANONYMOUS.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslCRAMMD5.dll">
+      <Link>Lib\TortoiseSvn\bin\saslCRAMMD5.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslDIGESTMD5.dll">
+      <Link>Lib\TortoiseSvn\bin\saslDIGESTMD5.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslLOGIN.dll">
+      <Link>Lib\TortoiseSvn\bin\saslLOGIN.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslNTLM.dll">
+      <Link>Lib\TortoiseSvn\bin\saslNTLM.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\saslPLAIN.dll">
+      <Link>Lib\TortoiseSvn\bin\saslPLAIN.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\SciLexer.dll">
+      <Link>Lib\TortoiseSvn\bin\SciLexer.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\SubWCRev.exe">
+      <Link>Lib\TortoiseSvn\bin\SubWCRev.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\SubWCRevCOM.exe">
+      <Link>Lib\TortoiseSvn\bin\SubWCRevCOM.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseBlame.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoiseBlame.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseIDiff.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoiseIDiff.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseMerge.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoiseMerge.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoisePlink.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoisePlink.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseProc.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoiseProc.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseStub.dll">
+      <Link>Lib\TortoiseSvn\bin\TortoiseStub.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseSVN.dll">
+      <Link>Lib\TortoiseSvn\bin\TortoiseSVN.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseSVN_error.wav">
+      <Link>Lib\TortoiseSvn\bin\TortoiseSVN_error.wav</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseSVN_Notification.wav">
+      <Link>Lib\TortoiseSvn\bin\TortoiseSVN_Notification.wav</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseSVN_Warning.wav">
+      <Link>Lib\TortoiseSvn\bin\TortoiseSVN_Warning.wav</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseUDiff.exe">
+      <Link>Lib\TortoiseSvn\bin\TortoiseUDiff.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TSVNCache.exe">
+      <Link>Lib\TortoiseSvn\bin\TSVNCache.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Changelog.txt">
+      <Link>Lib\TortoiseSvn\Changelog.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\CyrusSASL License.txt">
+      <Link>Lib\TortoiseSvn\CyrusSASL License.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-doc.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-doc.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-docx.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-docx.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-nb.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-nb.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-ods.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-ods.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-odt.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-odt.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-ppt.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-ppt.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-pptx.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-pptx.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-sxw.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-sxw.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-xls.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-xls.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\diff-xlsx.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\diff-xlsx.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\merge-doc.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\merge-doc.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\merge-docx.js">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\merge-docx.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\merge-ods.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\merge-ods.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\merge-odt.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\merge-odt.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Diff-Scripts\merge-sxw.vbs">
+      <Link>Lib\TortoiseSvn\Diff-Scripts\merge-sxw.vbs</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\OpenSSL License.txt">
+      <Link>Lib\TortoiseSvn\OpenSSL License.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Subversion license.txt">
+      <Link>Lib\TortoiseSvn\Subversion license.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\TortoiseSVN License.txt">
+      <Link>Lib\TortoiseSvn\TortoiseSVN License.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Docs\licence.rtf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseMerge_en.chm">
+      <Link>Lib\TortoiseSvn\bin\TortoiseMerge_en.chm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\TortoiseSVN_en.chm">
+      <Link>Lib\TortoiseSvn\bin\TortoiseSVN_en.chm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\bin\Website.url">
+      <Link>Lib\TortoiseSvn\bin\Website.url</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Languages\en_GB.aff">
+      <Link>Lib\TortoiseSvn\Languages\en_GB.aff</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Languages\en_GB.dic">
+      <Link>Lib\TortoiseSvn\Languages\en_GB.dic</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Languages\en_US.aff">
+      <Link>Lib\TortoiseSvn\Languages\en_US.aff</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\lib\TortoiseSVN\Languages\en_US.dic">
+      <Link>Lib\TortoiseSvn\Languages\en_US.dic</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -385,6 +660,7 @@
       <Name>DXVcsTools.Version</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

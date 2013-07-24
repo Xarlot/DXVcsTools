@@ -84,7 +84,7 @@ namespace DXVcsTools.Core {
             Process process = Process.Start(startInfo);
             process.WaitForExit();
         }
-        string GetMergeVcsPathByOriginalPath(string filePath, DXVcsBranch currentBranch) {
+        public string GetMergeVcsPathByOriginalPath(string filePath, DXVcsBranch currentBranch) {
             string relativePath = Port.GetRelativePath(filePath);
             string result = relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
             string ext = Path.GetExtension(filePath);
