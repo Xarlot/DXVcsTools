@@ -93,6 +93,7 @@
       <HintPath>..\..\lib\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SharpSvn, Version=1.6002.1279.38042, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\SharpSvn\SharpSvn.dll</HintPath>
     </Reference>
     <Reference Include="System" />

@@ -159,7 +159,6 @@
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
     <Compile Include="Blame\BlameHelper.cs" />
-    <Compile Include="Blame\HistoryImporter.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="MVVM\BindableBaseEx.cs" />
     <Compile Include="Navigator\NavigateHelper.cs" />
@@ -220,10 +219,6 @@
     <ProjectReference Include="..\DXVcsTools.Core\DXVcsTools.Core.csproj">
       <Project>{FF2054C1-BA2D-4A2B-A61C-ED8E5EF50860}</Project>
       <Name>DXVcsTools.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DXVcsTools.Data\DXVcsTools.Data.csproj">
-      <Project>{5C540740-A4DA-4DE6-9255-285662D1B626}</Project>
-      <Name>DXVcsTools.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\DXVcsTools.DXVcsClient\DXVcsTools.DXVcsClient.csproj">
       <Project>{12AFF108-FD20-4C7D-89C4-020D2CB87B35}</Project>

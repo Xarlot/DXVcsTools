@@ -3,7 +3,7 @@
 namespace DXVcsTools.DXVcsClient {
     public interface IDXVcsRepository {
         FileVersionInfo[] GetFileHistory(string vcsFile, out string fileName);
-        FileDiffInfo GetFileDiffInfo(string vcsFile);
+        FileDiffInfo GetFileDiffInfo(string vcsFile, SpacesAction spacesAction = SpacesAction.IgnoreAll);
         FileDiffInfo GetFileDiffInfo(string vcsFile, Action<int, int> progressAction, SpacesAction spacesAction);
         void GetLatestVersion(string vcsFile, string fileName);
         void Get(string vcsFile, string fileName, int version);

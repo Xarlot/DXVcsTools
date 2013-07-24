@@ -31,15 +31,13 @@ namespace DXVcsTools.DXVcsClient {
             return result.ToArray();
         }
 
-        public FileDiffInfo GetFileDiffInfo(string vcsFile) {
-            return GetFileDiffInfo(vcsFile, null, SpacesAction.Compare);
+        public FileDiffInfo GetFileDiffInfo(string vcsFile, SpacesAction spacesAction = SpacesAction.IgnoreAll) {
+            return GetFileDiffInfo(vcsFile, null, spacesAction);
         }
 
         public FileDiffInfo GetFileDiffInfo(string vcsFile, Action<int, int> progressAction, SpacesAction spacesAction) {
-            FileDiffInfo diffInfo;
-
             var history = new FileHistory(vcsFile, service);
-            diffInfo = new FileDiffInfo(history.Count);
+            FileDiffInfo diffInfo = new FileDiffInfo(history.Count);
             diffInfo.SpacesAction = spacesAction;
 
             int index = 0;

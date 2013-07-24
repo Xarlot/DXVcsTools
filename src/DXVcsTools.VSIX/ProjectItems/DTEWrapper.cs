@@ -108,5 +108,15 @@ namespace DXVcsTools.Core {
             var projectItem = dte.ActiveDocument.ProjectItem;
             return projectItem.FileCount > 0 ? projectItem.FileNames[0] : string.Empty;
         }
+        public int? GetSelectedLine() {
+            if (dte.ActiveDocument == null)
+                return null;
+            TextSelection selection = (TextSelection)dte.ActiveDocument.Selection;
+            return selection.TextRanges.Item(1).StartPoint.Line;
+        }
+        public bool IsItemUnderScc(string fileName) {
+            SourceControl2 sourceControl = (SourceControl2)dte.SourceControl;
+            return sourceControl.IsItemUnderSCC(fileName);
+        }
     }
 }

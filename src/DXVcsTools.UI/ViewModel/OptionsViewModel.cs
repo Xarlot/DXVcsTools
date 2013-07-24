@@ -20,8 +20,6 @@ namespace DXVcsTools.UI {
         public string BlueThemeName { get; set; }
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
-        public string SvnRepository { get; set; }
-        public string TempSvnDirectory { get; set; }
         public string TortoiseProc { get; set; }
     }
 }

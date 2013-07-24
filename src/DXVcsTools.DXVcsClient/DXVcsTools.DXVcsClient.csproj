@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blame\IBlameLine.cs" />
     <Compile Include="DXVcsRepository.cs" />
     <Compile Include="DXVcsRepositoryFactory.cs" />
     <Compile Include="DXVcsServiceProvider.cs" />
@@ -117,10 +118,6 @@
     <Compile Include="StringsDiff.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DXVcsTools.Data\DXVcsTools.Data.csproj">
-      <Project>{5C540740-A4DA-4DE6-9255-285662D1B626}</Project>
-      <Name>DXVcsTools.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DXVcsTools.Version\DXVcsTools.Version.csproj">
       <Project>{7A04901D-A838-4CB9-8758-CC3BFAD60309}</Project>
       <Name>DXVcsTools.Version</Name>

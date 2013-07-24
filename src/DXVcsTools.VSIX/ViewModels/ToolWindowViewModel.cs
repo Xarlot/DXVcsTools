@@ -382,11 +382,26 @@ namespace DXVcsTools.VSIX {
         }
         public void ShowBlame() {
             string path = dte.GetActiveDocument();
-            if (string.IsNullOrEmpty(path))
+            if (!CanHandleActiveDocument(path))
                 return;
+            int? lineNumber = dte.GetSelectedLine();
             BlameHelper helper = new BlameHelper(Options, PortOptions);
-            helper.ShowExternalBlame(path);
+            helper.ShowExternalBlame(path, lineNumber);
         }
+        private bool CanHandleActiveDocument(string fileName) {
+            if (string.IsNullOrEmpty(fileName)) {
+                MessageBox.Show("No current document.", "DXVcsTools", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
+            
+            if (!dte.IsItemUnderScc(fileName)) {
+                MessageBox.Show(string.Concat("File ", fileName, " is not under source control."), "DXVcsTools", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
     public enum CheckInTarget {

@@ -14,5 +14,7 @@ namespace DXVcsTools.Core {
         string GetVSTheme(Func<VSTheme, string> getThemeFunc);
         void NavigateToFile(ProjectItemBase item);
         string GetActiveDocument();
+        int? GetSelectedLine();
+        bool IsItemUnderScc(string fileName);
     }
 }
