@@ -60,7 +60,8 @@ namespace DXVcsTools.ViewModels {
             if (model.NavigateItems == null)
                 return;
             foreach (var item in model.NavigateItems) {
-                GenerateMenuItem(item, model.GetRelativePath);
+                if (item.Used)
+                    GenerateMenuItem(item, model.GetRelativePath);
             }
         }
         void GenerateMenuItem(NavigateItem item, Func<NavigateItem, string> getRelativePath) {
@@ -115,10 +116,6 @@ namespace DXVcsTools.ViewModels {
                 menuHierarchy.Add(menuName, menu);
             }
             return menu;
-        }
-
-        public void Save() {
-            throw new NotImplementedException();
         }
     }
 }

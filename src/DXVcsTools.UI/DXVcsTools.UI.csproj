@@ -163,6 +163,7 @@
     <Compile Include="MVVM\BindableBaseEx.cs" />
     <Compile Include="Navigator\NavigateHelper.cs" />
     <Compile Include="Navigator\NavigateItem.cs" />
+    <Compile Include="Navigator\NavigationTreeItem.cs" />
     <Compile Include="Tests\PathHelperTests.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />

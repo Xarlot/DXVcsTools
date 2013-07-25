@@ -5,11 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" MinWidth="1024">
+             d:DesignHeight="300" d:DesignWidth="300" >
     <dxlc:LayoutControl Orientation="Vertical">
-       <dxlc:LayoutItem Label="Content: ">
-            <dxe:TextEdit AcceptsReturn="True" EditValue="{Binding Path=Content}" Height="800"/>
+        <dxlc:LayoutItem Label="Content: " Height="600" Width="1200">
+            <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="DisplayText"></dxg:GridColumn>
+                </dxg:GridControl.Columns>
+                <dxg:GridControl.View>
+                    <dxg:TreeListView 
+                        AutoExpandAllNodes="True"
+                        AutoWidth="True"
+                        TreeDerivationMode="Selfreference" 
+                        KeyFieldName="Key" 
+                        ParentFieldName="ParentKey"
+                        ShowCheckboxes="True"
+                        AllowRecursiveNodeChecking="True"
+                        CheckBoxFieldName="Used">
+                    </dxg:TreeListView>
+                </dxg:GridControl.View>
+            </dxg:GridControl>
         </dxlc:LayoutItem>
         <dxlc:LayoutGroup Orientation="Horizontal">
             <dxlc:LayoutItem>
