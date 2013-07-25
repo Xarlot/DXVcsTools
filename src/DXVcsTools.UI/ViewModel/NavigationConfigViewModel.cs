@@ -54,6 +54,9 @@ namespace DXVcsTools.UI {
         readonly Dictionary<NavigateTreeItem, NavigateTreeItem> nodesCache = new Dictionary<NavigateTreeItem, NavigateTreeItem>();
         void Generate() {
             NavigateItems = NavigateHelper.Scan(Roots);
+            GenerateTreeSource();
+        }
+        public void GenerateTreeSource() {
             NavigateHierarchy = CreateNavigateHierarchy(NavigateItems);
         }
         ObservableCollection<NavigateTreeItem> CreateNavigateHierarchy(IEnumerable<NavigateItem> navigateItems) {

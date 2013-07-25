@@ -371,6 +371,7 @@ namespace DXVcsTools.VSIX {
                 IEnumerable<string> roots = helper.FindWorkingFolders(Options.Branches);
                 model.Roots = roots;
             }
+            model.GenerateTreeSource();
             if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OKCancel, "Navigation config", model) == MessageBoxResult.OK) {
                 model.Save();
                 generateMenuItemsHelper.Release();
