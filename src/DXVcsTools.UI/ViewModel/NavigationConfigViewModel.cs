@@ -62,6 +62,8 @@ namespace DXVcsTools.UI {
         ObservableCollection<NavigateTreeItem> CreateNavigateHierarchy(IEnumerable<NavigateItem> navigateItems) {
             nodesCache.Clear();
             ObservableCollection<NavigateTreeItem> list = new ObservableCollection<NavigateTreeItem>();
+            if (navigateItems == null)
+                return list;
             foreach (var item in navigateItems) {
                 var hierarchy = GetHierarchy(item);
                 foreach (var navItem in hierarchy)

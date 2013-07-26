@@ -365,18 +365,24 @@ namespace DXVcsTools.VSIX {
         public void ShowNavigationConfig() {
             Logger.AddInfo("ShowNavigationConfigCommand. Start.");
 
-            NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig();
-            if (PortOptions != null) {
-                MergeHelper helper = new MergeHelper(Options, PortOptions);
-                IEnumerable<string> roots = helper.FindWorkingFolders(Options.Branches);
-                model.Roots = roots;
+            try {
+                NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig();
+                if (PortOptions != null) {
+                    MergeHelper helper = new MergeHelper(Options, PortOptions);
+                    IEnumerable<string> roots = helper.FindWorkingFolders(Options.Branches);
+                    model.Roots = roots;
+                }
+
+                model.GenerateTreeSource();
+                if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OKCancel, "Navigation config", model) == MessageBoxResult.OK) {
+                    model.Save();
+                    generateMenuItemsHelper.Release();
+                    generateMenuItemsHelper.GenerateDefault();
+                    generateMenuItemsHelper.GenerateNavigation();
+                }
             }
-            model.GenerateTreeSource();
-            if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OKCancel, "Navigation config", model) == MessageBoxResult.OK) {
-                model.Save();
-                generateMenuItemsHelper.Release();
-                generateMenuItemsHelper.GenerateDefault();
-                generateMenuItemsHelper.GenerateNavigation();
+            catch (Exception e) {
+                Logger.AddError("ShowNavigationConfigCommand. Failed.", e);
             }
 
             Logger.AddInfo("ShowNavigationConfigCommand. End.");
