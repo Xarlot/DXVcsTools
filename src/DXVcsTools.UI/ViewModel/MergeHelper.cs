@@ -164,7 +164,7 @@ namespace DXVcsTools.Core {
         public void NavigateToSolution(DXVcsBranch currentBranch, IDteWrapper dte) {
             try {
                 string filePath = Port.ProjectFilePath;
-                string vcsFilePath = GetMergeVcsPathByOriginalPath(filePath, currentBranch) + Path.GetFileName(filePath);
+                string vcsFilePath = GetMergeVcsPathByOriginalPath(filePath, currentBranch);
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string targetPath = repository.GetFileWorkingPath(vcsFilePath);
                 dte.OpenSolution(targetPath);
