@@ -6,12 +6,13 @@
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              mc:Ignorable="d"
+             Width="500"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <dxlc:LayoutControl Orientation="Vertical">
             <dxlc:LayoutItem Label="Comment: ">
                 <dxe:TextEdit EditValue="{Binding Path=Comment}" Height="100" AcceptsReturn="True"
-                              TextTrimming="WordEllipsis" VerticalContentAlignment="Top" />
+                              TextTrimming="WordEllipsis" TextWrapping="Wrap" VerticalContentAlignment="Top" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="From: ">
                 <dxe:TextEdit EditValue="{Binding Path=FilePath}" />

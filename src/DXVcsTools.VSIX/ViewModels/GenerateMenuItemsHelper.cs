@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
@@ -14,7 +16,7 @@ namespace DXVcsTools.ViewModels {
         readonly DXVcsTools_VSIXPackage package;
         readonly Dictionary<VSDevExpressMenuItem, NavigateItem> menuCache = new Dictionary<VSDevExpressMenuItem, NavigateItem>();
         readonly Dictionary<string, VSDevExpressMenu> menuHierarchy = new Dictionary<string, VSDevExpressMenu>();
-        OptionsViewModel Options { get { return package.ToolWindowViewModel.Options; }}
+        OptionsViewModel Options { get { return package.ToolWindowViewModel.Options; } }
         public GenerateMenuItemsHelper(DXVcsTools_VSIXPackage package, DTE dte) {
             this.dte = dte;
             this.package = package;
@@ -49,7 +51,7 @@ namespace DXVcsTools.ViewModels {
         public void GenerateNavigation() {
             if (!Options.UseNavigateMenu)
                 return;
-            if (Options.UpdateNavigateMenuAsync) 
+            if (Options.UpdateNavigateMenuAsync)
                 Task.Run(new Action(GenerateNavigateMenuAsync));
             else {
                 GenerateNavigateMenuAsync();
@@ -88,11 +90,16 @@ namespace DXVcsTools.ViewModels {
         }
         void GenerateMenuItemContent(VSDevExpressMenuItem menu, NavigateItem item, string relativePath) {
             int startIndex = 0;
+            relativePath = ReduceRelativePath(relativePath);
             while (startIndex > -1) {
                 int index = GetDirectorySeparatorIndex(relativePath, startIndex + 1);
                 if (index < 0)
                     break;
-                string name = relativePath.Substring(startIndex + 1, Math.Max(0, index - startIndex - 1));
+                string name = relativePath.Substring(startIndex, Math.Max(0, index - startIndex));
+                name = name.Replace(Path.DirectorySeparatorChar.ToString(), string.Empty);
+                name = name.Replace(Path.AltDirectorySeparatorChar.ToString(), string.Empty);
+                if (string.IsNullOrEmpty(name))
+                    continue;
                 startIndex = index;
 
                 if (string.IsNullOrEmpty(name))
@@ -101,9 +108,20 @@ namespace DXVcsTools.ViewModels {
             }
             var menuItem = menu.CreateOrGetItem(item.Name);
             menuCache[menuItem] = item;
-            menuItem.Click += menuItem_Click;
+            menuItem.Click += MenuItemClick;
         }
-        void menuItem_Click(object sender, EventArgs e) {
+        string ReduceRelativePath(string path) {
+            string previous = string.Empty;
+            string result = string.Empty;
+            foreach (string str in path.Split(new[] {Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)) {
+                if (str == previous)
+                    continue;
+                result = Path.Combine(result, str);
+                previous = str;
+            }
+            return result;
+        }
+        void MenuItemClick(object sender, EventArgs e) {
             NavigateItem item;
             if (menuCache.TryGetValue((VSDevExpressMenuItem)sender, out item)) {
                 package.ToolWindowViewModel.NavigateToSolution(item.Path);

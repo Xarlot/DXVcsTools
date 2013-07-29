@@ -37,11 +37,15 @@ namespace DXVcsTools.UI.Navigator {
         readonly string parentKey;
         bool used;
         public bool Used {
-            get { return used; }
+            get { return Item.Return(x => x.Used, () => used); }
             set {
                 used = value;
                 Item.Do(x => x.Used = value);
             }
+        }
+        public string RelativePath {
+            get { return Item.Return(x => x.RelativePath, () => string.Empty); }
+            set { Item.Do(x => x.RelativePath = value); }
         }
         public string DisplayText { get { return Key; }}
         public NavigateItem Item { get { return item; } }
@@ -51,6 +55,7 @@ namespace DXVcsTools.UI.Navigator {
             this.parentKey = parentKey;
             this.key = key;
             this.item = item;
+            this.used = item.Return(x => x.Used, () => false);
         }
     }
 }

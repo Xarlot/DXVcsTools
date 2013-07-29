@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             MinWidth="400"
+             Width="500"
 
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -13,7 +13,7 @@
         <dxlc:LayoutControl Orientation="Vertical">
             <dxlc:LayoutItem Label="Comment: ">
                 <dxe:TextEdit EditValue="{Binding Path=Comment}" Height="100" AcceptsReturn="True"
-                              TextTrimming="WordEllipsis" VerticalContentAlignment="Top" />
+                              TextTrimming="WordEllipsis" TextWrapping="Wrap" VerticalContentAlignment="Top" />
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="From: ">
                 <dxe:TextEdit EditValue="{Binding Path=FilePath}" />
