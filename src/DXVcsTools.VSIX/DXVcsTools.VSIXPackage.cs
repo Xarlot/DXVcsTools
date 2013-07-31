@@ -146,7 +146,7 @@ namespace DXVcsTools.VSIX {
             var dte = (DTE)GetService(typeof(DTE));
             GenerateMenuItemsHelper generateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             generateMenuHelper.GenerateDefault();
-            generateMenuHelper.GenerateNavigation();
+            generateMenuHelper.GenerateMenus();
             //GenerateMenu(navigateMenu, root);
 
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;

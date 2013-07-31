@@ -182,12 +182,25 @@ namespace DXVcsTools.VSIX {
         }
     }
 
+    public enum VSDevExpressMenuLocation {
+        MenuBar,
+        AddReferenceRoot,
+    }
     public class VSDevExpressMenu : VSDevExpressMenuItem {
+        const string DevExpressMenuBarLocation = "MenuBar";
+        const string DevExpressMenuAddReferenceLocation = "Reference Root";
         const string DevExpressMenuName = "DXVcsTools";
-        public VSDevExpressMenu(DTE dte, string menuName = DevExpressMenuName) {
+        static readonly IDictionary<VSDevExpressMenuLocation, string> MenusCache = new Dictionary<VSDevExpressMenuLocation, string>();
+
+        static VSDevExpressMenu() {
+            MenusCache.Add(VSDevExpressMenuLocation.MenuBar, DevExpressMenuBarLocation);
+            MenusCache.Add(VSDevExpressMenuLocation.AddReferenceRoot, DevExpressMenuAddReferenceLocation);
+        }
+
+        public VSDevExpressMenu(DTE dte, string menuName = DevExpressMenuName, VSDevExpressMenuLocation location = VSDevExpressMenuLocation.MenuBar) {
             Header = menuName;
             var commandBars = dte.CommandBars as CommandBars;
-            CommandBar mainMenuBar = commandBars["MenuBar"];
+            CommandBar mainMenuBar = commandBars[MenusCache[location]];
             CommandBarPopup devExpressMenu = null;
 
             foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {

@@ -378,7 +378,7 @@ namespace DXVcsTools.VSIX {
                     model.Save();
                     generateMenuItemsHelper.Release();
                     generateMenuItemsHelper.GenerateDefault();
-                    generateMenuItemsHelper.GenerateNavigation();
+                    generateMenuItemsHelper.GenerateMenus();
                 }
             }
             catch (Exception e) {
