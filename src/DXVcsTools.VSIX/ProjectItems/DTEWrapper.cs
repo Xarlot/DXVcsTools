@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI.Logger;
 using EnvDTE;
 using EnvDTE80;
+using VSLangProj;
 
 namespace DXVcsTools.Core {
     public class DteWrapper : IDteWrapper {
@@ -14,11 +16,11 @@ namespace DXVcsTools.Core {
             this.dte = (DTE2)dte;
         }
         public SolutionItem BuildTree() {
-            return new SolutionItem(GetProjects(dte.Solution).ToList()) {Name = dte.Solution.FullName, Path = dte.Solution.FileName};
+            return new SolutionItem(GetProjects(dte.Solution).ToList()) { Name = dte.Solution.FullName, Path = dte.Solution.FileName };
         }
         IEnumerable<ProjectItem> GetProjects(EnvDTE.Solution solution) {
             string name = solution.FullName;
-            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item).ToList()) {Name = name, Path = item.FileName});
+            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item).ToList()) { Name = name, Path = item.FileName });
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
             ProjectItems children = project.ProjectItems;
@@ -48,7 +50,7 @@ namespace DXVcsTools.Core {
             }
             if (Directory.Exists(fileName)) {
                 var info = new DirectoryInfo(fileName);
-                item = new FolderItem(GetChildrenItems(projectItem).ToList()) {Name = info.Name, Path = fileName};
+                item = new FolderItem(GetChildrenItems(projectItem).ToList()) { Name = info.Name, Path = fileName };
             }
             if (item == null)
                 return null;
@@ -70,7 +72,7 @@ namespace DXVcsTools.Core {
         string GetThemeId() {
             return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
         }
-        public string GetVSTheme(Func<VSTheme,string> getThemeFunc) {
+        public string GetVSTheme(Func<VSTheme, string> getThemeFunc) {
             switch (GetThemeId()) {
                 case ThemeDark:
                     return getThemeFunc(VSTheme.Dark);
@@ -117,6 +119,14 @@ namespace DXVcsTools.Core {
         public bool IsItemUnderScc(string fileName) {
             SourceControl2 sourceControl = (SourceControl2)dte.SourceControl;
             return sourceControl.IsItemUnderSCC(fileName);
+        }
+        public void AddReference(string assembly) {
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if (projects.Length == 0)
+                return;
+            var project = projects.GetValue(0) as Project;
+            var newPrj = (VSLangProj.VSProject)(project).Object;
+            newPrj.References.Add(assembly);
         }
     }
 }

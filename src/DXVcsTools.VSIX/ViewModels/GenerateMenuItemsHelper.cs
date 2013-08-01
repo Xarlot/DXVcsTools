@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.AddReferenceHelper;
 using DXVcsTools.UI.Navigator;
@@ -165,7 +166,7 @@ namespace DXVcsTools.ViewModels {
             NavigateItem item;
             if (addReferenceMenuCache.TryGetValue((VSDevExpressMenuItem)sender, out item)) {
                 AddReferenceHelper helper = new AddReferenceHelper();
-                helper.AddReferences(item);
+                helper.AddReferences(new DteWrapper(dte), item);
             }
         }
         VSDevExpressMenu GetRootAddReferenceMenu(string menuName) {

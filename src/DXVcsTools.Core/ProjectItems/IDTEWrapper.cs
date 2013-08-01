@@ -16,5 +16,6 @@ namespace DXVcsTools.Core {
         string GetActiveDocument();
         int? GetSelectedLine();
         bool IsItemUnderScc(string fileName);
+        void AddReference(string assembly);
     }
 }
