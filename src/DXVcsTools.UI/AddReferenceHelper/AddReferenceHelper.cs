@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DXVcsTools.Core;
+﻿using DXVcsTools.Core;
 using DXVcsTools.UI.Navigator;
 
 namespace DXVcsTools.UI.AddReferenceHelper {

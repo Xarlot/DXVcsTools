@@ -103,6 +103,8 @@ namespace DXVcsTools.ViewModels {
             string relativePath = getRelativePath(item);
             if (string.IsNullOrEmpty(relativePath) || !relativePath.StartsWith("$"))
                 return;
+            if (!ProjectTypeMatch(item))
+                return;
             int index = GetDirectorySeparatorIndex(relativePath);
             if (index < 0)
                 return;
@@ -113,6 +115,9 @@ namespace DXVcsTools.ViewModels {
                 menuItem.Click += RootMenuItemClick;
                 rootMenuCache[menuItem] = navItem;
             });
+        }
+        bool ProjectTypeMatch(NavigateItem item) {
+            return false;
         }
         string GetRootMenuName(string relativePath) {
             int index = GetDirectorySeparatorIndex(relativePath);

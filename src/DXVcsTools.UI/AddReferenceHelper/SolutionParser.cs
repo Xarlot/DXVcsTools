@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using DevExpress.Utils.Text.Internal;
+using DevExpress.Xpf.Mvvm.Native;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Execution;
 
@@ -26,13 +28,19 @@ namespace DXVcsTools.UI.AddReferenceHelper {
                 yield break;
             foreach (object projectItem in items) {
                 ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
+                string location = root.DirectoryPath;
                 foreach (var item in GetDXReferences(root))
-                    yield return item;
+                    yield return GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value));
                 yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
             }
         }
-        IEnumerable<string> GetDXReferences(ProjectRootElement root) {
-            return root.Items.Where(item => item.ItemType == "Reference").Where(item => item.Include.StartsWith("DevExpress")).Select(item => item.Include);
+        string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {
+            if (!assemblyInclude.Contains("PublicKeyToken"))
+                return assemblyInclude;
+            return assemblyHintPath == null ? string.Empty : Path.Combine(location, assemblyHintPath);
+        }
+        IEnumerable<ProjectItemElement> GetDXReferences(ProjectRootElement root) {
+            return root.Items.Where(item => item.ItemType == "Reference").Where(item => item.Include.StartsWith("DevExpress"));
         }
         string GetAbsolutePath(object projectItem) {
             return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(projectItem);

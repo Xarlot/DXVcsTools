@@ -9,6 +9,9 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" >
     <dxlc:LayoutControl Orientation="Vertical">
+        <dxlc:LayoutItem>
+            <dxe:TextEdit/>
+        </dxlc:LayoutItem>
         <dxlc:LayoutItem Label="Content: " Height="600" Width="1200">
             <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}">
                 <dxg:GridControl.Columns>
