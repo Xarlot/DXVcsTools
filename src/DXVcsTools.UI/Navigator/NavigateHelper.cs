@@ -10,10 +10,12 @@ namespace DXVcsTools.UI.Navigator {
         static IEnumerable<NavigateItem> ScanRoot(string path) {
             if (!Directory.Exists(path))
                 yield break;
+            var addReferenceHelper = new AddReferenceHelper();
             foreach (var fileInfo in Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories)) {
                 NavigateItem item = new NavigateItem();
                 item.Path = fileInfo;
                 item.Name = Path.GetFileName(fileInfo);
+                item.ProjectType = addReferenceHelper.GetProjectType(fileInfo);
                 yield return item;
             }
         }

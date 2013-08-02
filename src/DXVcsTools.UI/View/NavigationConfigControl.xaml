@@ -6,16 +6,35 @@
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:navigator="clr-namespace:DXVcsTools.UI.Navigator"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <navigator:ProjectType x:Key="nullValue">NoPlatform</navigator:ProjectType>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <dxlc:LayoutControl Orientation="Vertical">
         <dxlc:LayoutItem>
             <dxe:TextEdit/>
         </dxlc:LayoutItem>
-        <dxlc:LayoutItem Label="Content: " Height="600" Width="1200">
+        <dxlc:LayoutItem Height="600" Width="1200">
             <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="DisplayText"></dxg:GridColumn>
+                    <dxg:GridColumn FieldName="UseForAddReference" Width="100">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:CheckEditSettings IsThreeState="False"/>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="ProjectType" Width="150">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:ComboBoxEditSettings 
+                                IsTextEditable="False" 
+                                ItemsSource="{Binding Path=ProjectTypes}" 
+                                NullValue="{StaticResource nullValue}"/>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TreeListView 

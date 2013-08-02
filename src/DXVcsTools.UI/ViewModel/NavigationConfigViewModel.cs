@@ -11,10 +11,10 @@ using log4net.Repository.Hierarchy;
 
 namespace DXVcsTools.UI {
     public class NavigationConfigViewModel : BindableBase {
-        string content;
         IEnumerable<string> roots;
         ObservableCollection<NavigateTreeItem> navigateHierarchy;
 
+        public IEnumerable<ProjectType> ProjectTypes { get; private set; }
         public IEnumerable<string> Roots {
             get { return roots; }
             set { SetProperty(ref roots, value, () => Roots); }
@@ -22,6 +22,9 @@ namespace DXVcsTools.UI {
         public ObservableCollection<NavigateTreeItem> NavigateHierarchy {
             get { return navigateHierarchy; }
             private set { SetProperty(ref navigateHierarchy, value, () => NavigateHierarchy); }
+        }
+        public bool ShouldSerializeProjectTypes() {
+            return false;
         }
         public bool ShouldSerializeContent() {
             return false;
@@ -40,6 +43,7 @@ namespace DXVcsTools.UI {
         public ICommand OpenConfigLocationCommand { get; private set; }
 
         public NavigationConfigViewModel() {
+            ProjectTypes = new ObservableCollection<ProjectType>() { ProjectType.Unknown, ProjectType.SL, ProjectType.WPF, ProjectType.WinRT };
             GenerateCommand = new DelegateCommand(Generate, CanGenerate);
             OpenConfigLocationCommand = new DelegateCommand(OpenConfigLocation);
         }
@@ -104,6 +108,5 @@ namespace DXVcsTools.UI {
         public void Save() {
             SerializeHelper.SerializeNavigationConfig(this);
         }
-
     }
 }

@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
-using DXVcsTools.UI.AddReferenceHelper;
 using DXVcsTools.UI.Navigator;
 using DXVcsTools.VSIX;
 using EnvDTE;
@@ -74,9 +73,12 @@ namespace DXVcsTools.ViewModels {
         }
         void GenerateAddReferenceMenu(NavigationConfigViewModel model) {
             foreach (var item in model.NavigateItems) {
-                if (item.Used)
+                if (ShouldGenerateMenuItem(item))
                     GenerateAddReferenceMenuItem(item, model.GetRelativePath);
             }
+        }
+        bool ShouldGenerateMenuItem(NavigateItem item) {
+            return item.UsedForAddReference && ProjectTypeMatch(item);
         }
         void GenerateAddReferenceMenuItem(NavigateItem item, Func<NavigateItem, string> getRelativePath) {
             string relativePath = getRelativePath(item);
@@ -117,7 +119,9 @@ namespace DXVcsTools.ViewModels {
             });
         }
         bool ProjectTypeMatch(NavigateItem item) {
-            return false;
+            DteWrapper wrapper = new DteWrapper(dte);
+            ProjectType type = wrapper.GetProjectType();
+            return (type != ProjectType.NoPlatform || type != ProjectType.Unknown) && wrapper.GetProjectType() == item.ProjectType;
         }
         string GetRootMenuName(string relativePath) {
             int index = GetDirectorySeparatorIndex(relativePath);
@@ -153,7 +157,7 @@ namespace DXVcsTools.ViewModels {
         string ReduceRelativePath(string path) {
             string previous = string.Empty;
             string result = string.Empty;
-            foreach (string str in path.Split(new[] {Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries)) {
+            foreach (string str in path.Split(new[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)) {
                 if (str == previous)
                     continue;
                 result = Path.Combine(result, str);

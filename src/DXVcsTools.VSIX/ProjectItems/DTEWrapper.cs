@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevExpress.Xpf.Mvvm.Native;
+using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
+using DXVcsTools.UI.Navigator;
 using EnvDTE;
 using EnvDTE80;
 using VSLangProj;
@@ -127,6 +129,18 @@ namespace DXVcsTools.Core {
             var project = projects.GetValue(0) as Project;
             var newPrj = (VSLangProj.VSProject)(project).Object;
             newPrj.References.Add(assembly);
+        }
+        public ProjectType GetProjectType() {
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if (projects.Length == 0)
+                return ProjectType.Unknown;
+            var project = projects.GetValue(0) as Project;
+            var projectKind = Guid.Parse(project.Kind);
+            if (projectKind == SolutionParser.Wpf)
+                return ProjectType.WPF;
+            if (projectKind == SolutionParser.SL)
+                return ProjectType.SL;
+            return ProjectType.Unknown;
         }
     }
 }

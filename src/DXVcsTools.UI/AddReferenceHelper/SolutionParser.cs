@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,20 +8,30 @@ using System.Reflection;
 using System.Windows.Controls;
 using DevExpress.Utils.Text.Internal;
 using DevExpress.Xpf.Mvvm.Native;
+using DXVcsTools.UI.Navigator;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Execution;
 
-namespace DXVcsTools.UI.AddReferenceHelper {
+namespace DXVcsTools.UI {
     public class SolutionParser {
+        public static readonly Guid Unknown = Guid.Empty;
+        public static readonly Guid Wpf = Guid.Parse("{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548}");
+        public static readonly Guid SL = Guid.Parse("{A1591282-1198-4647-A2B1-27E5FF5F6F3B}");
+        public static readonly Guid Win = Guid.Parse("{70E6D39B-F9F4-40DA-BAB2-2C604077941A}");
+        static List<Guid> knownGuides = new List<Guid>() { Unknown, Wpf, SL, Win };
         readonly string solutionPath;
         public SolutionParser(string path) {
             solutionPath = path;
         }
+        object GetSolution() {
+            object solution = GetSolutionWrapper();
+            SetSolutionPath(solution, solutionPath);
+            DoParse(solution);
+            return solution;
+        }
         public IEnumerable<string> Parse() {
-            object solutionWrapper = GetSolutionWrapper();
-            SetSolutionPath(solutionWrapper, solutionPath);
-            DoParse(solutionWrapper);
-            return GetAssembliesForAddReference(solutionWrapper);
+            object solution = GetSolution();
+            return GetAssembliesForAddReference(solution);
         }
         IEnumerable<string> GetAssembliesForAddReference(object solutionWrapper) {
             var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
@@ -54,7 +65,31 @@ namespace DXVcsTools.UI.AddReferenceHelper {
             methodInfo.Invoke(solution, null);
         }
         object GetSolutionWrapper() {
-            return typeof(BuildManager).Assembly.CreateInstance("Microsoft.Build.Construction.SolutionParser", true, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] {}, CultureInfo.CurrentCulture, null);
+            return typeof(BuildManager).Assembly.CreateInstance("Microsoft.Build.Construction.SolutionParser", true, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { }, CultureInfo.CurrentCulture, null);
+        }
+        IEnumerable GetProjects(object solution) {
+            return (IEnumerable)solution.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solution);
+        }
+        public ProjectType GetProjectType() {
+            try {
+                object solution = GetSolution();
+                var items = GetProjects(solution);
+                if (items == null || !items.Cast<object>().Any())
+                    return ProjectType.Unknown;
+                var projectItem = items.Cast<object>().First();
+                ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
+                string guides = root.Properties.FirstOrDefault(x => x.Name == "DefineConstants").With(x => x.Value);
+                if (string.IsNullOrEmpty(guides))
+                    return ProjectType.Unknown;
+                if (guides.Contains("WPF"))
+                    return ProjectType.WPF;
+                if (guides.Contains("SL"))
+                    return ProjectType.SL;
+                return ProjectType.Unknown;
+            }
+            catch {
+            }
+            return ProjectType.Unknown;
         }
     }
 }

@@ -2,6 +2,7 @@
 using DevExpress.Xpf.Editors.Helpers;
 using DevExpress.Xpf.Mvvm;
 using DXVcsTools.UI.Navigator;
+using Microsoft.Build.Evaluation;
 
 namespace DXVcsTools.UI.Navigator {
     public class NavigateTreeItem : BindableBase, IEquatable<NavigateTreeItem> {
@@ -36,6 +37,16 @@ namespace DXVcsTools.UI.Navigator {
         readonly string key;
         readonly string parentKey;
         bool used;
+        public bool UseForAddReference {
+            get { return Item.Return(x => x.UsedForAddReference, () => false); }
+            set { Item.Do(x => x.UsedForAddReference = value); }
+        }
+        public ProjectType ProjectType {
+            get { return Item.Return(x => Item.ProjectType, () => ProjectType.NoPlatform); }
+            set {
+                Item.Do(x => x.ProjectType = value);
+            }
+        }
         public bool Used {
             get { return Item.Return(x => x.Used, () => used); }
             set {
@@ -47,7 +58,7 @@ namespace DXVcsTools.UI.Navigator {
             get { return Item.Return(x => x.RelativePath, () => string.Empty); }
             set { Item.Do(x => x.RelativePath = value); }
         }
-        public string DisplayText { get { return Key; }}
+        public string DisplayText { get { return Key; } }
         public NavigateItem Item { get { return item; } }
         public string Key { get { return key; } }
         public string ParentKey { get { return parentKey; } }
