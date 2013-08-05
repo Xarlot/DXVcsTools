@@ -83,6 +83,7 @@ namespace DXVcsTools.VSIX {
         }
         int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) {
             InitializeToolWindow();
+            GenerateAddReferenceMenu();
             return VSConstants.S_OK;
         }
         int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) {
@@ -94,6 +95,9 @@ namespace DXVcsTools.VSIX {
         int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) {
             InitializeToolWindow();
             return VSConstants.S_OK;
+        }
+        void GenerateAddReferenceMenu() {
+            GenerateMenuHelper.UpdateAddReferenceMenu();
         }
         /// <summary>
         ///     This function is called when the user clicks the menu item that shows the
@@ -147,7 +151,6 @@ namespace DXVcsTools.VSIX {
             GenerateMenuItemsHelper generateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             generateMenuHelper.GenerateDefault();
             generateMenuHelper.GenerateMenus();
-            //GenerateMenu(navigateMenu, root);
 
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
             if (solution != null) {

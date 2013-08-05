@@ -22,11 +22,26 @@ namespace DXVcsTools.Core {
         }
         IEnumerable<ProjectItem> GetProjects(EnvDTE.Solution solution) {
             string name = solution.FullName;
-            return solution.Projects.Cast<Project>().Select(item => new ProjectItem(GetFilesAndDirectories(item).ToList()) { Name = name, Path = item.FileName });
+            foreach (Project item in solution.Projects)
+                yield return CreateProjectItem(item, name);
+        }
+        ProjectItem CreateProjectItem(Project item, string name) {
+            string fileName = string.Empty;
+            try {
+                fileName = item.FileName;
+            }
+            catch {
+                
+            }
+        
+            return new ProjectItem(GetFilesAndDirectories(item).ToList()) {
+                Name = name, 
+                Path = fileName,
+            };
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
             ProjectItems children = project.ProjectItems;
-            if (children.If(x => x.Count == 0).ReturnSuccess())
+            if (children == null || children.Count == 0)
                 yield break;
             foreach (EnvDTE.ProjectItem projectItem in children) {
                 FileItemBase item = GetItem(projectItem);

@@ -36,23 +36,17 @@ namespace DXVcsTools.UI.Navigator {
         readonly NavigateItem item;
         readonly string key;
         readonly string parentKey;
-        bool used;
         public bool UseForAddReference {
             get { return Item.Return(x => x.UsedForAddReference, () => false); }
             set { Item.Do(x => x.UsedForAddReference = value); }
         }
         public ProjectType ProjectType {
             get { return Item.Return(x => Item.ProjectType, () => ProjectType.NoPlatform); }
-            set {
-                Item.Do(x => x.ProjectType = value);
-            }
+            set { Item.Do(x => x.ProjectType = value); }
         }
         public bool Used {
-            get { return Item.Return(x => x.Used, () => used); }
-            set {
-                used = value;
-                Item.Do(x => x.Used = value);
-            }
+            get { return Item.Return(x => x.Used, () => false); }
+            set { Item.Do(x => x.Used = value); }
         }
         public string RelativePath {
             get { return Item.Return(x => x.RelativePath, () => string.Empty); }
@@ -66,7 +60,6 @@ namespace DXVcsTools.UI.Navigator {
             this.parentKey = parentKey;
             this.key = key;
             this.item = item;
-            this.used = item.Return(x => x.Used, () => false);
         }
     }
 }

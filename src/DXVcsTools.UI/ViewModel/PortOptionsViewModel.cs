@@ -42,7 +42,7 @@ namespace DXVcsTools.UI {
         string GetProjectPath(string path, out string serverPath) {
             return Locator.GetVcsLocation(path, path, out serverPath);
         }
-        public bool IsAttached { get { return VcsServer != null; }}
+        public bool IsAttached { get { return !string.IsNullOrEmpty(VcsServer); }}
         public OptionsViewModel Options { get; private set; }
         public IEnumerable<string> Branches { get; private set; }
         public string ProjectFilePath { get; private set; }

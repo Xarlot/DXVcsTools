@@ -26,13 +26,21 @@ namespace DXVcsTools.ViewModels {
             this.package = package;
         }
         public void Release() {
+            ReleaseRootMenu();
+            ReleaseAddReferenceMenu();
+            devExpressMenu = null;
+        }
+        void ReleaseRootMenu() {
             foreach (var pair in rootMenuHierarchy)
                 pair.Value.DeleteItem();
             rootMenuCache.Clear();
             rootMenuHierarchy.Clear();
+        }
+        void ReleaseAddReferenceMenu() {
+            foreach (var pair in addReferenceMenuHierarchy)
+                pair.Value.DeleteItem();
             addReferenceMenuCache.Clear();
             addReferenceMenuHierarchy.Clear();
-            devExpressMenu = null;
         }
         public void GenerateDefault() {
             devExpressMenu = new VSDevExpressMenu(dte);
@@ -55,6 +63,19 @@ namespace DXVcsTools.ViewModels {
         void WizardMenuClick(object sender, EventArgs e) {
             package.ShowToolWindow();
         }
+        public void UpdateAddReferenceMenu() {
+            if (!Options.UseNavigateMenu)
+                return;
+            if (Options.UpdateNavigateMenuAsync)
+                Task.Run(new Action(UpdateAddReferenceMenuAsync));
+            else {
+                UpdateAddReferenceMenuAsync();
+            }
+        }
+        void UpdateAddReferenceMenuAsync() {
+            ReleaseAddReferenceMenu();
+            GenerateAddReferenceMenuAsync();
+        }
         public void GenerateMenus() {
             if (!Options.UseNavigateMenu)
                 return;
@@ -64,13 +85,28 @@ namespace DXVcsTools.ViewModels {
                 GenerateMenuAsync();
             }
         }
+        public void GenerateAddReferenceMenu() {
+            if (!Options.UseNavigateMenu)
+                return;
+            if (Options.UpdateNavigateMenuAsync)
+                Task.Run(new Action(GenerateAddReferenceMenuAsync));
+            else {
+                GenerateAddReferenceMenuAsync();
+            }
+        }
         void GenerateMenuAsync() {
             var model = SerializeHelper.DeSerializeNavigationConfig();
             if (model.NavigateItems == null)
                 return;
             GenerateNavigationMenu(model);
+        }
+        void GenerateAddReferenceMenuAsync() {
+            var model = SerializeHelper.DeSerializeNavigationConfig();
+            if (model.NavigateItems == null)
+                return;
             GenerateAddReferenceMenu(model);
         }
+
         void GenerateAddReferenceMenu(NavigationConfigViewModel model) {
             foreach (var item in model.NavigateItems) {
                 if (ShouldGenerateMenuItem(item))
@@ -104,8 +140,6 @@ namespace DXVcsTools.ViewModels {
         void GenerateMenuItem(NavigateItem item, Func<NavigateItem, string> getRelativePath) {
             string relativePath = getRelativePath(item);
             if (string.IsNullOrEmpty(relativePath) || !relativePath.StartsWith("$"))
-                return;
-            if (!ProjectTypeMatch(item))
                 return;
             int index = GetDirectorySeparatorIndex(relativePath);
             if (index < 0)

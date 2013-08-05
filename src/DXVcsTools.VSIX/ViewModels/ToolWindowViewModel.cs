@@ -32,7 +32,7 @@ namespace DXVcsTools.VSIX {
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
         readonly Locker currentBranchLocker = new Locker();
-        GenerateMenuItemsHelper generateMenuItemsHelper;
+        readonly GenerateMenuItemsHelper generateMenuItemsHelper;
         public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper) {
             this.generateMenuItemsHelper = generateMenuHelper;
             this.dte = new DteWrapper(dte); 
