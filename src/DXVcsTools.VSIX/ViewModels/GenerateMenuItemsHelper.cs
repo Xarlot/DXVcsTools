@@ -106,7 +106,6 @@ namespace DXVcsTools.ViewModels {
                 return;
             GenerateAddReferenceMenu(model);
         }
-
         void GenerateAddReferenceMenu(NavigationConfigViewModel model) {
             foreach (var item in model.NavigateItems) {
                 if (ShouldGenerateMenuItem(item))

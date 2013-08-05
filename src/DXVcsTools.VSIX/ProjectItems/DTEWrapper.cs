@@ -143,8 +143,22 @@ namespace DXVcsTools.Core {
             if (projects.Length == 0)
                 return;
             var project = projects.GetValue(0) as Project;
-            var newPrj = (VSLangProj.VSProject)(project).Object;
+            var newPrj = (VSProject)project.Object;
             newPrj.References.Add(assembly);
+        }
+        public void ClearReferences() {
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if (projects.Length == 0)
+                return;
+            var projectWrapper = (Project)projects.GetValue(0);
+            var project = (VSProject)projectWrapper.Object;
+            if (project == null)
+                return;
+            var references = project.References.Cast<Reference>().ToList();
+            foreach (Reference reference in references) {
+                if (reference.Name.Contains("DevExpress"))
+                    reference.Remove();
+            }
         }
         public ProjectType GetProjectType() {
             foreach (Project project in dte.Solution.Projects) {

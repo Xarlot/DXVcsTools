@@ -6,6 +6,7 @@ using DXVcsTools.UI.Navigator;
 namespace DXVcsTools.UI {
     public class AddReferenceHelper {
         public void AddReferences(IDteWrapper dte, NavigateItem item) {
+            dte.ClearReferences();
             SolutionParser parser = new SolutionParser(item.Path);
             foreach (var assembly in parser.Parse()) {
                 dte.AddReference(assembly);
