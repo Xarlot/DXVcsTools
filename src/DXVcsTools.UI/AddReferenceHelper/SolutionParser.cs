@@ -79,7 +79,7 @@ namespace DXVcsTools.UI {
                 foreach (var projectItem in items) {
                     ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
                     string guides = root.Properties.FirstOrDefault(x => x.Name == "ProjectTypeGuids").With(x => x.Value);
-                    if (string.IsNullOrEmpty(guides)) {
+                    if (!string.IsNullOrEmpty(guides)) {
                         foreach (string strguid in guides.Split(';')) {
                             Guid guid = Guid.Parse(strguid);
                             if (guid == Wpf)

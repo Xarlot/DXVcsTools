@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI;
@@ -146,16 +147,15 @@ namespace DXVcsTools.Core {
             newPrj.References.Add(assembly);
         }
         public ProjectType GetProjectType() {
-            var projects = (Array)dte.ActiveSolutionProjects;
-            if (projects.Length == 0)
-                return ProjectType.Unknown;
-            var project = projects.GetValue(0) as Project;
-            var projectKind = Guid.Parse(project.Kind);
-            if (projectKind == SolutionParser.Wpf)
-                return ProjectType.WPF;
-            if (projectKind == SolutionParser.SL)
-                return ProjectType.SL;
-            return ProjectType.Unknown;
+            foreach (Project project in dte.Solution.Projects) {
+                var projectKind = Guid.Parse(project.Kind);
+                if (projectKind == SolutionParser.Wpf)
+                    return ProjectType.WPF;
+                if (projectKind == SolutionParser.SL)
+                    return ProjectType.SL;
+            }
+            SolutionParser parser = new SolutionParser(dte.Solution.FileName);
+            return parser.GetProjectType();
         }
     }
 }
