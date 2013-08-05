@@ -15,19 +15,16 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <dxlc:LayoutControl Orientation="Vertical">
-        <dxlc:LayoutItem>
-            <dxe:TextEdit/>
-        </dxlc:LayoutItem>
         <dxlc:LayoutItem Height="600" Width="1200">
             <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="DisplayText"></dxg:GridColumn>
-                    <dxg:GridColumn FieldName="UseForAddReference" Width="100">
+                    <dxg:GridColumn FieldName="UseForAddReference" FixedWidth="True" Width="100">
                         <dxg:GridColumn.EditSettings>
                             <dxe:CheckEditSettings IsThreeState="False"/>
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="ProjectType" Width="150">
+                    <dxg:GridColumn FieldName="ProjectType" FixedWidth="True" Width="100">
                         <dxg:GridColumn.EditSettings>
                             <dxe:ComboBoxEditSettings 
                                 IsTextEditable="False" 
