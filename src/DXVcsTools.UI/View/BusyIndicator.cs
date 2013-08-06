@@ -20,7 +20,7 @@ namespace DXVcsTools.UI {
 
     class ProgressBusyIndicator : DXWindow {
         public ProgressBusyIndicator() {
-            TextBlock tb = new TextBlock() {Text = "Loading", Margin = new Thickness(30)};
+            TextBlock tb = new TextBlock() {Text = "Loading...", Margin = new Thickness(30)};
             Content = tb;
             Topmost = true;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
