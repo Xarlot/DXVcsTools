@@ -13,6 +13,7 @@ namespace DXVcsTools.UI {
         }
         public void AddProjectReferences(IDteWrapper dte, NavigateItem item) {
             dte.ClearReferences();
+            dte.ClearProjectReferences();
             SolutionParser parser = new SolutionParser(item.Path);
             foreach (var assembly in parser.GetReferencedAssemblies(false))
                 dte.AddReference(assembly);

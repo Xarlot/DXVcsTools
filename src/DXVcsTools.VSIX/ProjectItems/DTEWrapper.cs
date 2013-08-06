@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
+using DevExpress.Data.PLinq.Helpers;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
@@ -154,6 +155,22 @@ namespace DXVcsTools.Core {
             var newPrj = (VSProject)project.Object;
             var projectReference = dte.Solution.AddFromFile(projectPath);
             newPrj.References.AddProject(projectReference);
+        }
+        public void ClearProjectReferences() {
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if (projects.Length == 0)
+                return;
+            var projectWrapper = (Project)projects.GetValue(0);
+            var project = (VSProject)projectWrapper.Object;
+            if (project == null)
+                return;
+            var solutionProjects = dte.Solution.Projects.Cast<object>().ToList();
+            foreach (Project projectToRemove in solutionProjects) {
+                if (projectToRemove == projectWrapper)
+                    continue;
+                if (projectToRemove.Name.Contains("DevExpress"))
+                    dte.Solution.Remove(projectToRemove);
+            }
         }
         public void ClearReferences() {
             var projects = (Array)dte.ActiveSolutionProjects;

@@ -19,5 +19,6 @@ namespace DXVcsTools.Core {
         void AddReference(string assembly);
         void ClearReferences();
         void AddProjectReference(string path);
+        void ClearProjectReferences();
     }
 }
