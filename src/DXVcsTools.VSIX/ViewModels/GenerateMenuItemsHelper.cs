@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
@@ -12,11 +13,11 @@ using EnvDTE;
 
 namespace DXVcsTools.ViewModels {
     public class GenerateMenuItemsHelper {
+        const string addReferenceFormat = "Add Reference - {0}";
+        const string addProjectReferenceFormat = "Add Project Reference - {0}";
         readonly DTE dte;
         VSDevExpressMenu devExpressMenu;
         readonly DXVcsTools_VSIXPackage package;
-        readonly Dictionary<VSDevExpressMenuItem, NavigateItem> rootMenuCache = new Dictionary<VSDevExpressMenuItem, NavigateItem>();
-        readonly Dictionary<VSDevExpressMenuItem, NavigateItem> addReferenceMenuCache = new Dictionary<VSDevExpressMenuItem, NavigateItem>();
         readonly Dictionary<string, VSDevExpressMenu> rootMenuHierarchy = new Dictionary<string, VSDevExpressMenu>();
         readonly Dictionary<string, VSDevExpressMenu> addReferenceMenuHierarchy = new Dictionary<string, VSDevExpressMenu>();
         OptionsViewModel Options { get { return package.ToolWindowViewModel.Options; } }
@@ -33,13 +34,11 @@ namespace DXVcsTools.ViewModels {
         void ReleaseRootMenu() {
             foreach (var pair in rootMenuHierarchy)
                 pair.Value.DeleteItem();
-            rootMenuCache.Clear();
             rootMenuHierarchy.Clear();
         }
         void ReleaseAddReferenceMenu() {
             foreach (var pair in addReferenceMenuHierarchy)
                 pair.Value.DeleteItem();
-            addReferenceMenuCache.Clear();
             addReferenceMenuHierarchy.Clear();
         }
         public void GenerateDefault() {
@@ -85,7 +84,7 @@ namespace DXVcsTools.ViewModels {
                 GenerateMenuAsync();
             }
         }
-        public void GenerateAddReferenceMenu() {
+        public void GenerateAddReferenceMenuImpl() {
             if (!Options.UseNavigateMenu)
                 return;
             if (Options.UpdateNavigateMenuAsync)
@@ -104,9 +103,31 @@ namespace DXVcsTools.ViewModels {
             var model = SerializeHelper.DeSerializeNavigationConfig();
             if (model.NavigateItems == null)
                 return;
-            GenerateAddReferenceMenu(model);
+            GenerateAddReferenceMenuImpl(model);
+            GenerateAddProjectReferenceMenuImpl(model);
         }
-        void GenerateAddReferenceMenu(NavigationConfigViewModel model) {
+        void GenerateAddProjectReferenceMenuImpl(NavigationConfigViewModel model) {
+            foreach (var item in model.NavigateItems) {
+                if (ShouldGenerateMenuItem(item))
+                    GenerateAddProjectReferenceMenuItem(item, model.GetRelativePath);
+            }
+        }
+        void GenerateAddProjectReferenceMenuItem(NavigateItem item, Func<NavigateItem, string> getRelativePath) {
+            string relativePath = getRelativePath(item);
+            if (string.IsNullOrEmpty(relativePath) || !relativePath.StartsWith("$"))
+                return;
+            int index = GetDirectorySeparatorIndex(relativePath);
+            if (index < 0)
+                return;
+            string menuName = GetRootMenuName(relativePath);
+            var rootMenu = GetRootAddReferenceMenu(string.Format(addProjectReferenceFormat, menuName));
+            relativePath = relativePath.Substring(index, relativePath.Length - index);
+            GenerateMenuItemContent(rootMenu, item, relativePath, (menuItem, navItem) => {
+                menuItem.Tag = navItem;
+                menuItem.Click += AddProjectReferenceMenuItemClick;
+            });
+        }
+        void GenerateAddReferenceMenuImpl(NavigationConfigViewModel model) {
             foreach (var item in model.NavigateItems) {
                 if (ShouldGenerateMenuItem(item))
                     GenerateAddReferenceMenuItem(item, model.GetRelativePath);
@@ -123,11 +144,11 @@ namespace DXVcsTools.ViewModels {
             if (index < 0)
                 return;
             string menuName = GetRootMenuName(relativePath);
+            var rootMenu = GetRootAddReferenceMenu(string.Format(addReferenceFormat, menuName));
             relativePath = relativePath.Substring(index, relativePath.Length - index);
-            var rootMenu = GetRootAddReferenceMenu(menuName);
             GenerateMenuItemContent(rootMenu, item, relativePath, (menuItem, navItem) => {
+                menuItem.Tag = navItem;
                 menuItem.Click += AddReferenceMenuItemClick;
-                addReferenceMenuCache[menuItem] = navItem;
             });
         }
         void GenerateNavigationMenu(NavigationConfigViewModel model) {
@@ -148,7 +169,7 @@ namespace DXVcsTools.ViewModels {
             var rootMenu = GetRootMenu(menuName);
             GenerateMenuItemContent(rootMenu, item, relativePath, (menuItem, navItem) => {
                 menuItem.Click += RootMenuItemClick;
-                rootMenuCache[menuItem] = navItem;
+                menuItem.Tag = navItem;
             });
         }
         bool ProjectTypeMatch(NavigateItem item) {
@@ -199,17 +220,21 @@ namespace DXVcsTools.ViewModels {
             return result;
         }
         void RootMenuItemClick(object sender, EventArgs e) {
-            NavigateItem item;
-            if (rootMenuCache.TryGetValue((VSDevExpressMenuItem)sender, out item)) {
-                package.ToolWindowViewModel.NavigateToSolution(item.Path);
-            }
+            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            NavigateItem item = (NavigateItem)menuItem.Tag;
+            package.ToolWindowViewModel.NavigateToSolution(item.Path);
         }
         void AddReferenceMenuItemClick(object sender, EventArgs e) {
-            NavigateItem item;
-            if (addReferenceMenuCache.TryGetValue((VSDevExpressMenuItem)sender, out item)) {
-                AddReferenceHelper helper = new AddReferenceHelper();
-                helper.AddReferences(new DteWrapper(dte), item);
-            }
+            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            NavigateItem item = (NavigateItem)menuItem.Tag;
+            AddReferenceHelper helper = new AddReferenceHelper();
+            helper.AddReferences(new DteWrapper(dte), item);
+        }
+        void AddProjectReferenceMenuItemClick(object sender, EventArgs e) {
+            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            NavigateItem item = (NavigateItem)menuItem.Tag;
+            AddReferenceHelper helper = new AddReferenceHelper();
+            helper.AddProjectReferences(new DteWrapper(dte), item);
         }
         VSDevExpressMenu GetRootAddReferenceMenu(string menuName) {
             VSDevExpressMenu menu;

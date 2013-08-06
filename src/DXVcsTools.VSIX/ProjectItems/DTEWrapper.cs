@@ -146,6 +146,15 @@ namespace DXVcsTools.Core {
             var newPrj = (VSProject)project.Object;
             newPrj.References.Add(assembly);
         }
+        public void AddProjectReference(string projectPath) {
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if (projects.Length == 0)
+                return;
+            var project = projects.GetValue(0) as Project;
+            var newPrj = (VSProject)project.Object;
+            var projectReference = dte.Solution.AddFromFile(projectPath);
+            newPrj.References.AddProject(projectReference);
+        }
         public void ClearReferences() {
             var projects = (Array)dte.ActiveSolutionProjects;
             if (projects.Length == 0)

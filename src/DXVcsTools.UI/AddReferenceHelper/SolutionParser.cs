@@ -29,11 +29,24 @@ namespace DXVcsTools.UI {
             DoParse(solution);
             return solution;
         }
-        public IEnumerable<string> Parse() {
+        public IEnumerable<string> GetReferencedAssemblies(bool includeRoot) {
             object solution = GetSolution();
-            return GetAssembliesForAddReference(solution);
+            return GetAssembliesForAddReference(solution, includeRoot);
         }
-        IEnumerable<string> GetAssembliesForAddReference(object solutionWrapper) {
+        public IEnumerable<string> GetProjectPathes() {
+            object solution = GetSolution();
+            return GetProjectPathesInternal(solution);
+        }
+        IEnumerable<string> GetProjectPathesInternal(object solutionWrapper) {
+            var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
+            if (items == null || !items.Cast<object>().Any())
+                yield break;
+            foreach (object projectItem in items) {
+                ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
+                yield return root.ProjectFileLocation.LocationString;
+            }
+        }
+        IEnumerable<string> GetAssembliesForAddReference(object solutionWrapper, bool includeRoot) {
             var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
             if (items == null || !items.Cast<object>().Any())
                 yield break;
@@ -42,7 +55,8 @@ namespace DXVcsTools.UI {
                 string location = root.DirectoryPath;
                 foreach (var item in GetDXReferences(root))
                     yield return GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value));
-                yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
+                if (includeRoot)
+                    yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
             }
         }
         string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {

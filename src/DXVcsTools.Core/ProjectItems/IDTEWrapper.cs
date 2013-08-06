@@ -18,5 +18,6 @@ namespace DXVcsTools.Core {
         bool IsItemUnderScc(string fileName);
         void AddReference(string assembly);
         void ClearReferences();
+        void AddProjectReference(string path);
     }
 }

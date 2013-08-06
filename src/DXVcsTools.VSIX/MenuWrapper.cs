@@ -58,14 +58,9 @@ namespace DXVcsTools.VSIX {
                 OnVSSourceChanged(oldValue);
             }
         }
-        IEnumerable<VSDevExpressMenuItem> Items {
-            get {
-                foreach (VSDevExpressMenuItem childItem in itemsInternal) {
-                    yield return childItem;
-                }
-                yield break;
-            }
-        }
+        IEnumerable<VSDevExpressMenuItem> Items { get { return itemsInternal; } }
+        public object Tag { get; set; }
+
         public event EventHandler Click;
         #endregion
 
@@ -156,7 +151,7 @@ namespace DXVcsTools.VSIX {
                 UpdateToolTip();
             }
         }
-        void OnButtonClick(CommandBarButton Ctrl, ref bool CancelDefault) {
+        void OnButtonClick(CommandBarButton ctrl, ref bool cancelDefault) {
             RaiseClickEvent();
         }
         protected virtual void RaiseClickEvent() {
@@ -185,42 +180,63 @@ namespace DXVcsTools.VSIX {
     public enum VSDevExpressMenuLocation {
         MenuBar,
         AddReferenceRoot,
+        AddReferenceItem,
     }
     public class VSDevExpressMenu : VSDevExpressMenuItem {
         const string DevExpressMenuBarLocation = "MenuBar";
         const string DevExpressMenuAddReferenceLocation = "Reference Root";
+        const string DevExpressMenuConvertToProjectReference = "Reference Item";
         const string DevExpressMenuName = "DXVcsTools";
         static readonly IDictionary<VSDevExpressMenuLocation, string> MenusCache = new Dictionary<VSDevExpressMenuLocation, string>();
 
         static VSDevExpressMenu() {
             MenusCache.Add(VSDevExpressMenuLocation.MenuBar, DevExpressMenuBarLocation);
             MenusCache.Add(VSDevExpressMenuLocation.AddReferenceRoot, DevExpressMenuAddReferenceLocation);
+            MenusCache.Add(VSDevExpressMenuLocation.AddReferenceItem, DevExpressMenuConvertToProjectReference);
         }
 
-        public VSDevExpressMenu(DTE dte, string menuName = DevExpressMenuName, VSDevExpressMenuLocation location = VSDevExpressMenuLocation.MenuBar) {
+        public VSDevExpressMenu(DTE dte, string menuName = DevExpressMenuName, VSDevExpressMenuLocation location = VSDevExpressMenuLocation.MenuBar, bool directItem = false) {
             Header = menuName;
             var commandBars = dte.CommandBars as CommandBars;
             CommandBar mainMenuBar = commandBars[MenusCache[location]];
-            CommandBarPopup devExpressMenu = null;
-
-            foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {
-                if (commandBarControl.Type == MsoControlType.msoControlPopup) {
-                    var commandBarPopup = (CommandBarPopup)commandBarControl;
-                    if (commandBarPopup.CommandBar.Name == menuName) {
-                        devExpressMenu = commandBarPopup;
-                        break;
+            MsoControlType controlType = GetControlType(directItem);
+            if (controlType == MsoControlType.msoControlPopup) {
+                CommandBarPopup devExpressMenu = null;
+                foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {
+                    if (commandBarControl.Type == MsoControlType.msoControlPopup) {
+                        var commandBarPopup = (CommandBarPopup)commandBarControl;
+                        if (commandBarPopup.CommandBar.Name == menuName) {
+                            devExpressMenu = commandBarPopup;
+                            break;
+                        }
                     }
                 }
+                if (devExpressMenu == null)
+                    devExpressMenu = mainMenuBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing) as CommandBarPopup;
+                VSSource = devExpressMenu;
+                CreateChildrenFromSource();
             }
-            if (devExpressMenu == null)
-                devExpressMenu = mainMenuBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing) as CommandBarPopup;
-            VSSource = devExpressMenu;
-            CreateChildrenFromSource();
+            else if (controlType == MsoControlType.msoControlButton) {
+                foreach (CommandBarControl commandBarControl in mainMenuBar.Controls) {
+                    if (commandBarControl.Type == MsoControlType.msoControlButton) {
+                        CommandBarButton button = (CommandBarButton)commandBarControl;
+                        if (button.Caption == menuName)
+                            throw new ArgumentException("button already registerer");
+                    }
+                }
+                var msoButton = mainMenuBar.Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing) as CommandBarButton;
+                msoButton.Caption = menuName;
+                VSSource = msoButton;
+            }
+        }
+        MsoControlType GetControlType(bool isDirect) {
+            return isDirect ? MsoControlType.msoControlButton : MsoControlType.msoControlPopup;
         }
     }
 
     public class MenuItemPictureHelper : AxHost {
-        public MenuItemPictureHelper() : base("") {
+        public MenuItemPictureHelper()
+            : base("") {
         }
 
         public static StdPicture LoadImageFromResources(string imageName) {

@@ -8,9 +8,16 @@ namespace DXVcsTools.UI {
         public void AddReferences(IDteWrapper dte, NavigateItem item) {
             dte.ClearReferences();
             SolutionParser parser = new SolutionParser(item.Path);
-            foreach (var assembly in parser.Parse()) {
+            foreach (var assembly in parser.GetReferencedAssemblies(true))
                 dte.AddReference(assembly);
-            }
+        }
+        public void AddProjectReferences(IDteWrapper dte, NavigateItem item) {
+            dte.ClearReferences();
+            SolutionParser parser = new SolutionParser(item.Path);
+            foreach (var assembly in parser.GetReferencedAssemblies(false))
+                dte.AddReference(assembly);
+            foreach (var path in parser.GetProjectPathes()) 
+                dte.AddProjectReference(path);
         }
         public ProjectType GetProjectType(string path) {
             SolutionParser parser = new SolutionParser(path);
