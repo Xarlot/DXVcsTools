@@ -180,6 +180,7 @@
     <Compile Include="ViewModel\ShowLogHelper.cs" />
     <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />
+    <Compile Include="View\BusyIndicator.cs" />
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>
     </Compile>
