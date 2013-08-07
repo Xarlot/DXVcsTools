@@ -5,19 +5,24 @@ using System.Linq;
 namespace DXVcsTools.UI.Navigator {
     public static class NavigateHelper {
         public static IEnumerable<NavigateItem> Scan(IEnumerable<string> roots) {
-            return roots.SelectMany(ScanRoot);
-        }
-        static IEnumerable<NavigateItem> ScanRoot(string path) {
-            if (!Directory.Exists(path))
-                yield break;
+            var files = roots.SelectMany(ScanForFiles).ToList();
             var addReferenceHelper = new AddReferenceHelper();
-            foreach (var fileInfo in Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories)) {
+            int index = 0;
+            foreach (var file in files) {
+                BusyIndicator.UpdateProgress(index + 1, files.Count);
                 NavigateItem item = new NavigateItem();
-                item.Path = fileInfo;
-                item.Name = Path.GetFileName(fileInfo);
-                item.ProjectType = addReferenceHelper.GetProjectType(fileInfo);
+                item.Path = file;
+                item.Name = Path.GetFileName(file);
+                item.ProjectType = addReferenceHelper.GetProjectType(file);
+                index++;
                 yield return item;
             }
+        }
+        static IEnumerable<string> ScanForFiles(string path) {
+            if (!Directory.Exists(path))
+                yield break;
+            foreach (var fileInfo in Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories))
+                yield return fileInfo;
         }
     }
 }

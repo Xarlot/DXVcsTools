@@ -91,7 +91,10 @@ namespace DXVcsTools.UI {
                 if (items == null || !items.Cast<object>().Any())
                     return ProjectType.Unknown;
                 foreach (var projectItem in items) {
-                    ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
+                    string absolutePath = GetAbsolutePath(projectItem);
+                    if (!IsValidProject(absolutePath))
+                        continue;
+                    ProjectRootElement root = ProjectRootElement.Open(absolutePath);
                     string guides = root.Properties.FirstOrDefault(x => x.Name == "ProjectTypeGuids").With(x => x.Value);
                     if (!string.IsNullOrEmpty(guides)) {
                         foreach (string strguid in guides.Split(';')) {
@@ -116,6 +119,9 @@ namespace DXVcsTools.UI {
             catch {
             }
             return ProjectType.Unknown;
+        }
+        bool IsValidProject(string absolutePath) {
+            return Path.HasExtension(absolutePath) && File.Exists(absolutePath);
         }
     }
 }

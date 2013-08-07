@@ -3,7 +3,6 @@ using DevExpress.Xpf.Mvvm;
 
 namespace DXVcsTools.UI {
     public class ThemeProvider : BindableBase {
-        [ThreadStatic]
         public static readonly ThemeProvider Instance;
 
         static ThemeProvider() {

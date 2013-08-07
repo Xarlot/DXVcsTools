@@ -1,35 +1,106 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Editors.Helpers;
 
 namespace DXVcsTools.UI {
     public class BusyIndicator {
-        static ProgressBusyIndicator indicator;
+        static ProgressBarBusyIndicatorThreadWrapper Wrapper { get; set; }
+        public static readonly object Locker = new object();
+        static Thread Thread { get; set; }
         public static void Show() {
-            indicator.Do(x => x.Close());
-            indicator = new ProgressBusyIndicator();
-            ThemeManager.SetThemeName(indicator, ThemeProvider.Instance.ThemeName);
-            indicator.Show();
+            lock (Locker) {
+                if (Wrapper != null)
+                    return;
+                Wrapper = new ProgressBarBusyIndicatorThreadWrapper();
+                Thread = new Thread(Wrapper.Show);
+                Thread.Priority = ThreadPriority.AboveNormal;
+                Thread.SetApartmentState(ApartmentState.STA);
+                Thread.Start();
+            }
         }
         public static void Close() {
-            indicator.Do(x => x.Close());
-            indicator = null;
+            lock (Locker) {
+                if (Wrapper == null)
+                    return;
+                Wrapper.Close();
+                Wrapper = null;
+                Thread = null;
+            }
+        }
+        public static void UpdateProgress(int current, int count) {
+            lock (Locker) {
+                if (Wrapper == null)
+                    return;
+                Wrapper.Progress = current;
+                Wrapper.Count = count;
+                Wrapper.SupportProgress = true;
+            }
         }
     }
 
+    public enum BusyIndicatorStyle {
+        Immediate, 
+        Marquee,
+    }
+
+    class ProgressBarBusyIndicatorThreadWrapper {
+        public ProgressBusyIndicator Indicator { get; set; }
+        public int Progress { get; set; }
+        public int Count { get; set; }
+        public bool SupportProgress { get; set; }
+        public volatile bool ShouldStop;
+        public void Show() {
+            Indicator = new ProgressBusyIndicator();
+            Indicator.Tag = this;
+            Indicator.ShowDialog();
+        }
+        public void Close() {
+            ShouldStop = true;
+        }
+    }
     class ProgressBusyIndicator : Window {
+        public int Progress { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).Progress; } }
+        public int Count { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).Count; } }
+        public bool SupportProgress { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).SupportProgress; } }
+        public bool ShouldStop { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).ShouldStop; } }
+        DispatcherTimer Timer { get; set; }
         public ProgressBusyIndicator() {
             BackgroundPanel panel = new BackgroundPanel();
-            TextBlock tb = new TextBlock() {Text = "Loading...", Margin = new Thickness(30)};
+            TextBlock tb = new TextBlock() { Text = "Loading...", Margin = new Thickness(30) };
             panel.Content = tb;
             Content = panel;
             Topmost = true;
+            ThemeManager.SetThemeName(this, ThemeProvider.Instance.ThemeName);
             BorderThickness = new Thickness(1);
             ResizeMode = ResizeMode.NoResize;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             WindowStyle = WindowStyle.None;
             SizeToContent = SizeToContent.WidthAndHeight;
+            Timer = new DispatcherTimer();
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = TimeSpan.FromMilliseconds(100);
+            Timer.Start();
+        }
+        protected override void OnClosing(CancelEventArgs e) {
+            Timer.Stop();
+            base.OnClosing(e);
+        }
+
+        void Timer_Tick(object sender, EventArgs e) {
+            lock (BusyIndicator.Locker) {
+                if (ShouldStop)
+                    Close();
+                if (!SupportProgress)
+                    return;
+                TextBlock tb = (TextBlock)LayoutHelper.FindElementByType(this, typeof(TextBlock));
+                tb.Text = string.Format("Progress: {0} in {1}", Progress, Count);
+            }
         }
     }
 }
