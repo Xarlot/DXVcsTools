@@ -18,11 +18,15 @@ namespace DXVcsTools.UI {
         }
     }
 
-    class ProgressBusyIndicator : DXWindow {
+    class ProgressBusyIndicator : Window {
         public ProgressBusyIndicator() {
+            BackgroundPanel panel = new BackgroundPanel();
             TextBlock tb = new TextBlock() {Text = "Loading...", Margin = new Thickness(30)};
-            Content = tb;
+            panel.Content = tb;
+            Content = panel;
             Topmost = true;
+            BorderThickness = new Thickness(1);
+            ResizeMode = ResizeMode.NoResize;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             WindowStyle = WindowStyle.None;
             SizeToContent = SizeToContent.WidthAndHeight;

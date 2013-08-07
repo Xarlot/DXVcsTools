@@ -36,9 +36,13 @@ namespace DXVcsTools.UI.Navigator {
         readonly NavigateItem item;
         readonly string key;
         readonly string parentKey;
+        bool usedForAddReference;
         public bool UseForAddReference {
-            get { return Item.Return(x => x.UsedForAddReference, () => false); }
-            set { Item.Do(x => x.UsedForAddReference = value); }
+            get { return Item.Return(x => x.UsedForAddReference, () => usedForAddReference); }
+            set {
+                Item.Do(x => x.UsedForAddReference = value);
+                SetProperty(ref usedForAddReference, value, () => UseForAddReference);
+            }
         }
         public ProjectType ProjectType {
             get { return Item.Return(x => Item.ProjectType, () => ProjectType.NoPlatform); }
