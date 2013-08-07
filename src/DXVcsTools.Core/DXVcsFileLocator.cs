@@ -10,6 +10,16 @@ namespace DXVcsTools.Core {
 
             _bindingInfo = bindingInfo;
         }
+        public bool IsUnderScc(string projectFile) {
+            try {
+                string server;
+                GetVcsLocation(projectFile, projectFile, out server);
+                return true;
+            }
+            catch {
+            }
+            return false;
+        }
         public string GetVcsLocation(string projectFile, out string server) {
             return GetVcsLocation(projectFile, projectFile, out server);
         }

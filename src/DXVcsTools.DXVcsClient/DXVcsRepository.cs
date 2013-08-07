@@ -116,7 +116,6 @@ namespace DXVcsTools.DXVcsClient {
 
             return Path.Combine(workingFolder, Path.GetFileName(vcsFile));
         }
-
         string GetWorkingFolder(string vcsProject) {
             if (string.IsNullOrEmpty(vcsProject))
                 throw new ArgumentException("vcsProject");

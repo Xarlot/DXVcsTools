@@ -65,7 +65,17 @@ namespace DXVcsTools.UI {
             string vcsTargetProjectPath = vcsPath.Replace(MasterBranch.Path, currentBranch.Path);
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(VcsServer);
             //bug - project file path returns as directory path
-            return repository.GetFileWorkingPath(vcsTargetProjectPath + Path.GetFileName(ProjectFilePath));
+            return FindRootProject(repository, repository.GetFileWorkingPath(vcsTargetProjectPath));
+        }
+        string FindRootProject(IDXVcsRepository repository, string rootPath) {
+            string firstCandidate = rootPath + Path.GetFileName(ProjectFilePath);
+            if (Locator.IsUnderScc(firstCandidate))
+                return firstCandidate;
+            foreach (var file in Directory.GetFiles(rootPath, "*.sln", SearchOption.AllDirectories)) {
+                if (Locator.IsUnderScc(file))
+                    return file;
+            }
+            return firstCandidate;
         }
         string GetRelativePath(string filePath, string projectPath) {
             string server;
