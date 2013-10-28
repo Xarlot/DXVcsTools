@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="DevExpress.Data.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Data.v13.2.dll</HintPath>
       <Private>False</Private>
@@ -227,6 +227,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProjectItems\ProjectItemWrapper.cs" />
+    <Compile Include="ProjectItems\VSVersion.cs" />
     <Compile Include="ViewModels\GenerateMenuItemsHelper.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="MenuWrapper.cs">

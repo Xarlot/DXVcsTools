@@ -89,7 +89,14 @@ namespace DXVcsTools.Core {
         const string ThemeLight = "de3dbbcd-f642-433c-8353-8f1df4370aba";
         const string ThemeDark = "1ded0138-47ce-435e-84ef-9ec1f439b749";
         string GetThemeId() {
-            return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
+            try {
+                if (VSVersion.VS2012)
+                    return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\11.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
+                if (VSVersion.VS2013OrLater)
+                    return Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\12.0\" + CategoryTextGeneral, PropertyNameCurrentTheme, "").ToString();
+            }
+            catch {}
+            return ThemeLight;
         }
         public string GetVSTheme(Func<VSTheme, string> getThemeFunc) {
             switch (GetThemeId()) {
