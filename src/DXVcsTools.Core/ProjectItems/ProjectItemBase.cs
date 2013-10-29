@@ -16,7 +16,6 @@ namespace DXVcsTools.Core {
     public abstract class ProjectItemBase : BindableBase {
         bool isCheckOut;
         bool isChecked;
-        bool isSaved;
         MergeState mergeState;
         string name;
         string path;

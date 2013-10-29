@@ -8,7 +8,6 @@ namespace DXVcsTools.DXVcsClient {
     class DXVcsServiceProvider : MarshalByRefObject {
         static bool isServiceRegistered;
         IDXVCSService service;
-        object serviceBase;
         class Factory : ChannelFactory<IDXVCSService> {
             public Factory(ServiceEndpoint endpoint) : base(endpoint) { }
             protected override void ApplyConfiguration(string configurationName) {
