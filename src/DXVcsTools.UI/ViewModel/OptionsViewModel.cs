@@ -21,5 +21,6 @@ namespace DXVcsTools.UI {
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
         public string TortoiseProc { get; set; }
+        public LayoutOptionsViewModel LayoutOptions { get; set; }
     }
 }

@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Markup;
+using DevExpress.Xpf.Core;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
@@ -52,6 +54,13 @@ namespace DXVcsTools.ViewModels {
                 VSDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
                 navigateMenu.Click += NavigateMenuClick;
             }
+            VSDevExpressMenuItem settingsMenu = devExpressMenu.CreateOrGetItem("Settings...");
+            settingsMenu.Click += SettingsMenuOnClick;
+        }
+        void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
+            DXDialog dialog = new DXDialog();
+            dialog.DataContext = Options;
+            dialog.ShowDialog(MessageBoxButton.OKCancel);
         }
         void NavigateMenuClick(object sender, EventArgs e) {
             package.ToolWindowViewModel.ShowNavigationConfig();

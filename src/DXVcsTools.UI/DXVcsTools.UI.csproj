@@ -170,6 +170,7 @@
     <Compile Include="Tests\PathHelperTests.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
+    <Compile Include="ViewModel\LayoutOptionsViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
     <Compile Include="ViewModel\NavigationConfigViewModel.cs" />
@@ -201,6 +202,9 @@
       <DependentUpon>NavigationConfigControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OnDemandContentControl.cs" />
+    <Compile Include="View\RootSettingsControl.xaml.cs">
+      <DependentUpon>RootSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TreeUIControl.xaml.cs">
       <DependentUpon>TreeUIControl.xaml</DependentUpon>
     </Compile>
@@ -264,6 +268,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NavigationConfigControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RootSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
