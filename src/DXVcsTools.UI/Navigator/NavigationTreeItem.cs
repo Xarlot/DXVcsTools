@@ -1,6 +1,7 @@
 ﻿using System;
 using DevExpress.Xpf.Editors.Helpers;
 using DevExpress.Xpf.Mvvm;
+using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI.Navigator;
 using Microsoft.Build.Evaluation;
 

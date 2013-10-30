@@ -4,10 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <dx:DXTabControl>
+            <dx:DXTabItem Header="Layout Settings">
+                <dxlc:DataLayoutControl>
+                    <dxlc:DataLayoutItem Content="{Binding Path=LayoutOptions}"></dxlc:DataLayoutItem>
+                </dxlc:DataLayoutControl>
+            </dx:DXTabItem>
         </dx:DXTabControl>
     </Grid>
 </UserControl>
