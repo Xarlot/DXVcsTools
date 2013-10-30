@@ -10,6 +10,7 @@ using DevExpress.Xpf.Core;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
+using DXVcsTools.UI.View;
 using DXVcsTools.VSIX;
 using EnvDTE;
 
@@ -60,6 +61,8 @@ namespace DXVcsTools.ViewModels {
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
             DXDialog dialog = new DXDialog();
             dialog.DataContext = Options;
+            dialog.Content = new RootSettingsControl();
+            dialog.SizeToContent = SizeToContent.WidthAndHeight;
             dialog.ShowDialog(MessageBoxButton.OKCancel);
         }
         void NavigateMenuClick(object sender, EventArgs e) {

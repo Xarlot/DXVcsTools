@@ -108,6 +108,10 @@
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.2.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll</HintPath>
       <Private>False</Private>
