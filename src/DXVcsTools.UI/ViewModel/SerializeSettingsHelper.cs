@@ -81,10 +81,11 @@ namespace DXVcsTools {
                 options.Branches.Add(new DXVcsBranch { Name = "test13.1", Path = "$/Sandbox/litvinov/13.1/".ToLower() });
                 options.Branches.Add(new DXVcsBranch { Name = "test13.2", Path = "$/Sandbox/litvinov/13.2/".ToLower() });
             }
-            options.Branches.Add(new DXVcsBranch { Name = "12.1", Path = "$/2012.1/" });
             options.Branches.Add(new DXVcsBranch { Name = "12.2", Path = "$/2012.2/" });
             options.Branches.Add(new DXVcsBranch { Name = "13.1", Path = "$/2013.1/" });
             options.Branches.Add(new DXVcsBranch { Name = "13.2", Path = "$/2013.2/" });
+            options.Branches.Add(new DXVcsBranch { Name = "14.1", Path = "$/2014.1/" });
+
             options.LightThemeName = "Seven";
             options.DarkThemeName = "MetropolisDark";
             options.BlueThemeName = "VS2010";
