@@ -90,7 +90,7 @@ namespace DXVcsTools {
             options.BlueThemeName = "VS2010";
             options.UseNavigateMenu = true;
             options.UpdateNavigateMenuAsync = true;
-            options.LayoutOptions = new LayoutOptionsViewModel() {UseLargeBarGlyph = false};
+            options.LayoutOptions = new LayoutOptionsViewModel();
             options.TortoiseProc = @"Lib/TortoiseSvn/bin/TortoiseBlame.exe";
 
             options.DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";

@@ -61,7 +61,7 @@
 
     </i:Interaction.Behaviors>
     <Grid>
-        <dxb:BarManager AllowCustomization="False">
+        <dxb:BarManager AllowCustomization="False" ToolbarGlyphSize="{Binding Path=Options.LayoutOptions.BarGlyphSize}">
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem
                     x:Name="bUpdate"

@@ -24,6 +24,7 @@ namespace DXVcsTools.ViewModels {
         readonly Dictionary<string, VSDevExpressMenu> rootMenuHierarchy = new Dictionary<string, VSDevExpressMenu>();
         readonly Dictionary<string, VSDevExpressMenu> addReferenceMenuHierarchy = new Dictionary<string, VSDevExpressMenu>();
         OptionsViewModel Options { get { return package.ToolWindowViewModel.Options; } }
+        ToolWindowViewModel ToolWindowViewModel { get { return package.ToolWindowViewModel; } }
 
         public GenerateMenuItemsHelper(DXVcsTools_VSIXPackage package, DTE dte) {
             this.dte = dte;
@@ -63,7 +64,10 @@ namespace DXVcsTools.ViewModels {
             dialog.DataContext = Options;
             dialog.Content = new RootSettingsControl();
             dialog.SizeToContent = SizeToContent.WidthAndHeight;
-            dialog.ShowDialog(MessageBoxButton.OKCancel);
+            if (dialog.ShowDialog(MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                SerializeHelper.SerializeSettings(Options);
+                ToolWindowViewModel.Update();
+            }
         }
         void NavigateMenuClick(object sender, EventArgs e) {
             package.ToolWindowViewModel.ShowNavigationConfig();

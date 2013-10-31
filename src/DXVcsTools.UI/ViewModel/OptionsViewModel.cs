@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
+using DevExpress.Xpf.Mvvm;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class OptionsViewModel {
+    public class OptionsViewModel : BindableBase {
+        LayoutOptionsViewModel layoutOptions;
+
         public OptionsViewModel() {
         }
 
@@ -21,6 +25,13 @@ namespace DXVcsTools.UI {
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
         public string TortoiseProc { get; set; }
-        public LayoutOptionsViewModel LayoutOptions { get; set; }
+
+        [Required]
+        public LayoutOptionsViewModel LayoutOptions {
+            get { return layoutOptions; }
+            set {
+                SetProperty(ref layoutOptions, value ?? new LayoutOptionsViewModel(), () => LayoutOptions);
+            }
+        }
     }
 }
