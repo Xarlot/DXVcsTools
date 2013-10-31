@@ -61,6 +61,7 @@ namespace DXVcsTools.ViewModels {
         }
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
             DXDialog dialog = new DXDialog();
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             dialog.DataContext = Options;
             dialog.Content = new RootSettingsControl();
             dialog.SizeToContent = SizeToContent.WidthAndHeight;
