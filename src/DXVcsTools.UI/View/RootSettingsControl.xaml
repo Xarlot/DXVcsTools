@@ -10,14 +10,10 @@
              d:DesignHeight="300" d:DesignWidth="300" MinWidth="400" MinHeight="300">
     <Grid>
         <dxprg:PropertyGridControl 
-            AllowExpanding="ForceIfNoTypeConverter" 
+            AllowExpanding="ForceIfNoTypeConverter"
             SelectedObject="{Binding}" 
             ShowCategories="False"
             SortMode="Ascending">
-            <dxprg:PropertyGridControl.PropertyDefinitions>
-                <dxprg:CollectionDefinition Path="Brunches" AllowInstanceInitializer="False"/>
-                <dxprg:PropertyDefinition Path="LayoutOptions" AllowInstanceInitializer="False" AllowExpanding="Force"/>
-            </dxprg:PropertyGridControl.PropertyDefinitions>
         </dxprg:PropertyGridControl>
     </Grid>
 </UserControl>
