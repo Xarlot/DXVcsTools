@@ -21,7 +21,7 @@
                 <view:FlatUIControl DataContext="{TemplateBinding DataContext}"/>
             </DataTemplate>
             <view:UITypeSelector x:Key="uiSelector"/>
-            <Style x:Key="windowStyle" TargetType="dx:DXDialog">
+            <Style x:Key="windowStyle" TargetType="dx:DXDialogWindow">
                 <Setter Property="dx:ThemeManager.ThemeName" Value="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}"/>
                 <Setter Property="SizeToContent" Value="WidthAndHeight"/>
                 <Setter Property="ResizeMode" Value="NoResize"/>

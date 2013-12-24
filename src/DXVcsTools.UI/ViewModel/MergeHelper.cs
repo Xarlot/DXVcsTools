@@ -128,20 +128,23 @@ namespace DXVcsTools.Core {
             string result = relativePath.Replace(Port.MasterBranch.Path, currentBranch.Path);
             string ext = Path.GetExtension(filePath);
             if (ext == ".sln" || ext == ".csproj")
-                return result + Path.GetFileName(filePath);
+                return result.EndsWith(ext) ? result : result + Path.GetFileName(filePath);
             return result;
         }
         string GetMergeVcsPathByTargetPath(string filePath, DXVcsBranch currentBranch) {
             return Port.GetRelativePath(filePath, currentBranch);
         }
-        public bool CheckIn(CheckInViewModel checkInViewModel, DXVcsBranch targetBranch) {
+        public bool CheckIn(CheckInViewModel checkInViewModel, DXVcsBranch targetBranch, bool isNew) {
             Logger.AddInfo("CheckInCommand. Perform checkin file: " + checkInViewModel.FilePath);
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string filePath = GetFilePathForBranch(checkInViewModel.FilePath, targetBranch);
                 string vcsOriginalPath = GetMergeVcsPathByTargetPath(filePath, targetBranch);
 
-                repository.CheckInFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
+                if (isNew) 
+                    repository.AddFile(vcsOriginalPath, File.ReadAllBytes(filePath), checkInViewModel.Comment);
+                else
+                    repository.CheckInFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
                 if (checkInViewModel.StaysChecked)
                     repository.CheckOutFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
             }

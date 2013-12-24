@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DXVCS;
 
 namespace DXVcsTools.DXVcsClient {
@@ -132,10 +133,41 @@ namespace DXVcsTools.DXVcsClient {
                 throw new InvalidOperationException("Can't undo check out: the file is not checked out: " + vcsFile);
             service.UndoCheckOut(new[] { vcsFile }, new[] { false });
         }
+        public void AddFile(string vcsFile, byte[] fileBytes, string comment) {
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("vcsFile");
+            var folders = vcsFile.Split(@"/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var queue = new Queue<string>(folders);
+            string temp = queue.Dequeue();
+            while (queue.Count > 0) {
+                string folder = queue.Dequeue();
+                if (queue.Count == 0)
+                    CreateFile(temp, folder, fileBytes, comment);
+                else
+                    CreateProject(temp, folder, comment);
+                temp += @"/" + folder;
+            }
+        }
+        void CreateFile(string vcsFile, string fileName, byte[] fileBytes, string comment) {
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("vcsFile");
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentException("fileName");
+            service.CreateFile(vcsFile, fileName, fileBytes, DateTime.Now, comment);
+        }
+        void CreateProject(string vcsFile, string name, string comment) {
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("vcsFile");
+            if (!IsUnderVss(vcsFile))
+                service.CreateProject(vcsFile, name, comment, false);
+        }
         public bool IsUnderVss(string vcsFile) {
             if (string.IsNullOrEmpty(vcsFile))
                 throw new ArgumentException("vcsFile");
 
+            var project = service.FindProject(vcsFile);
+            if (!project.IsNull)
+                return true;
             var file = service.FindFile(vcsFile);
             return !file.IsNull;
         }

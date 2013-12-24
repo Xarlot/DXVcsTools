@@ -274,7 +274,7 @@ namespace DXVcsTools.VSIX {
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
                     var helper = new MergeHelper(Options, PortOptions);
-                    helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment }, GetCheckInBranch(target));
+                    helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment }, GetCheckInBranch(target), SelectedItem.IsNew);
                     SelectedItem.IsChecked = model.StaysChecked;
                 }
 
@@ -289,7 +289,7 @@ namespace DXVcsTools.VSIX {
                     var helper = new MergeHelper(Options, PortOptions);
                     foreach (var item in SelectedItems) {
                         var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) { Comment = model.Comment };
-                        bool success = helper.CheckIn(currentFileModel, GetCheckInBranch(target));
+                        bool success = helper.CheckIn(currentFileModel, GetCheckInBranch(target), item.IsNew);
                         item.IsChecked = success && model.StaysChecked;
                     }
                 }
