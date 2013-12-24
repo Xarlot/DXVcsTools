@@ -17,7 +17,7 @@ namespace DXVcsTools.Core {
         }
         OptionsViewModel Options { get; set; }
         PortOptionsViewModel Port { get; set; }
-        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool showPreview) {
+        public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool showPreview, bool isNew) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string tmpOriginalFile = Path.GetTempFileName();
@@ -26,10 +26,15 @@ namespace DXVcsTools.Core {
                 string vcsTargetFile = mergePath == null ? GetMergeVcsPathByOriginalPath(filePath, currentBranch) : Port.GetRelativePath(mergePath, currentBranch);
 
                 try {
-                    repository.GetLatestVersion(vcsOriginalPath, tmpOriginalFile);
-                    string tmpTargetFile = string.Empty;
+                    if (!isNew)
+                        repository.GetLatestVersion(vcsOriginalPath, tmpOriginalFile);
+                    else
+                        CreateNewFileIfNeeded(repository, vcsTargetFile, currentBranch);
+                    string tmpTargetFile;
                     try {
-                        tmpTargetFile = repository.GetFileWorkingPath(vcsTargetFile);
+                        tmpTargetFile = isNew 
+                            ? GetFilePathForNewFile(repository, GetMergeVcsPathByOriginalPath(filePath, currentBranch), currentBranch) 
+                            : repository.GetFileWorkingPath(vcsTargetFile);
                     }
                     catch (Exception e) {
                         Logger.AddError("MergeCommand. Target file error.", e);
@@ -41,20 +46,23 @@ namespace DXVcsTools.Core {
                     }
 
                     try {
-                        repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
+                        if (!isNew)
+                            repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                     }
                     catch (Exception e) {
                         Logger.AddError("MergeCommand. Check out file error.", e);
                         return MergeState.CheckOutFileError;
                     }
 
-
                     var diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
                         return MergeState.Conflict;
                     }
                     if (showPreview)
-                        PreviewTarget(repository, vcsTargetFile, tmpTargetFile);
+                        PreviewTarget(repository, filePath, vcsTargetFile, tmpTargetFile, isNew);
+                }
+                catch (Exception e) {
+                    Logger.AddError("MergeCommand. Unknown error.", e);
                 }
                 finally {
                     File.Delete(tmpOriginalFile);
@@ -65,15 +73,46 @@ namespace DXVcsTools.Core {
             }
             return MergeState.Success;
         }
-        void PreviewTarget(IDXVcsRepository repository, string vcsFile, string file) {
-            string tmpVcsFile = Path.GetTempFileName();
+        void CreateNewFileIfNeeded(IDXVcsRepository repository, string vcsTargetFile, DXVcsBranch branch) {
+            if (repository.IsUnderVss(vcsTargetFile))
+                throw new ArgumentException("File is under vss alrealy!");
+            string filePath = GetFilePathForNewFile(repository, vcsTargetFile, branch);
+            if (File.Exists(filePath)) {
+                var attr = File.GetAttributes(filePath);
+                if (attr == FileAttributes.ReadOnly)
+                    throw new ArgumentException("File is readonly!");
+                File.Delete(filePath);
+            }
+            string dir = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(dir)) 
+                Directory.CreateDirectory(dir);
+            using (var f = File.Create(filePath)) {
+
+                f.Close();
+            }
+        }
+        void PreviewTarget(IDXVcsRepository repository, string file, string vcsFile, string targetFile, bool isNew) {
+            string tmpFile = Path.GetTempFileName();
 
             try {
-                repository.GetLatestVersion(vcsFile, tmpVcsFile);
-                LaunchDiffTool(tmpVcsFile, file);
+                if (!isNew)
+                    repository.GetLatestVersion(vcsFile, tmpFile);
+                else
+                    CopyFileContent(file, tmpFile);
+
+                LaunchDiffTool(tmpFile, targetFile);
             }
             finally {
-                File.Delete(tmpVcsFile);
+                File.Delete(tmpFile);
+            }
+        }
+        void CopyFileContent(string file, string tmpFile) {
+            using (FileStream stream = File.OpenRead(file))
+            using (FileStream writeStream = File.OpenWrite(tmpFile)) {
+                byte[] buffer = new Byte[1024];
+                int bytesRead;
+                while ((bytesRead = stream.Read(buffer, 0, 1024)) > 0) 
+                    writeStream.Write(buffer, 0, bytesRead);
             }
         }
         void LaunchDiffTool(string leftFile, string rightFile) {
@@ -106,7 +145,7 @@ namespace DXVcsTools.Core {
                 if (checkInViewModel.StaysChecked)
                     repository.CheckOutFile(vcsOriginalPath, filePath, checkInViewModel.Comment);
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Logger.AddError("CheckInCommand. CheckIn failed.", e);
                 return false;
             }
@@ -115,13 +154,16 @@ namespace DXVcsTools.Core {
         public void CompareWithCurrentVersion(string filePath) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
             string vcsOriginalPath = Port.GetRelativePath(filePath);
-            PreviewTarget(repository, vcsOriginalPath, filePath);
+            PreviewTarget(repository, filePath, vcsOriginalPath, filePath, false);
         }
-        public void CompareWithPortVersion(string filePath, DXVcsBranch current) {
+        public void CompareWithPortVersion(string filePath, DXVcsBranch current, bool isNew) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
-                PreviewTarget(repository, vcsTargetPath, repository.GetFileWorkingPath(vcsTargetPath));
+                string fileTargetPath = isNew 
+                    ? GetFilePathForNewFile(repository, vcsTargetPath, current)
+                    : repository.GetFileWorkingPath(vcsTargetPath);
+                PreviewTarget(repository, filePath, vcsTargetPath, fileTargetPath, isNew);
             }
             catch (Exception e) {
                 DXMessageBox.Show(e.Message);
@@ -153,7 +195,7 @@ namespace DXVcsTools.Core {
                 repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
                 LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Logger.AddError("ManualMergeCommand. Unknown error.", e);
                 Logger.AddInfo("ManualMergeCommand. Result = MergeState.UnknownError.");
                 return MergeState.UnknownError;
@@ -178,7 +220,7 @@ namespace DXVcsTools.Core {
             try {
                 dte.OpenSolution(path);
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Logger.AddError("Can`t navigate to solution", e);
                 MessageBox.Show("Can`t navigate to solution");
             }
@@ -198,13 +240,18 @@ namespace DXVcsTools.Core {
             }
             return false;
         }
+        string GetFilePathForNewFile(IDXVcsRepository repository, string vcsPath, DXVcsBranch currentBranch) {
+            string testVcsPath = currentBranch.Path;
+            string result = repository.GetFileWorkingPath(testVcsPath);
+            return vcsPath.Replace(currentBranch.Path, result);
+        }
         public string GetFilePathForBranch(string path, DXVcsBranch currentBranch) {
             try {
                 string relativePath = GetMergeVcsPathByOriginalPath(path, currentBranch);
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 return repository.GetFileWorkingPath(relativePath);
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Logger.AddError("GetFilePathForBranch failed.", e);
             }
             return string.Empty;

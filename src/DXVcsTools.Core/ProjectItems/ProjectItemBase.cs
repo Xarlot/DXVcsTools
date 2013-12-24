@@ -16,6 +16,7 @@ namespace DXVcsTools.Core {
     public abstract class ProjectItemBase : BindableBase {
         bool isCheckOut;
         bool isChecked;
+        bool isNew;
         MergeState mergeState;
         string name;
         string path;
@@ -30,6 +31,10 @@ namespace DXVcsTools.Core {
         public ProjectItemBase Parent { get; internal set; }
         public virtual int Priority {
             get { return 0; }
+        }
+        public bool IsNew {
+            get { return isNew; }
+            set { SetProperty(ref isNew, value, () => IsNew); }
         }
         public string Path {
             get { return path; }

@@ -39,6 +39,9 @@ namespace DXVcsTools.Core {
             return new ProjectItem(GetFilesAndDirectories(item).ToList()) {
                 Name = name, 
                 Path = fileName,
+                IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName),
+                IsNew = !dte.SourceControl.IsItemUnderSCC(fileName),
+                MergeState = MergeState.None,
             };
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {
@@ -75,6 +78,7 @@ namespace DXVcsTools.Core {
                 return null;
             item.ItemWrapper = new ProjectItemWrapper(projectItem);
             item.IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName);
+            item.IsNew = !dte.SourceControl.IsItemUnderSCC(fileName);
             item.MergeState = MergeState.None;
             return item;
         }

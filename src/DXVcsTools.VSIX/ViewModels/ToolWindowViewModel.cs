@@ -15,6 +15,7 @@ using DXVcsTools.UI.Logger;
 using DXVcsTools.UI.ViewModel;
 using DXVcsTools.ViewModels;
 using EnvDTE;
+using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
     public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
@@ -158,7 +159,7 @@ namespace DXVcsTools.VSIX {
 
             //since grid bugs we must initialize startup collection
             SelectedItems = new ObservableCollection<ProjectItemBase>();
-            var source = GetFlatItemsSource().Where(item => item.IsCheckOut).ToList();
+            var source = GetFlatItemsSource().Where(item => item.IsCheckOut || item.IsNew).ToList();
             Source = source;
 
             PortOptions = new PortOptionsViewModel(Solution, Options);
@@ -189,13 +190,16 @@ namespace DXVcsTools.VSIX {
         }
         bool CanMerge(bool? parameter) {
             return IsSingleSelection
-                ? SelectedItem.Return(x => x.IsCheckOut && x.MergeState == MergeState.None, () => false)
-                : SelectedItems.Return(x => x.Select(item => item.IsCheckOut && item.MergeState == MergeState.None).Any(), () => false);
+                ? SelectedItem.Return(CanMergeInternal, () => false)
+                : SelectedItems.Return(x => x.Select(CanMergeInternal).Any(), () => false);
 
+        }
+        static bool CanMergeInternal(ProjectItemBase x) {
+            return (x.IsCheckOut || x.IsNew) && x.MergeState == MergeState.None;
         }
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
             var helper = new MergeHelper(Options, PortOptions);
-            return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview);
+            return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview, item.IsNew);
         }
         void MergeAll() {
             List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
@@ -218,6 +222,8 @@ namespace DXVcsTools.VSIX {
             if (root.Children == null)
                 yield break;
             foreach (ProjectItemBase item in root.Children) {
+                if (item is ProjectItem)
+                    yield return item;
                 if (item is FileItem)
                     yield return item;
                 foreach (ProjectItemBase subItem in GetChildren(item)) {
@@ -244,11 +250,10 @@ namespace DXVcsTools.VSIX {
             return SelectedItems.All(item => CanCheckInItem(target, item));
         }
         bool CanCheckInItem(CheckInTarget target, ProjectItemBase item) {
-            bool canCheckInMaster = IsCorrectlyLoaded && item.If(x => x.IsCheckOut).ReturnSuccess();
+            bool canCheckInMaster = IsCorrectlyLoaded && item.If(x => x.IsCheckOut || x.IsNew).ReturnSuccess();
             if (target == CheckInTarget.Master)
                 return canCheckInMaster;
-            else
-                return canCheckInMaster && item.If(x => x.MergeState == MergeState.Success).ReturnSuccess();
+            return canCheckInMaster && item.If(x => x.MergeState == MergeState.Success).ReturnSuccess();
         }
         string GetCheckInPath(CheckInTarget target, string selectedItemPath) {
             switch (target) {
@@ -308,11 +313,11 @@ namespace DXVcsTools.VSIX {
                 return false;
             if (CurrentBranch == null)
                 return false;
-            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut || (x.IsNew && x.MergeState == MergeState.Success)).ReturnSuccess();
         }
         void CompareWithPortVersion() {
             var helper = new MergeHelper(Options, PortOptions);
-            helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch);
+            helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch, SelectedItem.IsNew);
         }
         bool CanManualMerge() {
             return IsCorrectlyLoaded && IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();

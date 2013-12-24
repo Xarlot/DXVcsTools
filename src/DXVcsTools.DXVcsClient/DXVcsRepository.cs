@@ -84,7 +84,7 @@ namespace DXVcsTools.DXVcsClient {
                 throw new ArgumentException("localFile");
 
             bool getLocalCopy = !File.Exists(localFile) || !service.GetFile(vcsFile).CheckedOutMe;
-            service.CheckOut(Environment.MachineName, new[] {vcsFile}, new[] {Path.GetDirectoryName(localFile)}, new[] {comment}, null);
+            service.CheckOut(Environment.MachineName, new[] { vcsFile }, new[] { Path.GetDirectoryName(localFile) }, new[] { comment }, null);
 
             if (File.Exists(localFile))
                 File.SetAttributes(localFile, FileAttributes.Normal);
@@ -104,8 +104,8 @@ namespace DXVcsTools.DXVcsClient {
             if (!service.GetFile(vcsFile).CheckedOutMe)
                 throw new InvalidOperationException("Can't check-in: the file is not checked out: " + vcsFile);
 
-            var data = new byte[1][] {File.ReadAllBytes(localFile)};
-            string result = service.CheckIn(new[] {vcsFile}, data, new[] {File.GetLastWriteTimeUtc(localFile)}, new[] {comment}, false);
+            var data = new byte[1][] { File.ReadAllBytes(localFile) };
+            string result = service.CheckIn(new[] { vcsFile }, data, new[] { File.GetLastWriteTimeUtc(localFile) }, new[] { comment }, false);
             File.SetAttributes(localFile, File.GetAttributes(localFile) | FileAttributes.ReadOnly);
         }
 
@@ -125,12 +125,19 @@ namespace DXVcsTools.DXVcsClient {
         public void UndoCheckout(string vcsFile, string localFile) {
             if (string.IsNullOrEmpty(vcsFile))
                 throw new ArgumentException("vcsFile");
-            if (string.IsNullOrEmpty(vcsFile))
+            if (string.IsNullOrEmpty(localFile))
                 throw new ArgumentException("localFile");
 
             if (!service.GetFile(vcsFile).CheckedOutMe)
                 throw new InvalidOperationException("Can't undo check out: the file is not checked out: " + vcsFile);
-            service.UndoCheckOut(new[] {vcsFile}, new[] {false});
+            service.UndoCheckOut(new[] { vcsFile }, new[] { false });
+        }
+        public bool IsUnderVss(string vcsFile) {
+            if (string.IsNullOrEmpty(vcsFile))
+                throw new ArgumentException("vcsFile");
+
+            var file = service.FindFile(vcsFile);
+            return !file.IsNull;
         }
     }
 }

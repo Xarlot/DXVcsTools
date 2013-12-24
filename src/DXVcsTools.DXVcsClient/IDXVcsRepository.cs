@@ -11,5 +11,6 @@ namespace DXVcsTools.DXVcsClient {
         void CheckInFile(string vcsFile, string localFile, string comment);
         void UndoCheckout(string vcsFile, string localFile);
         string GetFileWorkingPath(string vcsFile);
+        bool IsUnderVss(string vcsFile);
     }
 }
