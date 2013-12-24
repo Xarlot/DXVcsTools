@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
+using System.Management.Instrumentation;
 using DevExpress.Data.PLinq.Helpers;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.UI;
@@ -42,6 +43,7 @@ namespace DXVcsTools.Core {
                 IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName),
                 IsNew = !dte.SourceControl.IsItemUnderSCC(fileName),
                 MergeState = MergeState.None,
+                ItemWrapper = new ProjectWrapper(item),
             };
         }
         IEnumerable<FileItemBase> GetFilesAndDirectories(Project project) {

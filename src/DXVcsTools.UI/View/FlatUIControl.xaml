@@ -53,7 +53,12 @@
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsCheckOut" Header="Checked Out"  FixedWidth="True" Width="80">
+                <dxg:GridColumn FieldName="IsCheckOut" Header="Checked Out" FixedWidth="True" Width="80">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:CheckEditSettings />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="IsNew"  FixedWidth="True" Width="80">
                     <dxg:GridColumn.EditSettings>
                         <dxe:CheckEditSettings />
                     </dxg:GridColumn.EditSettings>

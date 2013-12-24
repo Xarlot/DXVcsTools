@@ -245,7 +245,7 @@ namespace DXVcsTools.Core {
         }
         string GetFilePathForNewFile(IDXVcsRepository repository, string vcsPath, DXVcsBranch currentBranch) {
             string testVcsPath = currentBranch.Path;
-            string result = repository.GetFileWorkingPath(testVcsPath);
+            string result = repository.GetFileWorkingPath(testVcsPath) + @"\";
             return vcsPath.Replace(currentBranch.Path, result);
         }
         public string GetFilePathForBranch(string path, DXVcsBranch currentBranch) {

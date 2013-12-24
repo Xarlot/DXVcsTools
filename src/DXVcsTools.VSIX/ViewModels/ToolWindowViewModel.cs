@@ -199,6 +199,7 @@ namespace DXVcsTools.VSIX {
         }
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
             var helper = new MergeHelper(Options, PortOptions);
+            item.ItemWrapper.Save();
             return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview, item.IsNew);
         }
         void MergeAll() {
