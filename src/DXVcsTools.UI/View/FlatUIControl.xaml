@@ -81,6 +81,7 @@
                         <dxb:BarItemLinkSeparator/>
                         <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
                         <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
+                        <dxb:BarItemLink BarItemName="bCompareCurrentWithPortVersion" />
                         <dxb:BarItemLinkSeparator/>
                         <dxb:BarItemLink BarItemName="bCheckIn" />
                         <dxb:BarItemLink BarItemName="bUndoCheckout" />

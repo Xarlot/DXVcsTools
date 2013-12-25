@@ -47,11 +47,23 @@ namespace DXVcsTools.VSIX {
             CheckInCommand = new DelegateCommand<CheckInTarget>(CheckIn, CanCheckIn);
             CompareCurrentVersionCommand = new DelegateCommand(CompareWithCurrentVersion, CanCompareWithCurrentVersion);
             ComparePortVersionCommand = new DelegateCommand(CompareWithPortVersion, CanCompareWithPortVersion);
+            CompareCurrentWithPortCommand = new DelegateCommand(CompareCurrentWithPortVersion, CanCompareCurrentWithPortVersion);
             ManualMergeCommand = new DelegateCommand(ManualMerge, CanManualMerge);
             NavigateToSolutionCommand = new DelegateCommand(NavigateToSolution, CanNavigateToSolution);
             UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
             ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
             NavigateToFileCommand = new DelegateCommand<ProjectItemBase>(NavigateToItem, CanNavigateToItem);
+        }
+        bool CanCompareCurrentWithPortVersion() {
+            if (!IsCorrectlyLoaded)
+                return false;
+            if (CurrentBranch == null)
+                return false;
+            return IsSingleSelection && SelectedItem.Return(x => !x.IsNew, () => false);
+        }
+        void CompareCurrentWithPortVersion() {
+            var helper = new MergeHelper(Options, PortOptions);
+            helper.CompareCurrentWithPortVersion(SelectedItem.Path, CurrentBranch);
         }
         void NavigateToItem(ProjectItemBase parameter) {
             var item = parameter ?? SelectedItem;
@@ -125,6 +137,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand CompareCurrentVersionCommand { get; private set; }
         public DelegateCommand ComparePortVersionCommand { get; private set; }
         public DelegateCommand ManualMergeCommand { get; private set; }
+        public DelegateCommand CompareCurrentWithPortCommand { get; private set; }
         public DelegateCommand NavigateToSolutionCommand { get; private set; }
         public DelegateCommand UndoCheckoutCommand { get; private set; }
         public DelegateCommand ShowLogCommand { get; private set; }

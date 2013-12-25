@@ -269,5 +269,16 @@ namespace DXVcsTools.Core {
             }
             return null;
         }
+        public void CompareCurrentWithPortVersion(string filePath, DXVcsBranch current) {
+            try {
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
+                string fileTargetPath = repository.GetFileWorkingPath(vcsTargetPath);
+                PreviewTarget(repository, filePath, vcsTargetPath, fileTargetPath, false);
+            }
+            catch (Exception e) {
+                DXMessageBox.Show(e.Message);
+            }
+        }
     }
 }
