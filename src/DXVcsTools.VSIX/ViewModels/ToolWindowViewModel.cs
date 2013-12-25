@@ -142,6 +142,7 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand NavigateToSolutionCommand { get; private set; }
         public DelegateCommand UndoCheckoutCommand { get; private set; }
         public DelegateCommand ShowLogCommand { get; private set; }
+        public DelegateCommand StatusCheckOutCommand { get; private set; }
         public DelegateCommand<ProjectItemBase> NavigateToFileCommand { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }

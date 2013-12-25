@@ -58,6 +58,13 @@
                 </DataTemplate>
             </dx:DialogService.ViewTemplate>
         </dx:DialogService>
+        <dx:DialogService x:Name="StatusCheckOutWindow" DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <view:StatusCheckOutControl/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+        </dx:DialogService>
 
     </i:Interaction.Behaviors>
     <Grid>

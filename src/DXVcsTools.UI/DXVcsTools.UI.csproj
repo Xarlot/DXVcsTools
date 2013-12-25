@@ -84,47 +84,47 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Data.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Data.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Core.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Core.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Grid.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v13.2.Core, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Grid.v13.2.Core, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v13.2.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.LayoutControl.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.LayoutControl.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Mvvm.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Mvvm.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Mvvm.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.PropertyGrid.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Themes.Office2013.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.Seven.v13.2, Version=13.2.1.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Themes.Seven.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v13.2.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -184,6 +184,7 @@
     <Compile Include="ViewModel\PortOptionsViewModel.cs" />
     <Compile Include="ViewModel\SerializeSettingsHelper.cs" />
     <Compile Include="ViewModel\ShowLogHelper.cs" />
+    <Compile Include="ViewModel\StatusCheckOutViewModel.cs" />
     <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />
     <Compile Include="View\BusyIndicator.cs" />
@@ -209,6 +210,9 @@
     <Compile Include="View\OnDemandContentControl.cs" />
     <Compile Include="View\RootSettingsControl.xaml.cs">
       <DependentUpon>RootSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StatusCheckOutControl.xaml.cs">
+      <DependentUpon>StatusCheckOutControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TreeUIControl.xaml.cs">
       <DependentUpon>TreeUIControl.xaml</DependentUpon>
@@ -277,6 +281,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\RootSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StatusCheckOutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
