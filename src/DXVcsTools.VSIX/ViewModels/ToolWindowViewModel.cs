@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using DXVcsTools.Core;
+using DXVcsTools.DXVcsClient;
 using DXVcsTools.UI;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Mvvm;
@@ -169,11 +170,7 @@ namespace DXVcsTools.VSIX {
                 Logger.AddInfo("UpdateCommand. End - cant merge since solution is empty or not under vss");
                 return;
             }
-
             //since grid bugs we must initialize startup collection
-            SelectedItems = new ObservableCollection<ProjectItemBase>();
-            var source = GetFlatItemsSource().Where(item => item.IsCheckOut || item.IsNew).ToList();
-            Source = source;
 
             PortOptions = new PortOptionsViewModel(Solution, Options);
             if (!PortOptions.IsAttached) {
@@ -181,14 +178,24 @@ namespace DXVcsTools.VSIX {
                 CanTotalMerge = false;
                 return;
             }
+           
+
             MasterBranch = FindMasterBranch(PortOptions);
             CanTotalMerge = MasterBranch != null;
             PortOptions.MasterBranch = MasterBranch;
+
+            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            SelectedItems = new ObservableCollection<ProjectItemBase>();
+            var source = GetFlatItemsSource().Where(item => FilterItems(item, helper)).ToList();
+            Source = source;
 
             currentBranchLocker.DoIfNotLocked(() => CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch));
             MergeProgress = 0;
 
             Logger.AddInfo("UpdateCommand. End - successful initialized");
+        }
+        bool FilterItems(ProjectItemBase item, MergeHelper helper) {
+            return item.IsCheckOut || (item.IsNew && !string.IsNullOrEmpty(item.FullPath) && !helper.IsItemUnderVss(item.FullPath, MasterBranch));
         }
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(PortOptions.ProjectFilePath);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using DevExpress.Xpf.Core;
 using DXVcsTools.DXVcsClient;
@@ -283,6 +284,17 @@ namespace DXVcsTools.Core {
             catch (Exception e) {
                 DXMessageBox.Show(e.Message);
             }
+        }
+        public bool IsItemUnderVss(string filePath, DXVcsBranch current) {
+            try {
+                string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
+                IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+                return repository.IsUnderVss(vcsTargetPath);
+            }
+            catch (Exception e) {
+                Logger.AddError("IsItemUnderVss failed.", e);
+            }
+            return true;
         }
     }
 }

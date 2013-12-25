@@ -61,7 +61,15 @@ namespace DXVcsTools.Core {
         }
         public IEnumerable<ProjectItemBase> Children { get; private set; }
         public IProjectItemWrapper ItemWrapper { get; set; }
-        public string FullPath { get { return ItemWrapper.Return(x => x.FullPath, () => string.Empty); } }
+        public string FullPath {
+            get {
+                try {
+                    return ItemWrapper.Return(x => x.FullPath, () => string.Empty);
+                }
+                catch {}
+                return string.Empty;
+            }
+        }
 
         public void Save() {
             if (!IsSaved)
