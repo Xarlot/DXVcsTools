@@ -273,6 +273,10 @@ namespace DXVcsTools.Core {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
                 string vcsTargetPath = GetMergeVcsPathByOriginalPath(filePath, current);
+                if (!repository.IsUnderVss(vcsTargetPath)) {
+                    DXMessageBox.Show("Target is not under vss");
+                    return;
+                }
                 string fileTargetPath = repository.GetFileWorkingPath(vcsTargetPath);
                 PreviewTarget(repository, filePath, vcsTargetPath, fileTargetPath, false);
             }
