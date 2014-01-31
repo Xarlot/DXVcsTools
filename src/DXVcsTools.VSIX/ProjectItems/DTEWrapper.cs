@@ -41,7 +41,7 @@ namespace DXVcsTools.Core {
                 Name = name, 
                 Path = fileName,
                 IsCheckOut = dte.SourceControl.IsItemCheckedOut(fileName),
-                IsNew = !dte.SourceControl.IsItemUnderSCC(fileName),
+                IsNew = !dte.SourceControl.IsItemUnderSCC(fileName),                
                 MergeState = MergeState.None,
                 ItemWrapper = new ProjectWrapper(item),
             };
