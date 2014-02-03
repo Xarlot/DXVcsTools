@@ -192,7 +192,7 @@ namespace DXVcsTools.ViewModels {
         bool ProjectTypeMatch(NavigateItem item) {
             DteWrapper wrapper = new DteWrapper(dte);
             ProjectType type = wrapper.GetProjectType();
-            return (type != ProjectType.NoPlatform || type != ProjectType.Unknown) && wrapper.GetProjectType() == item.ProjectType;
+            return !type.Conflicts(item.ProjectType);
         }
         string GetRootMenuName(string relativePath) {
             int index = GetDirectorySeparatorIndex(relativePath);

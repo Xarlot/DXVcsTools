@@ -42,7 +42,15 @@ namespace DXVcsTools.UI {
             if (items == null || !items.Cast<object>().Any())
                 yield break;
             foreach (object projectItem in items) {
-                ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
+                var absolutePath = GetAbsolutePath(projectItem);                
+                if(!IsValidProject(absolutePath))
+                    continue;
+                ProjectRootElement root = null;
+                try {
+                    root = ProjectRootElement.Open(absolutePath);
+                } catch {
+                    continue;
+                }
                 yield return root.ProjectFileLocation.LocationString;
             }
         }
@@ -51,21 +59,27 @@ namespace DXVcsTools.UI {
             if (items == null || !items.Cast<object>().Any())
                 yield break;
             foreach (object projectItem in items) {
-                ProjectRootElement root = ProjectRootElement.Open(GetAbsolutePath(projectItem));
-                string location = root.DirectoryPath;
-                foreach (var item in GetDXReferences(root))
-                    yield return GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value));
-                if (includeRoot)
-                    yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
+                foreach(var item in GetDXReferencePaths(GetAbsolutePath(projectItem), includeRoot))
+                    yield return item;                
             }
         }
-        string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {
+        static string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {
             if (!assemblyInclude.Contains("PublicKeyToken"))
                 return assemblyInclude;
             return assemblyHintPath == null ? string.Empty : Path.Combine(location, assemblyHintPath);
         }
-        IEnumerable<ProjectItemElement> GetDXReferences(ProjectRootElement root) {
+        static IEnumerable<ProjectItemElement> GetDXReferences(ProjectRootElement root) {
             return root.Items.Where(item => item.ItemType == "Reference").Where(item => item.Include.StartsWith("DevExpress"));
+        }
+        public static IEnumerable<string> GetDXReferencePaths(string absolutePath, bool includeRoot) {
+            return GetDXReferencePaths(ProjectRootElement.Open(absolutePath), includeRoot);
+        }
+        public static IEnumerable<string> GetDXReferencePaths(ProjectRootElement root, bool includeRoot) {
+            string location = root.DirectoryPath;
+            foreach(var item in GetDXReferences(root))
+                yield return GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value));
+            if(includeRoot)
+                yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
         }
         string GetAbsolutePath(object projectItem) {
             return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(projectItem);
@@ -91,28 +105,9 @@ namespace DXVcsTools.UI {
                 if (items == null || !items.Cast<object>().Any())
                     return ProjectType.Unknown;
                 foreach (var projectItem in items) {
-                    string absolutePath = GetAbsolutePath(projectItem);
-                    if (!IsValidProject(absolutePath))
-                        continue;
-                    ProjectRootElement root = ProjectRootElement.Open(absolutePath);
-                    string guides = root.Properties.FirstOrDefault(x => x.Name == "ProjectTypeGuids").With(x => x.Value);
-                    if (!string.IsNullOrEmpty(guides)) {
-                        foreach (string strguid in guides.Split(';')) {
-                            Guid guid = Guid.Parse(strguid);
-                            if (guid == Wpf)
-                                return ProjectType.WPF;
-                            if (guid == SL)
-                                return ProjectType.SL;
-                        }
-                    }
-
-                    string defines = root.Properties.FirstOrDefault(x => x.Name == "DefineConstants").With(x => x.Value);
-                    if (string.IsNullOrEmpty(defines))
-                        return ProjectType.Unknown;
-                    if (defines.Contains("WPF"))
-                        return ProjectType.WPF;
-                    if (defines.Contains("SL") || defines.Contains("SILVERLIGHT"))
-                        return ProjectType.SL;
+                    var type = GetProjectType(GetAbsolutePath(projectItem));
+                    if(type != ProjectType.Unknown)
+                        return type;
                 }
                 return ProjectType.Unknown;
             }
@@ -120,8 +115,42 @@ namespace DXVcsTools.UI {
             }
             return ProjectType.Unknown;
         }
-        bool IsValidProject(string absolutePath) {
+        public static ProjectType GetProjectType(string source) {
+            if(!IsValidProject(source))
+                return ProjectType.Unknown;
+            return GetProjectType(ProjectRootElement.Open(source));
+        }
+        public static ProjectType GetProjectType(ProjectRootElement source) {
+            string guides = source.Properties.FirstOrDefault(x => x.Name == "ProjectTypeGuids").With(x => x.Value);
+            if(!string.IsNullOrEmpty(guides)) {
+                foreach(string strguid in guides.Split(';')) {
+                    Guid guid = Guid.Parse(strguid);
+                    if(guid == Wpf)
+                        return ProjectType.WPF;
+                    if(guid == SL)
+                        return ProjectType.SL;
+                }
+            }
+
+            string defines = source.Properties.FirstOrDefault(x => x.Name == "DefineConstants").With(x => x.Value);
+            if(string.IsNullOrEmpty(defines))
+                return ProjectType.Unknown;
+            if(defines.Contains("WPF"))
+                return ProjectType.WPF;
+            if(defines.Contains("SL") || defines.Contains("SILVERLIGHT"))
+                return ProjectType.SL;
+            return ProjectType.Unknown;
+        }
+        static bool IsValidProject(string absolutePath) {
             return Path.HasExtension(absolutePath) && File.Exists(absolutePath);
+        }
+
+        public static string GetAssemblyNameFromProject(string proj) {
+            return GetAssemblyNameFromProject(ProjectRootElement.Open(proj));
+        }
+
+        public static string GetAssemblyNameFromProject(ProjectRootElement projectRoot) {
+            return projectRoot.Properties.FirstOrDefault(x => String.IsNullOrEmpty(x.Condition) && String.Compare("AssemblyName", x.Name, true) == 0).With(x=>x.Value);
         }
     }
 }

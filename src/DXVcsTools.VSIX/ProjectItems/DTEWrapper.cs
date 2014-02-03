@@ -186,18 +186,21 @@ namespace DXVcsTools.Core {
             }
         }
         public void ClearReferences() {
+            foreach(var element in GetReferences(x => x.Name.Contains("DevExpress")))
+                element.Remove();
+        }
+        public IEnumerable<IReferenceWrapper> GetReferences(Predicate<IReferenceWrapper> predicate) {            
             var projects = (Array)dte.ActiveSolutionProjects;
-            if (projects.Length == 0)
-                return;
+            if(projects.Length == 0)
+                yield break;
             var projectWrapper = (Project)projects.GetValue(0);
             var project = (VSProject)projectWrapper.Object;
-            if (project == null)
-                return;
-            var references = project.References.Cast<Reference>().ToList();
-            foreach (Reference reference in references) {
-                if (reference.Name.Contains("DevExpress"))
-                    reference.Remove();
-            }
+            if(project == null)
+                yield break;
+            var references = project.References.Cast<Reference>().ToList().Select(x=>new ReferenceWrapper(x));
+            foreach(var reference in references)
+                if(predicate(reference))
+                yield return reference;
         }
         public ProjectType GetProjectType() {
             foreach (Project project in dte.Solution.Projects) {
@@ -210,5 +213,35 @@ namespace DXVcsTools.Core {
             SolutionParser parser = new SolutionParser(dte.Solution.FileName);
             return parser.GetProjectType();
         }
+
+        #region IDteWrapper Members        
+
+        #endregion
+    }
+    public class ReferenceWrapper : IReferenceWrapper {
+        Reference source;
+        int majorVersion = 0;
+        int minorVersion = 0;
+        string name = null;
+        public ReferenceWrapper(Reference source) {
+            this.source = source;
+            this.name = source.Name;
+            this.majorVersion = source.MajorVersion;
+            this.minorVersion = source.MinorVersion;
+        }
+        public string Name {
+            get { return name; }
+        }
+        public int MajorVersion {
+            get { return majorVersion; }
+        }
+        public int MinorVersion {
+            get { return minorVersion; }
+        }
+
+        public void Remove() {
+            source.Remove();
+        }
+        
     }
 }

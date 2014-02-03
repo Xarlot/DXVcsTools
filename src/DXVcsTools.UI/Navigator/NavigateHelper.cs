@@ -14,6 +14,7 @@ namespace DXVcsTools.UI.Navigator {
                 item.Path = file;
                 item.Name = Path.GetFileName(file);
                 item.ProjectType = addReferenceHelper.GetProjectType(file);
+                item.GeneratedProjects = new SolutionParser(file).GetProjectPathes().ToList();
                 index++;
                 yield return item;
             }

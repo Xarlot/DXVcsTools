@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DXVcsTools.Core {
     public enum VSTheme {
@@ -18,7 +19,16 @@ namespace DXVcsTools.Core {
         bool IsItemUnderScc(string fileName);
         void AddReference(string assembly);
         void ClearReferences();
+        IEnumerable<IReferenceWrapper> GetReferences(Predicate<IReferenceWrapper> predicate);
         void AddProjectReference(string path);
         void ClearProjectReferences();
+    }    
+    public interface IReferenceWrapper{
+        string Name { get; }
+        int MajorVersion { get; }
+        int MinorVersion { get; }
+        //Project SourceProject { get; }
+
+        void Remove();
     }
 }
