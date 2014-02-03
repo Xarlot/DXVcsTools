@@ -7,6 +7,7 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:navigator="clr-namespace:DXVcsTools.UI.Navigator"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" >
     <UserControl.Resources>
@@ -16,7 +17,7 @@
     </UserControl.Resources>
     <dxlc:LayoutControl Orientation="Vertical">
         <dxlc:LayoutItem Height="600" Width="1200">
-            <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}">
+            <dxg:GridControl ItemsSource="{Binding Path=NavigateHierarchy}" FilterString="{Binding Path=FilterCriteriaString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="DisplayText" ReadOnly="True"></dxg:GridColumn>
                     <dxg:GridColumn FieldName="UseForAddReference" FixedWidth="True" Width="100">
@@ -49,6 +50,14 @@
             </dxg:GridControl>
         </dxlc:LayoutItem>
         <dxlc:LayoutGroup Orientation="Horizontal">
+            <dxlc:LayoutItem>
+              <dxe:ComboBoxEdit ValidateOnTextInput="True" x:Name="cbPresets" Width="300" NullText="Presets" IsTextEditable="False" ItemsSource="{Binding Path=Presets}" ValueMember="Value" DisplayMember="Name"
+                                EditValue="{Binding Path=FilterCriteriaString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <!--<dxmvvm:Interaction.Triggers>
+                  <dxmvvm:EventToCommand EventName="EditValueChanged" Command="{Binding Path=ChoosePresetCommand}" CommandParameter="{Binding Path=EditValue, ElementName=cbPresets, UpdateSourceTrigger=PropertyChanged}"/>
+                </dxmvvm:Interaction.Triggers>-->
+              </dxe:ComboBoxEdit>
+            </dxlc:LayoutItem>
             <dxlc:LayoutItem>
                 <Button Content="Generate" Command="{Binding Path=GenerateCommand}"/>
             </dxlc:LayoutItem>

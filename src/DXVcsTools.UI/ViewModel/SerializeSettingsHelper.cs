@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -46,7 +47,23 @@ namespace DXVcsTools {
             return CreateDefaultNavigationConfig();
         }
         static NavigationConfigViewModel CreateDefaultNavigationConfig() {
-            return new NavigationConfigViewModel();
+            return new NavigationConfigViewModel() {Presets = GenerateDefaultPresets()};
+        }
+        static ObservableCollection<NavigatePreset> GenerateDefaultPresets() {
+            var presets = new ObservableCollection<NavigatePreset>();
+            presets.Add(new NavigatePreset() {
+                Name = "General",
+                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+            });
+            presets.Add(new NavigatePreset() {
+                Name = "Wpf",
+                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+            });
+            presets.Add(new NavigatePreset() {
+                Name = "Win",
+                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization') And Contains([DisplayText], 'Win') Or Contains([DisplayText], 'RealLife')"
+            });
+            return presets;
         }
         public static void SerializeSettings(OptionsViewModel model) {
             string path = SettingsFilePath;

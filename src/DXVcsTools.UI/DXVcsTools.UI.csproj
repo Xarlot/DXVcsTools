@@ -179,6 +179,7 @@
     <Compile Include="ViewModel\LayoutOptionsViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
+    <Compile Include="ViewModel\NavigatePreset.cs" />
     <Compile Include="ViewModel\NavigationConfigViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PathHelper.cs" />
