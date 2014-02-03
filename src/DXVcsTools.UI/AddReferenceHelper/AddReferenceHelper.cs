@@ -41,17 +41,17 @@ namespace DXVcsTools.UI {
                     reference.Remove();                
                 SolutionParser parser = new SolutionParser(item.Path);
                 var newAssemblies = parser.GetReferencedAssemblies(true);
-                var newVersion = newAssemblies.FirstOrDefault(x => DXControlsVersionHelper.HasDXVersionInfo(x)).With(x => DXControlsVersionHelper.GetDXVersionString(x));                                
+                var newVersion = newAssemblies.FirstOrDefault(DXControlsVersionHelper.HasDXVersionInfo).With(DXControlsVersionHelper.GetDXVersionString);                                
 
                 var modifiedReferences = dxReferences.Select(x => DXControlsVersionHelper.ReplaceDXVersion(x.Name, newVersion));
                 var model = SerializeHelper.DeSerializeNavigationConfig();
 
-                var projects = model.NavigateItems.SelectMany(x => x.GeneratedProjects).Distinct();
+                var projects = model.NavigateItems.Where(x => x.GeneratedProjects != null).SelectMany(x => x.GeneratedProjects).Distinct();
                 List<string> currentProjects = projects.AsParallel().Where(project => {
                     var projectRoot = ProjectRootElement.Open(project);
                     if(project.Contains("Localization") || SolutionParser.GetProjectType(projectRoot).Conflicts(parser.GetProjectType()))
                         return false;
-                    var assemblyNameProperty = SolutionParser.GetAssemblyNameFromProject(projectRoot).If(x => DXControlsVersionHelper.HasDXVersionInfo(x));
+                    var assemblyNameProperty = SolutionParser.GetAssemblyNameFromProject(projectRoot).If(DXControlsVersionHelper.HasDXVersionInfo);
                     if(assemblyNameProperty == null)
                         return false;
                     if(modifiedReferences.Contains(assemblyNameProperty))
