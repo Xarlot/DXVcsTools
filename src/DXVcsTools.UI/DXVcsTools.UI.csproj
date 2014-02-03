@@ -169,6 +169,7 @@
     <Compile Include="Blame\BlameHelper.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="MVVM\BindableBaseEx.cs" />
+    <Compile Include="MVVM\UpdateButtonsOnLoadedBehavior.cs" />
     <Compile Include="Navigator\NavigateHelper.cs" />
     <Compile Include="Navigator\NavigateItem.cs" />
     <Compile Include="Navigator\NavigationTreeItem.cs" />

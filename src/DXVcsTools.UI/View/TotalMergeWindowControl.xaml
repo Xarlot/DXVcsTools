@@ -54,7 +54,11 @@
         <dx:DialogService x:Name="NavigationConfigWindow" DialogStyle="{StaticResource windowStyle}" DialogWindowStartupLocation="CenterScreen">
             <dx:DialogService.ViewTemplate>
                 <DataTemplate>
-                    <view:NavigationConfigUserControl/>
+                    <view:NavigationConfigUserControl>
+                        <i:Interaction.Behaviors>
+                            <ui:UpdateButtonsOnLoadedBehavior/>
+                        </i:Interaction.Behaviors>
+                    </view:NavigationConfigUserControl>
                 </DataTemplate>
             </dx:DialogService.ViewTemplate>
         </dx:DialogService>
@@ -159,7 +163,7 @@
                     Content="Check in port version..."
                     Hint="Check in version version, note you use it at your own risk ;)">
                 </dxb:BarButtonItem>
-                
+
                 <dxb:BarButtonItem
                     x:Name="bUndoCheckout"
                     Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png"
