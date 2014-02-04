@@ -157,7 +157,7 @@ namespace DXVcsTools.Core {
             if (projects.Length == 0)
                 return;
             var project = projects.GetValue(0) as Project;
-            var newPrj = (VSProject)project.Object;
+            var newPrj = currentProject ?? (VSProject)project.Object;
             newPrj.References.Add(assembly);
         }
         public void AddProjectReference(string projectPath) {
@@ -165,36 +165,42 @@ namespace DXVcsTools.Core {
             if (projects.Length == 0)
                 return;
             var project = projects.GetValue(0) as Project;
-            var newPrj = (VSProject)project.Object;
+            var newPrj = currentProject ?? (VSProject)project.Object;
             var projectReference = dte.Solution.AddFromFile(projectPath);
             newPrj.References.AddProject(projectReference);
         }
         public void ClearProjectReferences() {
+            foreach(var project in GetProjects(x => x.Name.Contains("DevExpress")))
+                dte.Solution.Remove(((ProjectWrapper)project).Item);
+        }
+        public IEnumerable<IProjectWrapper> GetProjects(Predicate<IProjectWrapper> predicate) {
             var projects = (Array)dte.ActiveSolutionProjects;
-            if (projects.Length == 0)
-                return;
+            if(projects.Length == 0)
+                yield break;
             var projectWrapper = (Project)projects.GetValue(0);
-            var project = (VSProject)projectWrapper.Object;
-            if (project == null)
-                return;
+            var project = currentProject ?? (VSProject)projectWrapper.Object;
+            if(project == null)
+                yield break;
             var solutionProjects = dte.Solution.Projects.Cast<object>().ToList();
-            foreach (Project projectToRemove in solutionProjects) {
-                if (projectToRemove == projectWrapper)
+            foreach(Project projectToRemove in solutionProjects) {
+                if(projectToRemove == projectWrapper)
                     continue;
-                if (projectToRemove.Name.Contains("DevExpress"))
-                    dte.Solution.Remove(projectToRemove);
+                var wrapper = new ProjectWrapper(projectToRemove);
+                if(predicate(wrapper)) {
+                    yield return new ProjectWrapper(projectToRemove);
+                }
             }
         }
         public void ClearReferences() {
             foreach(var element in GetReferences(x => x.Name.Contains("DevExpress")))
                 element.Remove();
-        }
+        }        
         public IEnumerable<IReferenceWrapper> GetReferences(Predicate<IReferenceWrapper> predicate) {            
             var projects = (Array)dte.ActiveSolutionProjects;
             if(projects.Length == 0)
                 yield break;
             var projectWrapper = (Project)projects.GetValue(0);
-            var project = (VSProject)projectWrapper.Object;
+            var project = currentProject ?? (VSProject)projectWrapper.Object;
             if(project == null)
                 yield break;
             var references = project.References.Cast<Reference>().ToList().Select(x=>new ReferenceWrapper(x));
@@ -215,6 +221,25 @@ namespace DXVcsTools.Core {
         }
 
         #region IDteWrapper Members        
+
+        #endregion
+
+        #region IDteWrapper Members
+
+        VSProject currentProject = null;
+        public void LockCurrentProject() {
+            if(currentProject != null)
+                return;
+            var projects = (Array)dte.ActiveSolutionProjects;
+            if(projects.Length > 0 )
+                currentProject = (VSProject)((Project)projects.GetValue(0)).Object;
+        }
+
+        public void UnlockCurrentProject() {
+            if(currentProject == null)
+                return;
+            currentProject = null;
+        }
 
         #endregion
     }

@@ -244,7 +244,7 @@ namespace DXVcsTools.ViewModels {
         void AddReferenceMenuItemClick(object sender, EventArgs e) {
             VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
             NavigateItem item = (NavigateItem)menuItem.Tag;
-            AddReferenceHelper helper = new AddReferenceHelper();
+            AddReferenceHelper helper = new AddReferenceHelper();            
             helper.AddReferences(new DteWrapper(dte), item);
         }
         void AddProjectReferenceMenuItemClick(object sender, EventArgs e) {

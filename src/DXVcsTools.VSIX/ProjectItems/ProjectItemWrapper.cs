@@ -1,12 +1,14 @@
 ﻿using System;
 
 namespace DXVcsTools.Core {
-    public class ProjectWrapper : IProjectItemWrapper {
+    public class ProjectWrapper : IProjectWrapper {
         public ProjectWrapper(EnvDTE.Project item) {
             Item = item;
         }
-        EnvDTE.Project Item { get; set; }
+        public EnvDTE.Project Item { get; set; }
         public string FullPath { get { return Item.Properties.Item("FullPath").Value.ToString(); } }
+        public string Name { get { return Item.Name; } }
+        public string FullName { get { return Item.FullName; } }
         public bool IsSaved {
             get { return Item.Saved; }
         }

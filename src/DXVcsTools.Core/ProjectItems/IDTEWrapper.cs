@@ -19,9 +19,12 @@ namespace DXVcsTools.Core {
         bool IsItemUnderScc(string fileName);
         void AddReference(string assembly);
         void ClearReferences();
+        IEnumerable<IProjectWrapper> GetProjects(Predicate<IProjectWrapper> predicate);
         IEnumerable<IReferenceWrapper> GetReferences(Predicate<IReferenceWrapper> predicate);
         void AddProjectReference(string path);
         void ClearProjectReferences();
+        void LockCurrentProject();
+        void UnlockCurrentProject();
     }    
     public interface IReferenceWrapper{
         string Name { get; }
