@@ -6,7 +6,7 @@ namespace DXVcsTools.Core {
             Item = item;
         }
         public EnvDTE.Project Item { get; set; }
-        public string FullPath { get { return Item.Properties.Item("FullPath").Value.ToString(); } }
+        public string FullPath { get { return Item.Properties.Item("FullName").Value.ToString(); } }
         public string Name { get { return Item.Name; } }
         public string FullName { get { return Item.FullName; } }
         public bool IsSaved {
@@ -25,7 +25,7 @@ namespace DXVcsTools.Core {
             Item = item;
         }
         EnvDTE.ProjectItem Item { get; set; }
-        public string FullPath { get { return Item.Properties.Item("FullPath").Value.ToString(); }}
+        public string FullPath { get { return Item.Properties.Item("FullName").Value.ToString(); }}
         public bool IsSaved {
             get { return Item.Saved; }
         }

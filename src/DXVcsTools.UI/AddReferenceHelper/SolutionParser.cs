@@ -14,6 +14,15 @@ using Microsoft.Build.Construction;
 using Microsoft.Build.Execution;
 
 namespace DXVcsTools.UI {
+    public class ReferenceInfo {
+        public string Name { get; set; }
+        public string FullName { get; set; }
+        public static bool IsEmpty(ReferenceInfo value){
+            if(value == null)
+                return true;
+            return String.IsNullOrEmpty(value.Name);
+        }
+    }
     public class SolutionParser {
         public static readonly Guid Unknown = Guid.Empty;
         public static readonly Guid Wpf = Guid.Parse("{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548}");
@@ -29,7 +38,7 @@ namespace DXVcsTools.UI {
             DoParse(solution);
             return solution;
         }
-        public IEnumerable<string> GetReferencedAssemblies(bool includeRoot) {
+        public IEnumerable<ReferenceInfo> GetReferencedAssemblies(bool includeRoot) {
             object solution = GetSolution();
             return GetAssembliesForAddReference(solution, includeRoot);
         }
@@ -54,7 +63,7 @@ namespace DXVcsTools.UI {
                 yield return root.ProjectFileLocation.LocationString;
             }
         }
-        IEnumerable<string> GetAssembliesForAddReference(object solutionWrapper, bool includeRoot) {
+        IEnumerable<ReferenceInfo> GetAssembliesForAddReference(object solutionWrapper, bool includeRoot) {
             var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
             if (items == null || !items.Cast<object>().Any())
                 yield break;
@@ -63,23 +72,24 @@ namespace DXVcsTools.UI {
                     yield return item;                
             }
         }
-        static string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {
-            if (!assemblyInclude.Contains("PublicKeyToken"))
-                return assemblyInclude;
-            return assemblyHintPath == null ? string.Empty : Path.Combine(location, assemblyHintPath);
+        static string GetAsemblyPath(string location, string assemblyInclude, string assemblyHintPath) {            
+            return assemblyHintPath == null ? assemblyInclude : Path.Combine(location, assemblyHintPath);
         }
         static IEnumerable<ProjectItemElement> GetDXReferences(ProjectRootElement root) {
             return root.Items.Where(item => item.ItemType == "Reference").Where(item => item.Include.StartsWith("DevExpress"));
         }
-        public static IEnumerable<string> GetDXReferencePaths(string absolutePath, bool includeRoot) {
+        public static IEnumerable<ReferenceInfo> GetDXReferencePaths(string absolutePath, bool includeRoot) {
             return GetDXReferencePaths(ProjectRootElement.Open(absolutePath), includeRoot);
         }
-        public static IEnumerable<string> GetDXReferencePaths(ProjectRootElement root, bool includeRoot) {
+        public static IEnumerable<ReferenceInfo> GetDXReferencePaths(ProjectRootElement root, bool includeRoot) {
             string location = root.DirectoryPath;
             foreach(var item in GetDXReferences(root))
-                yield return GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value));
-            if(includeRoot)
-                yield return root.Properties.First(item => item.Name == "AssemblyName").Value;
+                yield return new ReferenceInfo() { FullName = GetAsemblyPath(location, item.Include, item.Metadata.FirstOrDefault(x => x.Name == "HintPath").With(x => x.Value)), Name = item.Include };
+            if(includeRoot){
+                var assemblyName = root.Properties.First(item => item.Name == "AssemblyName").Value;
+                yield return new ReferenceInfo() { FullName = Path.Combine(root.DirectoryPath, root.Properties.First(x=>x.Name=="OutputPath").Value, String.Format("{0}.dll",assemblyName) ), Name = assemblyName };
+            }
+                
         }
         string GetAbsolutePath(object projectItem) {
             return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(projectItem);

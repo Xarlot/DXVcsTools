@@ -42,6 +42,8 @@ namespace DXVcsTools.UI {
         MultiReferenceType type;
         public string AssemblySource { get; private set; }
         public string ProjectSource { get; private set; }
+        public ReferenceInfo ReferenceSource { get; private set; }
+        public string FullAssemblySource { get { return ReferenceSource.With(x => x.FullName ?? x.Name) ?? AssemblySource; } }
         public MultiReferenceType Type { get { return type; } set { type = value; hCode = type == MultiReferenceType.Assembly ? aHCode : pHCode; } }
         static int pHCode = "ProjectSource".GetHashCode();
         static int aHCode = "AssemblySource".GetHashCode();
@@ -54,6 +56,10 @@ namespace DXVcsTools.UI {
                 AssemblySource = SolutionParser.GetAssemblyNameFromProject(ProjectSource);
             }
             this.Type = type;
+        }
+        public MultiReference(ReferenceInfo source)
+            : this(source.Name, MultiReferenceType.Assembly) {
+            this.ReferenceSource = source;
         }
         public void ReplaceVersion(string newVersion) {
             AssemblySource = DXControlsVersionHelper.ReplaceDXVersion(AssemblySource, newVersion);
@@ -73,38 +79,39 @@ namespace DXVcsTools.UI {
     }
     public class AddReferenceHelper {
         public void AddReferences(IDteWrapper dte, NavigateItem item) {
-            dte.LockCurrentProject();
-            try {
-                AddReferencesImpl(dte, item);
-            } finally {
-                dte.UnlockCurrentProject();
-            }            
+            AddReferencesImpl(dte, item, false);
         }
-        public void AddReferencesImpl(IDteWrapper dte, NavigateItem item) {
+        public void AddReferencesImpl(IDteWrapper dte, NavigateItem item, bool addAsProjectReference) {
+            dte.LockCurrentProject();
             try {
                 BusyIndicator.Show();
                 
                 SolutionParser parser = new SolutionParser(item.Path);
+                var projectType = parser.GetProjectType();
 
-                var newAssemblies = parser.GetReferencedAssemblies(true).Select(x => new MultiReference(x, MultiReferenceType.Assembly));
+                var newAssemblies = parser.GetReferencedAssemblies(!addAsProjectReference).Select(x => new MultiReference(x));
                 var newVersion = newAssemblies.Select(x=>x.AssemblySource).FirstOrDefault(DXControlsVersionHelper.HasDXVersionInfo).With(DXControlsVersionHelper.GetDXVersionString);
 
-                var updatedReferences = ChangeVersion(dte, parser.GetProjectType(), newVersion);
+                var updatedReferences = ChangeVersion(dte, projectType, newVersion);
 
                 dte.ClearReferences();
                 dte.ClearProjectReferences();
 
                 var actualReferences = Concat(newAssemblies, updatedReferences);
+                if(addAsProjectReference) {
+                    actualReferences = Concat(actualReferences, parser.GetProjectPathes().Select(x => new MultiReference(x, MultiReferenceType.Project)));
+                }
                 foreach(var reference in actualReferences)
                     try {
                         if(reference.Type == MultiReferenceType.Assembly)
-                            dte.AddReference(reference.AssemblySource);
+                            dte.AddReference(projectType == ProjectType.SL ? reference.FullAssemblySource : reference.AssemblySource);
                         else
                             dte.AddProjectReference(reference.ProjectSource);
                     } catch { }                    
             }
             finally {
                 BusyIndicator.Close();
+                dte.UnlockCurrentProject();
             }
         }
         public static IEnumerable<MultiReference> Concat(IEnumerable<MultiReference> first, IEnumerable<MultiReference> second) {
@@ -142,24 +149,12 @@ namespace DXVcsTools.UI {
                 }
                 return false;
             });
-            var dependentProjects = targetProjects.SelectMany(x => SolutionParser.GetDXReferencePaths(x.ProjectSource, true)).Where(x => !String.IsNullOrEmpty(x)).Select(x => new MultiReference(x, MultiReferenceType.Assembly));
+            var dependentProjects = targetProjects.SelectMany(x => SolutionParser.GetDXReferencePaths(x.ProjectSource, true)).Where(x => !ReferenceInfo.IsEmpty(x)).Select(x => new MultiReference(x));
             return Concat(targetProjects.ToList(), dependentProjects.ToList());
         }
 
         public void AddProjectReferences(IDteWrapper dte, NavigateItem item) {
-            try {
-                BusyIndicator.Show();
-                dte.ClearReferences();
-                dte.ClearProjectReferences();
-                SolutionParser parser = new SolutionParser(item.Path);
-                foreach (var assembly in parser.GetReferencedAssemblies(false))
-                    dte.AddReference(assembly);
-                foreach (var path in parser.GetProjectPathes())
-                    dte.AddProjectReference(path);
-            }
-            finally {
-                BusyIndicator.Close();
-            }
+            AddReferencesImpl(dte, item, true);
         }
         public ProjectType GetProjectType(string path) {
             SolutionParser parser = new SolutionParser(path);
