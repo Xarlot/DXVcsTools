@@ -169,6 +169,7 @@
     <Compile Include="Blame\BlameHelper.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="MVVM\BindableBaseEx.cs" />
+    <Compile Include="MVVM\UpdateButtonsOnLoadedBehavior.cs" />
     <Compile Include="Navigator\NavigateHelper.cs" />
     <Compile Include="Navigator\NavigateItem.cs" />
     <Compile Include="Navigator\NavigationTreeItem.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="ViewModel\LayoutOptionsViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
+    <Compile Include="ViewModel\NavigatePreset.cs" />
     <Compile Include="ViewModel\NavigationConfigViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="ViewModel\PathHelper.cs" />

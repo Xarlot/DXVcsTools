@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using DevExpress.Data.Access;
 using DevExpress.Xpf.Mvvm;
 using DXVcsTools.UI.Navigator;
-using log4net.Repository.Hierarchy;
 
 namespace DXVcsTools.UI {
     public class NavigationConfigViewModel : BindableBase {
         IEnumerable<string> roots;
         ObservableCollection<NavigateTreeItem> navigateHierarchy;
+        string filterCriteriaString;
 
         public IEnumerable<ProjectType> ProjectTypes { get; private set; }
         public IEnumerable<string> Roots {
@@ -22,6 +22,11 @@ namespace DXVcsTools.UI {
         public ObservableCollection<NavigateTreeItem> NavigateHierarchy {
             get { return navigateHierarchy; }
             private set { SetProperty(ref navigateHierarchy, value, () => NavigateHierarchy); }
+        }
+        public ObservableCollection<NavigatePreset> Presets { get; set; }
+        public string FilterCriteriaString { 
+            get { return filterCriteriaString; }
+            set { SetProperty(ref filterCriteriaString, value, () => FilterCriteriaString); }
         }
         public bool ShouldSerializeProjectTypes() {
             return false;
@@ -35,17 +40,28 @@ namespace DXVcsTools.UI {
         public bool ShouldSerializeOpenConfigLocationCommand() {
             return false;
         }
+        public bool ShouldSerializeChoosePresetCommand() {
+            return false;
+        }
         public bool ShouldSerializeNavigateHierarchy() {
+            return false;
+        }
+        public bool ShouldSerializeFilterCriteriaString() {
             return false;
         }
         public IEnumerable<NavigateItem> NavigateItems { get; set; }
         public ICommand GenerateCommand { get; private set; }
         public ICommand OpenConfigLocationCommand { get; private set; }
+        public ICommand ChoosePresetCommand { get; private set; }
 
         public NavigationConfigViewModel() {
             ProjectTypes = new ObservableCollection<ProjectType>() { ProjectType.Unknown, ProjectType.SL, ProjectType.WPF, ProjectType.WinRT };
             GenerateCommand = new DelegateCommand(Generate, CanGenerate);
             OpenConfigLocationCommand = new DelegateCommand(OpenConfigLocation);
+            ChoosePresetCommand = new DelegateCommand<string>(ChoosePreset);
+        }
+        void ChoosePreset(string filter) {
+            FilterCriteriaString = filter;
         }
         void OpenConfigLocation() {
             var startInfo = new ProcessStartInfo();
