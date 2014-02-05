@@ -25,6 +25,10 @@ namespace DXVcsTools.Core {
         void ClearProjectReferences();
         void LockCurrentProject();
         void UnlockCurrentProject();
+
+        IEnumerable<string> GetAvailableConfigurationNames();        
+        string GetActiveConfigurationName();
+        void ActivateConfiguration(string configurationName);
     }    
     public interface IReferenceWrapper{
         string Name { get; }

@@ -17,8 +17,10 @@ using VSLangProj;
 namespace DXVcsTools.Core {
     public class DteWrapper : IDteWrapper {
         readonly DTE2 dte;
+        readonly SolutionBuild2 solutionBuild;
         public DteWrapper(DTE dte) {
             this.dte = (DTE2)dte;
+            solutionBuild = ((SolutionBuild2)((Solution2)dte.Solution).SolutionBuild);
         }
         public SolutionItem BuildTree() {
             return new SolutionItem(GetProjects(dte.Solution).ToList()) { Name = dte.Solution.FullName, Path = dte.Solution.FileName };
@@ -219,13 +221,6 @@ namespace DXVcsTools.Core {
             SolutionParser parser = new SolutionParser(dte.Solution.FileName);
             return parser.GetProjectType();
         }
-
-        #region IDteWrapper Members        
-
-        #endregion
-
-        #region IDteWrapper Members
-
         VSProject currentProject = null;
         public void LockCurrentProject() {
             if(currentProject != null)
@@ -239,9 +234,26 @@ namespace DXVcsTools.Core {
             if(currentProject == null)
                 return;
             currentProject = null;
+        }        
+        public IEnumerable<string> GetAvailableConfigurationNames() {            
+            foreach(var conf in GetAvailableConfigurations())
+                yield return conf.Name;
         }
-
-        #endregion
+        public IEnumerable<SolutionConfiguration2> GetAvailableConfigurations() {            
+            var configurations = solutionBuild.SolutionConfigurations;
+            foreach(SolutionConfiguration2 configuration in configurations) {
+                yield return configuration;
+            }
+        }
+        public string GetActiveConfigurationName() {
+            return ((SolutionConfiguration2)solutionBuild.ActiveConfiguration).Name;
+        }
+        public void ActivateConfiguration(string configurationName) {
+            var target = GetAvailableConfigurations().FirstOrDefault(x=>String.Compare(x.Name, configurationName, true)==0);
+            if(target==null)
+                return;
+            target.Activate();
+        }
     }
     public class ReferenceWrapper : IReferenceWrapper {
         Reference source;

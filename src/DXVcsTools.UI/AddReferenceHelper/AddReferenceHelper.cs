@@ -112,6 +112,7 @@ namespace DXVcsTools.UI {
             finally {
                 BusyIndicator.Close();
                 dte.UnlockCurrentProject();
+                dte.ActivateConfiguration("DebugTest");
             }
         }
         public static IEnumerable<MultiReference> Concat(IEnumerable<MultiReference> first, IEnumerable<MultiReference> second) {
