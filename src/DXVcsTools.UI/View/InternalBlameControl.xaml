@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:View="clr-namespace:DXVcsTools.UI.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -14,6 +16,9 @@
         int Revision { get; }
         DateTime CommitDate { get; }-->
         <dxg:GridControl ItemsSource="{Binding Path=Blame}">
+            <dxmvvm:Interaction.Behaviors>
+                <View:CustomDisplayTextAttachedBehavior/>
+            </dxmvvm:Interaction.Behaviors>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Revision" Width="15"/>
                 <dxg:GridColumn FieldName="User" Width="30"/>
