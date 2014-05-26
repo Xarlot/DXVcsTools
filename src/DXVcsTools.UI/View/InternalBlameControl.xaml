@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="DXVcsTools.UI.View.InternalBlameControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <!--string SourceLine { get; }
+        string Comment { get; }
+        string User { get; }
+        int Revision { get; }
+        DateTime CommitDate { get; }-->
+        <dxg:GridControl ItemsSource="{Binding Path=Blame}">
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="Revision" Width="15"/>
+                <dxg:GridColumn FieldName="User" Width="30"/>
+                <dxg:GridColumn FieldName="CommitDate" Width="30"/>
+                <dxg:GridColumn FieldName="Comment" Width="50">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings/>
+                    </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                <dxg:GridColumn FieldName="SourceLine"/>
+            </dxg:GridControl.Columns>
+            <dxg:GridControl.View>
+                <dxg:TableView ShowHorizontalLines="False" AutoWidth="True">
+                    
+                </dxg:TableView>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </Grid>
+</UserControl>

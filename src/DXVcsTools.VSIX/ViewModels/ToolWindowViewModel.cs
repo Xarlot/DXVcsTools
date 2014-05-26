@@ -420,7 +420,7 @@ namespace DXVcsTools.VSIX {
                 return;
             int? lineNumber = dte.GetSelectedLine();
             BlameHelper helper = new BlameHelper(Options, PortOptions);
-            helper.ShowExternalBlame(path, lineNumber);
+            helper.ShowBlame(path, lineNumber);
         }
         private bool CanHandleActiveDocument(string fileName) {
             if (string.IsNullOrEmpty(fileName)) {

@@ -4,11 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using DevExpress.Xpf.Editors.Helpers;
 using DevExpress.Xpf.Mvvm.Native;
 using DXVcsTools.Core;
 using DXVcsTools.Data;
 using DXVcsTools.DXVcsClient;
+using DXVcsTools.UI.View;
+using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI {
     public class BlameHelper {
@@ -120,6 +123,47 @@ namespace DXVcsTools.UI {
             if (!File.Exists(path))
                 throw new ArgumentException("tortoise not found");
             return path;
+        }
+        public void ShowBlame(string path, int? lineNumber) {
+            if (options.BlameType == DXBlameType.External)
+                ShowExternalBlame(path, lineNumber);
+            else
+                ShowInternalBlame(path, lineNumber);
+        }
+        void ShowInternalBlame(string path, int? lineNumber) {
+            Logger.Logger.AddInfo("ShowInternalBlame. Start.");
+            try {
+                ShowInternalBlameInternal(path, lineNumber);
+            }
+            catch (Exception e) {
+                Logger.Logger.AddError("ShowInternalBlame. Failed.", e);
+            }
+            Logger.Logger.AddInfo("ShowInternalBlame. End.");
+        }
+        void ShowInternalBlameInternal(string filePath, int? lineNumber) {
+            string blameFile = null;
+            string logFile = null;
+            try {
+                IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
+                MergeHelper helper = new MergeHelper(options, portOptions);
+                string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
+
+                FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
+                int revision = diffInfo.LastRevision;
+                IList<IBlameLine> blame = diffInfo.BlameAtRevision(revision);
+
+                InternalBlameViewModel model = new InternalBlameViewModel(blame);
+                Window wind = new Window() {Width = 1000, Height = 600};
+                wind.DataContext = model;
+                wind.Content = new InternalBlameControl();
+                wind.Show();
+
+//                ShowExternalBlameInternal(filePath, vcsFile, blameFile, logFile, revision, lineNumber);
+            }
+            finally {
+                blameFile.Do(File.Delete);
+                logFile.Do(File.Delete);
+            }
         }
     }
 }

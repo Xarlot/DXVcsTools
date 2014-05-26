@@ -176,6 +176,7 @@
     <Compile Include="Tests\PathHelperTests.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
+    <Compile Include="ViewModel\InternalBlameViewModel.cs" />
     <Compile Include="ViewModel\LayoutOptionsViewModel.cs" />
     <Compile Include="ViewModel\ManualMergeViewModel.cs" />
     <Compile Include="ViewModel\MergeHelper.cs" />
@@ -199,6 +200,9 @@
     <Compile Include="DXBlameViewer.cs" />
     <Compile Include="View\FlatUIControl.xaml.cs">
       <DependentUpon>FlatUIControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\InternalBlameControl.xaml.cs">
+      <DependentUpon>InternalBlameControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ManualMergeControl.xaml.cs">
       <DependentUpon>ManualMergeControl.xaml</DependentUpon>
@@ -267,6 +271,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FlatUIControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\InternalBlameControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
