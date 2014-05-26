@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using DevExpress.Xpf.Core.Native;
-using DevExpress.Xpf.Mvvm.Native;
-using DevExpress.Xpf.Mvvm.UI.Interactivity;
+using DevExpress.Mvvm.Native;
+using DevExpress.Mvvm.UI.Interactivity;
 
 namespace DXVcsTools.UI {
     public class UpdateButtonsOnLoadedBehavior : Behavior<FrameworkElement> {

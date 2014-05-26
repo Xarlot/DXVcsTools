@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using DXVcsTools.Core;
 using DevExpress.Xpf.Grid;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 
 namespace DXVcsTools.UI {
     public class ChildNodesSelector : IChildNodesSelector {

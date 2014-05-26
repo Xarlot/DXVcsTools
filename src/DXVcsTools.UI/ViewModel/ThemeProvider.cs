@@ -1,5 +1,5 @@
 ﻿using System;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 
 namespace DXVcsTools.UI {
     public class ThemeProvider : BindableBase {

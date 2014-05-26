@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {

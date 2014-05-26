@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using DevExpress.Xpf.Mvvm;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 
 namespace DXVcsTools.Core {
     public enum MergeState {

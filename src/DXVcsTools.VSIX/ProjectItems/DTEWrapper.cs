@@ -6,7 +6,7 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Management.Instrumentation;
 using DevExpress.Data.PLinq.Helpers;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
 using DXVcsTools.UI.Navigator;

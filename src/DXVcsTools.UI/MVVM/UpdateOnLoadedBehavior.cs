@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using DevExpress.Xpf.Mvvm.Native;
-using DevExpress.Xpf.Mvvm.UI.Interactivity;
+using DevExpress.Mvvm.Native;
+using DevExpress.Mvvm.UI.Interactivity;
 
 namespace DXVcsTools.UI {
     public class UpdateOnLoadedBehavior : Behavior<FrameworkElement> {

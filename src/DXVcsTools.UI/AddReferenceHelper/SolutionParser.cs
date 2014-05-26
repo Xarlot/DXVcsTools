@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using DevExpress.Utils.Text.Internal;
 using DevExpress.Xpf.Core;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 using DXVcsTools.UI.Navigator;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Execution;

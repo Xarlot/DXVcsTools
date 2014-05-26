@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 using DXVcsTools.UI.Navigator;
 using log4net.Repository.Hierarchy;
 

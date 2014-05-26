@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Xpf.Editors.Helpers;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 using DXVcsTools.Core;
 using DXVcsTools.Data;
 using DXVcsTools.DXVcsClient;

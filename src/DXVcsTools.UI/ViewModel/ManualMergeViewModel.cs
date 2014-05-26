@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows.Forms;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 using DXVcsTools.UI.MVVM;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 
 namespace DXVcsTools.UI {
     public class ManualMergeViewModel : BindableBaseEx {

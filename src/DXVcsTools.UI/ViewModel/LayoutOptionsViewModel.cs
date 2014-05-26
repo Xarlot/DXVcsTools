@@ -1,5 +1,5 @@
 ﻿using DevExpress.Xpf.Bars;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 
 namespace DXVcsTools.UI {
     public class LayoutOptionsViewModel : BindableBase {

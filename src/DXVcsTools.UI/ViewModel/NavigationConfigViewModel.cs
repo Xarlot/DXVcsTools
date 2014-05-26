@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using DevExpress.Data.Access;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 using DXVcsTools.UI.Navigator;
 
 namespace DXVcsTools.UI {

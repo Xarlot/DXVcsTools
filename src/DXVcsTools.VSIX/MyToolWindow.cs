@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using DXVcsTools.Version;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 using Microsoft.VisualStudio.Shell;
 
 namespace DXVcsTools.VSIX {

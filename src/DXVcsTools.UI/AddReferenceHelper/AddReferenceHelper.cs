@@ -4,7 +4,7 @@ using DXVcsTools.Core;
 using DXVcsTools.UI.Navigator;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Mvvm.Native;
 using System.Collections.Generic;
 using Microsoft.Build.Construction;
 

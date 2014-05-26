@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Controls;
 using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Grid;
-using DevExpress.Xpf.Mvvm.UI.Interactivity;
+using DevExpress.Mvvm.UI.Interactivity;
 
 namespace DXVcsTools.UI.View {
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Markup;
-using DevExpress.Xpf.Mvvm.UI;
+using DevExpress.Mvvm.UI;
 
 namespace DXVcsTools.UI.View {
     public class ControlLocator : MarkupExtension, IViewLocator {
