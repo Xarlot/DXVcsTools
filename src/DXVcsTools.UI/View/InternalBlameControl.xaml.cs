@@ -42,6 +42,7 @@ namespace DXVcsTools.UI.View {
         protected override void OnAttached() {
             base.OnAttached();
             AssociatedObject.PreviewMouseMove += AssociatedObjectPreviewMouseMove;
+            AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
             userCondition = new FormatCondition() { FieldName = "User" };
             userCondition2 = new FormatCondition() { FieldName = "User" };
             revisionCondition = new FormatCondition() { FieldName = "Revision" };
@@ -55,6 +56,13 @@ namespace DXVcsTools.UI.View {
         protected override void OnDetaching() {
             base.OnDetaching();
             AssociatedObject.PreviewMouseMove -= AssociatedObjectPreviewMouseMove;
+            AssociatedObject.MouseLeave -= AssociatedObject_MouseLeave;
+        }
+        void AssociatedObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) {
+            userCondition.Format = null;
+            userCondition2.Format = null;
+            revisionCondition.Format = null;
+            revisionCondition2.Format = null;
         }
         void AssociatedObjectPreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
             var result = AssociatedObject.CalcHitInfo(e.OriginalSource as DependencyObject);
@@ -64,7 +72,9 @@ namespace DXVcsTools.UI.View {
                     var revisionValue = grid.GetCellValue(result.RowHandle, "Revision");
                     var userValue = grid.GetCellValue(result.RowHandle, "User");
                     var halfHighlightExpression = new BinaryOperator("User", userValue).ToString();
-                    var halfHighlightFormat = new Format() {Background = new SolidColorBrush(Color.FromArgb(50, 0, 0, 255))};
+                    var halfHighlightFormat = new Format() {
+                        Background = new SolidColorBrush(!string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov") ? Color.FromArgb(50, 255, 0, 0) : Color.FromArgb(50, 0, 0, 255))
+                    };
                     userCondition.Expression = halfHighlightExpression;
                     userCondition.Format = halfHighlightFormat;
                     revisionCondition.Expression = halfHighlightExpression;
@@ -73,10 +83,12 @@ namespace DXVcsTools.UI.View {
                     string expression = CriteriaOperator.And(
                         new BinaryOperator("Revision", revisionValue),
                         new BinaryOperator("User", userValue)).ToString();
-                    var color = new SolidColorBrush(Color.FromArgb(100, 0, 0, 255));
-                    userCondition2.Format = new Format() {Background = color};
+                    var highlightFormat = new Format() {
+                        Background = new SolidColorBrush(!string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov") ? Color.FromArgb(150, 255, 0, 0) : Color.FromArgb(100, 0, 0, 255))
+                    };
+                    userCondition2.Format = highlightFormat;
                     userCondition2.Expression = expression;
-                    revisionCondition2.Format = new Format() {Background = color};
+                    revisionCondition2.Format = highlightFormat;
                     revisionCondition2.Expression = expression;
                 }
                 else {

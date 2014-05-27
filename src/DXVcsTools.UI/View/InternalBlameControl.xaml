@@ -7,42 +7,64 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:View="clr-namespace:DXVcsTools.UI.View"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <!--string SourceLine { get; }
-        string Comment { get; }
-        string User { get; }
-        int Revision { get; }
-        DateTime CommitDate { get; }-->
-        <dxg:GridControl 
-            ItemsSource="{Binding Path=Blame}"
-            CurrentItem="{Binding Path=CurrentLine}">
-            <dxmvvm:Interaction.Behaviors>
-                <View:CustomDisplayTextAttachedBehavior/>
-            </dxmvvm:Interaction.Behaviors>
-            <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="Revision" Width="15" ReadOnly="True"/>
-                <dxg:GridColumn FieldName="User" Width="30" ReadOnly="True"/>
-                <dxg:GridColumn FieldName="CommitDate" Width="30" ReadOnly="True"/>
-                <dxg:GridColumn FieldName="Comment" Width="50" ReadOnly="True"/>
-                <dxg:GridColumn FieldName="SourceLine" ReadOnly="True"/>
-            </dxg:GridControl.Columns>
-            <dxg:GridControl.View>
-                <dxg:TableView 
-                    ShowHorizontalLines="False" 
-                    AutoWidth="True" 
-                    NavigationStyle="Row">
-                    <dxg:TableView.FormatConditions>
-                        <dxg:ColorScaleFormatCondition FieldName="Revision">
-                            <dxg:ColorScaleFormat ColorMin="#1000FF00" ColorMax="#4000FF00"/>
-                        </dxg:ColorScaleFormatCondition>
-                    </dxg:TableView.FormatConditions>
-                    <dxmvvm:Interaction.Behaviors>
-                        <View:MouseOverHighlightBehavior/>
-                    </dxmvvm:Interaction.Behaviors>
-                </dxg:TableView>
-            </dxg:GridControl.View>
-        </dxg:GridControl>
+        <dxb:BarManager AllowCustomization="False">
+            <dxb:BarManager.Bars>
+                <dxb:Bar>
+                    <dxb:BarButtonItem
+                        x:Name="bPrevious"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding PreviousViewCommand}"
+                        Content="Previous view"
+                        Hint="Previous view">
+                    </dxb:BarButtonItem>
+                    <dxb:BarButtonItem
+                        x:Name="bNext"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding NextViewCommand}"
+                        Content="Next view"
+                        Hint="Next View">
+                    </dxb:BarButtonItem>
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+            <dxg:GridControl 
+                ItemsSource="{Binding Path=Blame}"
+                CurrentItem="{Binding Path=CurrentLine}">
+                <dxmvvm:Interaction.Behaviors>
+                    <View:CustomDisplayTextAttachedBehavior/>
+                </dxmvvm:Interaction.Behaviors>
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="Revision" Width="15" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="User" Width="30" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="CommitDate" Width="30" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="Comment" Width="50" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="SourceLine" ReadOnly="True"/>
+                </dxg:GridControl.Columns>
+                <dxg:GridControl.View>
+                    <dxg:TableView 
+                        ShowHorizontalLines="False" 
+                        AutoWidth="True" 
+                        NavigationStyle="Row">
+                        <dxg:TableView.FormatConditions>
+                            <dxg:ColorScaleFormatCondition FieldName="Revision">
+                                <dxg:ColorScaleFormat ColorMin="#1000FF00" ColorMax="#4000FF00"/>
+                            </dxg:ColorScaleFormatCondition>
+                        </dxg:TableView.FormatConditions>
+                        <dxg:TableView.RowCellMenuCustomizations>
+                            <dxb:BarItemLink BarItemName="bPrevious" />
+                            <dxb:BarItemLink BarItemName="bNext" />
+                        </dxg:TableView.RowCellMenuCustomizations>
+                        <dxmvvm:Interaction.Behaviors>
+                            <View:MouseOverHighlightBehavior/>
+                        </dxmvvm:Interaction.Behaviors>
+
+                    </dxg:TableView>
+                </dxg:GridControl.View>
+            </dxg:GridControl>
+        </dxb:BarManager>
+
     </Grid>
 </UserControl>
