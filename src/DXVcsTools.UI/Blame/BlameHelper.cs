@@ -124,46 +124,35 @@ namespace DXVcsTools.UI {
                 throw new ArgumentException("tortoise not found");
             return path;
         }
-        public void ShowBlame(string path, int? lineNumber) {
-            if (options.BlameType == DXBlameType.External)
-                ShowExternalBlame(path, lineNumber);
-            else
-                ShowInternalBlame(path, lineNumber);
-        }
-        void ShowInternalBlame(string path, int? lineNumber) {
+        public void ShowInternalBlame(string path, int? lineNumber, Action<InternalBlameViewModel> attachBlameControlHandler) {
             Logger.Logger.AddInfo("ShowInternalBlame. Start.");
             try {
-                ShowInternalBlameInternal(path, lineNumber);
+                ShowInternalBlameInternal(path, lineNumber, attachBlameControlHandler);
             }
             catch (Exception e) {
                 Logger.Logger.AddError("ShowInternalBlame. Failed.", e);
             }
             Logger.Logger.AddInfo("ShowInternalBlame. End.");
         }
-        void ShowInternalBlameInternal(string filePath, int? lineNumber) {
-            string blameFile = null;
-            string logFile = null;
-            try {
-                IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
-                MergeHelper helper = new MergeHelper(options, portOptions);
-                string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
+        void ShowInternalBlameInternal(string filePath, int? lineNumber, Action<InternalBlameViewModel> attachBlameControlHandler) {
+            InternalBlameViewModel model = new InternalBlameViewModel(filePath, lineNumber, this);
+            attachBlameControlHandler(model);
+        }
+        public int GetLastRevision(string filePath, int? lineNumber) {
+            IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
+            MergeHelper helper = new MergeHelper(options, portOptions);
+            string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
 
-                FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
-                int revision = diffInfo.LastRevision;
-                IList<IBlameLine> blame = diffInfo.BlameAtRevision(revision);
+            FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
+            return diffInfo.LastRevision;
+        }
+        public IEnumerable<IBlameLine> BlameAtRevision(string filePath, int? lineNumber, int revision) {
+            IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
+            MergeHelper helper = new MergeHelper(options, portOptions);
+            string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
 
-                InternalBlameViewModel model = new InternalBlameViewModel(blame);
-                Window wind = new Window() {Width = 1000, Height = 600};
-                wind.DataContext = model;
-                wind.Content = new InternalBlameControl();
-                wind.Show();
-
-//                ShowExternalBlameInternal(filePath, vcsFile, blameFile, logFile, revision, lineNumber);
-            }
-            finally {
-                blameFile.Do(File.Delete);
-                logFile.Do(File.Delete);
-            }
+            FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
+            return diffInfo.BlameAtRevision(revision);
         }
     }
 }

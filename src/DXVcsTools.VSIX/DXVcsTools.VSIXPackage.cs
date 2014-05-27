@@ -28,6 +28,7 @@ namespace DXVcsTools.VSIX {
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
+    [ProvideToolWindow(typeof(InternalBlameWindow), Style = VsDockStyle.Tabbed)]
     [ProvideBindingPath(SubPath = "Lib")]
     [ProvideAutoLoad(UIContextGuids.NoSolution)]
     [Guid(GuidList.guidDXVcsTools_VSIXPkgString)]
@@ -40,7 +41,7 @@ namespace DXVcsTools.VSIX {
             Menu = new MenuViewModel();
             Menu.DoConnect(dte);
             GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
-            ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper);
+            ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper, GetBlameWindow);
         }
         MenuViewModel Menu { get; set; }
         public ToolWindowViewModel ToolWindowViewModel { get; set; }
@@ -119,6 +120,14 @@ namespace DXVcsTools.VSIX {
             }
             return window;
         }
+        InternalBlameWindow GetBlameWindow() {
+            var window = (InternalBlameWindow)FindToolWindow(typeof(InternalBlameWindow), 0, true);
+            if ((null == window) || (null == window.Frame)) {
+                throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+            return window;
+        }
+
         public void ShowToolWindow() {
             var windowFrame = (IVsWindowFrame)GetMyToolWindow().Frame;
             InitializeToolWindow();

@@ -33,11 +33,13 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
+        Func<InternalBlameWindow> internalBlameWindowAccessor;
         readonly Locker currentBranchLocker = new Locker();
         readonly GenerateMenuItemsHelper generateMenuItemsHelper;
-        public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper) {
+        public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper, Func<InternalBlameWindow> internalBlameWindowAccessor) {
             this.generateMenuItemsHelper = generateMenuHelper;
-            this.dte = new DteWrapper(dte); 
+            this.dte = new DteWrapper(dte);
+            this.internalBlameWindowAccessor = internalBlameWindowAccessor;
             Options = options;
             ServiceContainer = new ServiceContainer(this);
 
@@ -420,7 +422,10 @@ namespace DXVcsTools.VSIX {
                 return;
             int? lineNumber = dte.GetSelectedLine();
             BlameHelper helper = new BlameHelper(Options, PortOptions);
-            helper.ShowBlame(path, lineNumber);
+            if (Options.BlameType == DXBlameType.External)
+               helper.ShowExternalBlame(path, lineNumber);
+            else
+                helper.ShowInternalBlame(path, lineNumber, model => internalBlameWindowAccessor().Initialize(model));
         }
         private bool CanHandleActiveDocument(string fileName) {
             if (string.IsNullOrEmpty(fileName)) {

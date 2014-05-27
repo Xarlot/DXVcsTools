@@ -243,6 +243,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InternalBlameWindow.cs" />
     <Compile Include="ProjectItems\ProjectItemWrapper.cs" />
     <Compile Include="ProjectItems\VSVersion.cs" />
     <Compile Include="ViewModels\GenerateMenuItemsHelper.cs" />
