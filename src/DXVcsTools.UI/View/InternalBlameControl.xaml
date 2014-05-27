@@ -33,6 +33,14 @@
                     ShowHorizontalLines="False" 
                     AutoWidth="True" 
                     NavigationStyle="Row">
+                    <dxg:TableView.FormatConditions>
+                        <dxg:ColorScaleFormatCondition FieldName="Revision">
+                            <dxg:ColorScaleFormat ColorMin="#1000FF00" ColorMax="#4000FF00"/>
+                        </dxg:ColorScaleFormatCondition>
+                    </dxg:TableView.FormatConditions>
+                    <dxmvvm:Interaction.Behaviors>
+                        <View:MouseOverHighlightBehavior/>
+                    </dxmvvm:Interaction.Behaviors>
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>
