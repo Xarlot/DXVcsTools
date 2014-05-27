@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Data.Filtering;
 using DevExpress.Xpf.Editors;
@@ -39,15 +40,16 @@ namespace DXVcsTools.UI.View {
         FormatCondition userCondition2;
         FormatCondition revisionCondition;
         FormatCondition revisionCondition2;
+        bool isInMenu;
         protected override void OnAttached() {
             base.OnAttached();
             AssociatedObject.PreviewMouseMove += AssociatedObjectPreviewMouseMove;
             AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
+            AssociatedObject.ShowGridMenu += AssociatedObject_ShowGridMenu;
             userCondition = new FormatCondition() { FieldName = "User" };
             userCondition2 = new FormatCondition() { FieldName = "User" };
             revisionCondition = new FormatCondition() { FieldName = "Revision" };
             revisionCondition2 = new FormatCondition() { FieldName = "Revision" };
-            
             AssociatedObject.AddFormatCondition(userCondition);
             AssociatedObject.AddFormatCondition(userCondition2);
             AssociatedObject.AddFormatCondition(revisionCondition);
@@ -58,15 +60,32 @@ namespace DXVcsTools.UI.View {
             AssociatedObject.PreviewMouseMove -= AssociatedObjectPreviewMouseMove;
             AssociatedObject.MouseLeave -= AssociatedObject_MouseLeave;
         }
+        void AssociatedObject_ShowGridMenu(object sender, GridMenuEventArgs e) {
+            e.MenuInfo.Menu.Closed += Menu_Closed;
+            isInMenu = true;
+        }
+
+        void Menu_Closed(object sender, EventArgs e) {
+            ((DataControlPopupMenu)sender).Closed -= Menu_Closed;
+            isInMenu = false;
+            UpdateHighlighting(AssociatedObject.InputHitTest(Mouse.GetPosition(AssociatedObject)) as FrameworkElement);
+        }
         void AssociatedObject_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) {
+            if (isInMenu)
+                return;
             userCondition.Format = null;
             userCondition2.Format = null;
             revisionCondition.Format = null;
             revisionCondition2.Format = null;
         }
         void AssociatedObjectPreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
-            var result = AssociatedObject.CalcHitInfo(e.OriginalSource as DependencyObject);
+            UpdateHighlighting(e.OriginalSource as FrameworkElement);
+        }
+        void UpdateHighlighting(FrameworkElement element) {
+            var result = AssociatedObject.CalcHitInfo(element);
             GridControl grid = AssociatedObject.Grid;
+            if (isInMenu)
+                return;
             if (result.InRowCell) {
                 if (result.Column.FieldName == "Revision" || result.Column.FieldName == "User") {
                     var revisionValue = grid.GetCellValue(result.RowHandle, "Revision");
@@ -79,10 +98,8 @@ namespace DXVcsTools.UI.View {
                     userCondition.Format = halfHighlightFormat;
                     revisionCondition.Expression = halfHighlightExpression;
                     revisionCondition.Format = halfHighlightFormat;
-                    
-                    string expression = CriteriaOperator.And(
-                        new BinaryOperator("Revision", revisionValue),
-                        new BinaryOperator("User", userValue)).ToString();
+
+                    string expression = CriteriaOperator.And(new BinaryOperator("Revision", revisionValue), new BinaryOperator("User", userValue)).ToString();
                     var highlightFormat = new Format() {
                         Background = new SolidColorBrush(!string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov") ? Color.FromArgb(150, 255, 0, 0) : Color.FromArgb(100, 0, 0, 255))
                     };

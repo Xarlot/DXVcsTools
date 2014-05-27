@@ -79,7 +79,6 @@ namespace DXVcsTools.DXVcsClient {
             this.versionInfo = versionInfo;
             this.sourceLine = sourceLine;
         }
-
         public string SourceLine {
             get { return sourceLine; }
         }
