@@ -15,7 +15,9 @@
         string User { get; }
         int Revision { get; }
         DateTime CommitDate { get; }-->
-        <dxg:GridControl ItemsSource="{Binding Path=Blame}">
+        <dxg:GridControl 
+            ItemsSource="{Binding Path=Blame}"
+            CurrentItem="{Binding Path=CurrentLine}">
             <dxmvvm:Interaction.Behaviors>
                 <View:CustomDisplayTextAttachedBehavior/>
             </dxmvvm:Interaction.Behaviors>
@@ -27,8 +29,10 @@
                 <dxg:GridColumn FieldName="SourceLine" ReadOnly="True"/>
             </dxg:GridControl.Columns>
             <dxg:GridControl.View>
-                <dxg:TableView ShowHorizontalLines="False" AutoWidth="True">
-                    
+                <dxg:TableView 
+                    ShowHorizontalLines="False" 
+                    AutoWidth="True" 
+                    NavigationStyle="Row">
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>
