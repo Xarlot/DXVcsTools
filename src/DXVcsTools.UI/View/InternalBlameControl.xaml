@@ -20,15 +20,11 @@
                 <View:CustomDisplayTextAttachedBehavior/>
             </dxmvvm:Interaction.Behaviors>
             <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="Revision" Width="15"/>
-                <dxg:GridColumn FieldName="User" Width="30"/>
-                <dxg:GridColumn FieldName="CommitDate" Width="30"/>
-                <dxg:GridColumn FieldName="Comment" Width="50">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings/>
-                    </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                <dxg:GridColumn FieldName="SourceLine"/>
+                <dxg:GridColumn FieldName="Revision" Width="15" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="User" Width="30" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="CommitDate" Width="30" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="Comment" Width="50" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="SourceLine" ReadOnly="True"/>
             </dxg:GridControl.Columns>
             <dxg:GridControl.View>
                 <dxg:TableView ShowHorizontalLines="False" AutoWidth="True">
