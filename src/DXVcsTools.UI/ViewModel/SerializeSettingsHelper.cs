@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using DevExpress.Mvvm.Native;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
 using Newtonsoft.Json;
@@ -37,14 +38,14 @@ namespace DXVcsTools {
         }
         public static NavigationConfigViewModel DeSerializeNavigationConfig() {
             string path = NavigationConfigFilePath;
-
+            NavigationConfigViewModel model = null;
             if (File.Exists(path)) {
                 using (StreamReader reader = File.OpenText(path)) {
                     string json = reader.ReadToEnd();
-                    return JsonConvert.DeserializeObject<NavigationConfigViewModel>(json, new JsonSerializerSettings());
+                    model = JsonConvert.DeserializeObject<NavigationConfigViewModel>(json, new JsonSerializerSettings());
                 }
             }
-            return CreateDefaultNavigationConfig();
+            return model.Return(x => x, CreateDefaultNavigationConfig);
         }
         static NavigationConfigViewModel CreateDefaultNavigationConfig() {
             return new NavigationConfigViewModel() {Presets = GenerateDefaultPresets()};
