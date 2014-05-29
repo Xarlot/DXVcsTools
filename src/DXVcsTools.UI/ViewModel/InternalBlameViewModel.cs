@@ -5,15 +5,45 @@ using DevExpress.Mvvm;
 using DXVcsTools.Data;
 
 namespace DXVcsTools.UI.ViewModel {
+    public class InternalBlameUndoManager {
+        readonly Stack<InternalBlameViewState> undoStack = new Stack<InternalBlameViewState>();
+        readonly Stack<InternalBlameViewModel> redoStack = new Stack<InternalBlameViewModel>();
+        InternalBlameViewState currentState;
+
+        public void RegisterState(InternalBlameViewState state) {
+            if (Equals(state, currentState))
+                return;
+            if (currentState == null) {
+                currentState = state;
+                return;
+            }
+            redoStack.Clear();
+            undoStack.Push(currentState);
+            currentState = state;
+        }
+        public bool CanUndo() {
+            return undoStack.Count > 0;
+        }
+        public void Undo(InternalBlameViewModel model) {
+            if (undoStack.Count == 0)
+                return;
+            currentState = undoStack.Pop();
+            ApplyCurrentState(model);
+        }
+        public void ApplyCurrentState(InternalBlameViewModel model) {
+            if (currentState == null)
+                return;
+            model.Blame = currentState.Blame;
+            model.CurrentLine = currentState.CurrentLine;
+        }
+    }
     public class InternalBlameViewModel : BindableBase {
         IEnumerable<IBlameLine> blame;
-        int revision;
         string filePath;
-        int lineNumber;
-        BlameHelper blameHelper;
+        readonly BlameHelper blameHelper;
         IBlameLine currentLine;
-        Stack<InternalBlameViewState> undoStack = new Stack<InternalBlameViewState>();
-        Stack<InternalBlameViewModel> redoStack = new Stack<InternalBlameViewModel>();
+        public BlameHelper BlameHelper { get { return blameHelper; } }
+        InternalBlameUndoManager undoManager = new InternalBlameUndoManager();
         public string FilePath {
             get { return filePath; }
             set { SetProperty(ref filePath, value, () => FilePath); }
@@ -21,10 +51,6 @@ namespace DXVcsTools.UI.ViewModel {
         public IBlameLine CurrentLine {
             get { return currentLine; }
             set { SetProperty(ref currentLine, value, () => CurrentLine); }
-        }
-        public int Revision {
-            get { return revision; }
-            set { SetProperty(ref revision, value, () => Revision); }
         }
         public IEnumerable<IBlameLine> Blame {
             get { return blame; }
@@ -39,53 +65,39 @@ namespace DXVcsTools.UI.ViewModel {
             PreviousCommand = new DelegateCommand(ExecutePrevious, CanExecutePrevious);
             NextCommand = new DelegateCommand(NextPrevious, CanExecuteNext);
             NavigateToPreviousRevisionCommand = new DelegateCommand<IBlameLine>(NavigateToPreviousRevision, CanNavigateToPreviousRevision);
-            this.lineNumber = lineNumber - 1 ?? 0;
+            int line = lineNumber - 1 ?? 0;
             FilePath = filePath;
-            Revision = blameHelper.GetLastRevision(filePath, lineNumber);
-            Blame = blameHelper.BlameAtRevision(filePath, lineNumber, Revision);
-            CurrentLine = Blame.ElementAtOrDefault(this.lineNumber);
+            int revision = blameHelper.GetLastRevision(filePath, line);
+            Blame = blameHelper.BlameAtRevision(filePath, line, revision);
+            CurrentLine = Blame.ElementAtOrDefault(line);
+            undoManager.RegisterState(new InternalBlameViewState() {Blame = Blame, CurrentLine = currentLine, });
         }
         bool CanNavigateToPreviousRevision(IBlameLine line) {
             return line.Revision > 0;
         }
         void NavigateToPreviousRevision(IBlameLine line) {
-            InternalBlameViewState state = new InternalBlameViewState() {FilePath = filePath, Line = lineNumber, Revision = Revision};
-            undoStack.Push(state);
-            redoStack.Clear();
-         //   Blame = blameHelper.BlameAtRevision(filePath, line.SourceLine, line.Revision - 1);
+            //int revision = line.Revision - 1;
+            //InternalBlameViewState state = new InternalBlameViewState() { FilePath = filePath, Line = lineNumber, Revision = revision };
+            //undoStack.Push(state);
+            //redoStack.Clear();
+            //int index = Blame.ToList().FindIndex(item => item == line);
+            //Blame = blameHelper.BlameAtRevision(filePath, index > 0 ? new int?(index) : null, revision);
+            //CurrentLine = Blame.FirstOrDefault();
         }
         bool CanExecuteNext() {
-            return redoStack.Any();
+            return false;
         }
         void NextPrevious() {
         }
         bool CanExecutePrevious() {
-            return undoStack.Any();
+            return undoManager.CanUndo();
         }
         void ExecutePrevious() {
         }
     }
 
     public class InternalBlameViewState {
-        protected bool Equals(InternalBlameViewState other) {
-            return Revision == other.Revision && Line == other.Line && string.Equals(FilePath, other.FilePath);
-        }
-        public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((InternalBlameViewState)obj);
-        }
-        public override int GetHashCode() {
-            unchecked {
-                var hashCode = Revision;
-                hashCode = (hashCode * 397) ^ Line;
-                hashCode = (hashCode * 397) ^ (FilePath != null ? FilePath.GetHashCode() : 0);
-                return hashCode;
-            }
-        }
-        public int Revision { get; set; }
-        public int Line { get; set; }
-        public string FilePath { get; set; }
+        public IEnumerable<IBlameLine> Blame { get; set; }
+        public IBlameLine CurrentLine { get; set; }
     }
 }
