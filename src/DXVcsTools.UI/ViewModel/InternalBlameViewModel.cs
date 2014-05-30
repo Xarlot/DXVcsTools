@@ -1,49 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using DevExpress.Mvvm;
+using DXVcsTools.Core;
 using DXVcsTools.Data;
 
 namespace DXVcsTools.UI.ViewModel {
-    public class InternalBlameUndoManager {
-        readonly Stack<InternalBlameViewState> undoStack = new Stack<InternalBlameViewState>();
-        readonly Stack<InternalBlameViewModel> redoStack = new Stack<InternalBlameViewModel>();
-        InternalBlameViewState currentState;
-
-        public void RegisterState(InternalBlameViewState state) {
-            if (Equals(state, currentState))
-                return;
-            if (currentState == null) {
-                currentState = state;
-                return;
-            }
-            redoStack.Clear();
-            undoStack.Push(currentState);
-            currentState = state;
-        }
-        public bool CanUndo() {
-            return undoStack.Count > 0;
-        }
-        public void Undo(InternalBlameViewModel model) {
-            if (undoStack.Count == 0)
-                return;
-            currentState = undoStack.Pop();
-            ApplyCurrentState(model);
-        }
-        public void ApplyCurrentState(InternalBlameViewModel model) {
-            if (currentState == null)
-                return;
-            model.Blame = currentState.Blame;
-            model.CurrentLine = currentState.CurrentLine;
-        }
-    }
     public class InternalBlameViewModel : BindableBase {
-        IEnumerable<IBlameLine> blame;
+        readonly Dictionary<int, InternalBlameViewState> blameCache = new Dictionary<int, InternalBlameViewState>();
+        readonly int maxRevision;
+        IList<IBlameLine> blame;
         string filePath;
         readonly BlameHelper blameHelper;
+        readonly MergeHelper mergeHelper;
         IBlameLine currentLine;
         public BlameHelper BlameHelper { get { return blameHelper; } }
-        InternalBlameUndoManager undoManager = new InternalBlameUndoManager();
+        int currentRevision;
+        public int CurrentRevision {
+            get { return currentRevision; }
+            set { SetProperty(ref currentRevision, value, () => CurrentRevision, NavigateToRevision); }
+        }
         public string FilePath {
             get { return filePath; }
             set { SetProperty(ref filePath, value, () => FilePath); }
@@ -52,52 +29,85 @@ namespace DXVcsTools.UI.ViewModel {
             get { return currentLine; }
             set { SetProperty(ref currentLine, value, () => CurrentLine); }
         }
-        public IEnumerable<IBlameLine> Blame {
+        public IList<IBlameLine> Blame {
             get { return blame; }
             set { SetProperty(ref blame, value, () => Blame); }
         }
-        public ICommand PreviousCommand { get; private set; }
-        public ICommand NextCommand { get; private set; }
-        public ICommand NavigateToPreviousRevisionCommand { get; private set; }
+        public ICommand CompareWithPreviousCommand { get; private set; }
+        public ICommand PreviousRevisionCommand { get; private set; }
+        public ICommand SpecifiedRevisionCommand { get; private set; }
+        public ICommand NextRevisionCommand { get; private set; }
+        public ICommand MaxRevisionCommand { get; private set; }
+        public ICommand CompareCurrentFileCommand { get; private set; }
 
         public InternalBlameViewModel(string filePath, int? lineNumber, BlameHelper blameHelper) {
             this.blameHelper = blameHelper;
-            PreviousCommand = new DelegateCommand(ExecutePrevious, CanExecutePrevious);
-            NextCommand = new DelegateCommand(NextPrevious, CanExecuteNext);
-            NavigateToPreviousRevisionCommand = new DelegateCommand<IBlameLine>(NavigateToPreviousRevision, CanNavigateToPreviousRevision);
-            int line = lineNumber - 1 ?? 0;
+            this.mergeHelper = new MergeHelper(blameHelper.Options, blameHelper.PortOptions);
             FilePath = filePath;
-            int revision = blameHelper.GetLastRevision(filePath, line);
-            Blame = blameHelper.BlameAtRevision(filePath, line, revision);
+            PreviousRevisionCommand = new DelegateCommand(NavigateToPreviousRevision, CanNavigateToPreviousRevision);
+            NextRevisionCommand = new DelegateCommand(NavigateToNextRevision, CanNavigateToNextRevision);
+            SpecifiedRevisionCommand = new DelegateCommand(NavigateToSpecifiedRevision, CanNavigateToSpecifiedRevision);
+            MaxRevisionCommand = new DelegateCommand(NavigateToMaxRevision, CanNavigateToMaxRevision);
+            CompareWithPreviousCommand = new DelegateCommand(CompareWithPrevious, CanCompareWithPrevious);
+            CompareCurrentFileCommand = new DelegateCommand(CompareCurrentFile, CanCompareCurrentFile);
+
+            int line = lineNumber - 1 ?? 0;
+            maxRevision = blameHelper.GetLastRevision(filePath, line);
+            CurrentRevision = maxRevision;
             CurrentLine = Blame.ElementAtOrDefault(line);
-            undoManager.RegisterState(new InternalBlameViewState() {Blame = Blame, CurrentLine = currentLine, });
         }
-        bool CanNavigateToPreviousRevision(IBlameLine line) {
-            return line.Revision > 0;
+        bool CanCompareCurrentFile() {
+            return CurrentLine != null;
         }
-        void NavigateToPreviousRevision(IBlameLine line) {
-            //int revision = line.Revision - 1;
-            //InternalBlameViewState state = new InternalBlameViewState() { FilePath = filePath, Line = lineNumber, Revision = revision };
-            //undoStack.Push(state);
-            //redoStack.Clear();
-            //int index = Blame.ToList().FindIndex(item => item == line);
-            //Blame = blameHelper.BlameAtRevision(filePath, index > 0 ? new int?(index) : null, revision);
-            //CurrentLine = Blame.FirstOrDefault();
+        void CompareCurrentFile() {
+            mergeHelper.CompareWithCurrentVersion(filePath, CurrentRevision, 0, true);
         }
-        bool CanExecuteNext() {
-            return false;
+        bool CanCompareWithPrevious() {
+            return CurrentRevision > 0;
         }
-        void NextPrevious() {
+        void CompareWithPrevious() {
+            mergeHelper.CompareWithCurrentVersion(filePath, CurrentRevision - 1, CurrentRevision);
         }
-        bool CanExecutePrevious() {
-            return undoManager.CanUndo();
+        bool CanNavigateToMaxRevision() {
+            return CurrentRevision != maxRevision;
         }
-        void ExecutePrevious() {
+        void NavigateToMaxRevision() {
+            CurrentRevision = maxRevision;
+        }
+        bool CanNavigateToSpecifiedRevision() {
+            return CurrentLine != null && CurrentRevision != CurrentLine.Revision;
+        }
+        void NavigateToSpecifiedRevision() {
+            CurrentRevision = CurrentLine.Revision;
+        }
+        bool CanNavigateToNextRevision() {
+            return CurrentRevision < maxRevision;
+        }
+        void NavigateToNextRevision() {
+            CurrentRevision += 1;
+        }
+        bool CanNavigateToPreviousRevision() {
+            return CurrentRevision > 0;
+        }
+        void NavigateToPreviousRevision() {
+            CurrentRevision -= 1;
+        }
+        void NavigateToRevision() {
+            int revision = CurrentRevision;
+            InternalBlameViewState state;
+            if (!blameCache.TryGetValue(revision, out state)) {
+                var currentBlame = BlameHelper.BlameAtRevision(filePath, null, revision);
+                state = new InternalBlameViewState() { Blame = currentBlame, CurrentLine = CurrentLine, Revision = revision };
+                blameCache[revision] = state;
+            }
+            Blame = state.Blame;
+            CurrentLine = state.CurrentLine;
         }
     }
 
     public class InternalBlameViewState {
-        public IEnumerable<IBlameLine> Blame { get; set; }
+        public int Revision { get; set; }
+        public IList<IBlameLine> Blame { get; set; }
         public IBlameLine CurrentLine { get; set; }
     }
 }

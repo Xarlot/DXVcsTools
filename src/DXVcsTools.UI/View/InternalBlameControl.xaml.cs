@@ -16,6 +16,25 @@ namespace DXVcsTools.UI.View {
     public partial class InternalBlameControl : UserControl {
         public InternalBlameControl() {
             InitializeComponent();
+            grid.Focus();
+        }
+    }
+
+    public class LineIndexAttachedBehavior : Behavior<GridControl> {
+        protected override void OnAttached() {
+            base.OnAttached();
+            AssociatedObject.CustomUnboundColumnData += AssociatedObject_CustomUnboundColumnData;
+        }
+
+        void AssociatedObject_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e) {
+            if (e.Column.FieldName == "LineNumber") {
+                e.Value = e.ListSourceRowIndex + 1;
+                return;
+            }
+        }
+        protected override void OnDetaching() {
+            base.OnDetaching();
+            AssociatedObject.CustomUnboundColumnData -= AssociatedObject_CustomUnboundColumnData;
         }
     }
 

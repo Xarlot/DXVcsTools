@@ -88,8 +88,31 @@ namespace DXVcsTools.Core {
             if (!Directory.Exists(dir)) 
                 Directory.CreateDirectory(dir);
             using (var f = File.Create(filePath)) {
-
                 f.Close();
+            }
+        }
+        void PreviewTarget(IDXVcsRepository repository, string file, string vcsFile, int leftVersion = 0, int rightVersion = 0, bool compareWithCurrent = true) {
+            string leftFile = Path.GetTempFileName();
+            string rightFile = Path.GetTempFileName();
+
+            try {
+                if (leftVersion > 0) 
+                    repository.Get(vcsFile, leftFile, leftVersion);
+                else
+                    repository.GetLatestVersion(vcsFile, leftFile);
+
+                if (compareWithCurrent)
+                    CopyFileContent(file, rightFile);
+                else if (rightVersion > 0)
+                    repository.Get(vcsFile, rightFile, rightVersion);
+                else
+                    repository.GetLatestVersion(vcsFile, rightFile);
+
+                LaunchDiffTool(leftFile, rightFile);
+            }
+            finally {
+                File.Delete(leftFile);
+                File.Delete(rightFile);
             }
         }
         void PreviewTarget(IDXVcsRepository repository, string file, string vcsFile, string targetFile, bool isNew) {
@@ -155,10 +178,10 @@ namespace DXVcsTools.Core {
             }
             return true;
         }
-        public void CompareWithCurrentVersion(string filePath) {
+        public void CompareWithCurrentVersion(string filePath, int leftVersion = 0, int rightVersion = 0, bool compareWithCurrent = false) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
             string vcsOriginalPath = Port.GetRelativePath(filePath);
-            PreviewTarget(repository, filePath, vcsOriginalPath, filePath, false);
+            PreviewTarget(repository, filePath, vcsOriginalPath, leftVersion, rightVersion, compareWithCurrent);
         }
         public void CompareWithPortVersion(string filePath, DXVcsBranch current, bool isNew) {
             try {

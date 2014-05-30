@@ -181,7 +181,7 @@ namespace DXVcsTools.VSIX {
                 CanTotalMerge = false;
                 return;
             }
-           
+
 
             MasterBranch = FindMasterBranch(PortOptions);
             CanTotalMerge = MasterBranch != null;
@@ -423,7 +423,7 @@ namespace DXVcsTools.VSIX {
             int? lineNumber = dte.GetSelectedLine();
             BlameHelper helper = new BlameHelper(Options, PortOptions);
             if (Options.BlameType == DXBlameType.External)
-               helper.ShowExternalBlame(path, lineNumber);
+                helper.ShowExternalBlame(path, lineNumber);
             else
                 helper.ShowInternalBlame(path, lineNumber, model => internalBlameWindowAccessor().Initialize(model));
         }
@@ -432,7 +432,7 @@ namespace DXVcsTools.VSIX {
                 MessageBox.Show("No current document.", "DXVcsTools", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;
             }
-            
+
             if (!dte.IsItemUnderScc(fileName)) {
                 MessageBox.Show(string.Concat("File ", fileName, " is not under source control."), "DXVcsTools", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;

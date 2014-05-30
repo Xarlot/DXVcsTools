@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using DevExpress.Xpf.Editors.Helpers;
 using DevExpress.Mvvm.Native;
 using DXVcsTools.Core;
 using DXVcsTools.Data;
 using DXVcsTools.DXVcsClient;
-using DXVcsTools.UI.View;
 using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI {
     public class BlameHelper {
         readonly OptionsViewModel options;
         readonly PortOptionsViewModel portOptions;
+        public OptionsViewModel Options { get { return options; } }
+        public PortOptionsViewModel PortOptions { get { return portOptions; } }
         public BlameHelper(OptionsViewModel options, PortOptionsViewModel portOptions) {
             this.options = options;
             this.portOptions = portOptions;
@@ -31,21 +29,6 @@ namespace DXVcsTools.UI {
             }
             Logger.Logger.AddInfo("ShowExternalBlame. End.");
         }
-        //void ShowExternalBlameInternal(Uri svnFile, int? lineNumber) {
-        //    if (string.IsNullOrEmpty(svnFile.ToString()))
-        //        throw new ArgumentException("svnFile");
-
-        //    var startInfo = new ProcessStartInfo();
-        //    startInfo.FileName = GetTortoiseProcPath();
-        //    startInfo.Arguments = string.Format("/command:blame /path:{0} /startrev:0 /endrev:-1", svnFile.AbsoluteUri);
-
-        //    if (lineNumber.HasValue)
-        //        startInfo.Arguments += string.Format(" /line:{0}", lineNumber);
-
-        //    using (Process process = Process.Start(startInfo)) {
-        //        process.WaitForExit();
-        //    }
-        //}
         void PrepareBlameFileAndShowBlameUI(string filePath, int? lineNumber) {
             string blameFile = null;
             string logFile = null;
@@ -70,7 +53,7 @@ namespace DXVcsTools.UI {
             string path = filePath + "|" + vcsFile;
             string blameArgs = string.Format("\"{0}\" \"{1}\" \"{2}\" /path:\"{3}\" /revrange:\"{4}\"", blameFile, logFile, Path.GetFileName(filePath), path, revision.ToString());
             if (lineNumber != null)
-                blameArgs += " /line:" + lineNumber.ToString();
+                blameArgs += " /line:" + lineNumber;
             blameArgs += " /ignoreallspaces";
             ShowBlameUI(blameArgs);
         }
@@ -146,7 +129,7 @@ namespace DXVcsTools.UI {
             FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
             return diffInfo.LastRevision;
         }
-        public IEnumerable<IBlameLine> BlameAtRevision(string filePath, int? lineNumber, int revision) {
+        public IList<IBlameLine> BlameAtRevision(string filePath, int? lineNumber, int revision) {
             IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
             MergeHelper helper = new MergeHelper(options, portOptions);
             string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);

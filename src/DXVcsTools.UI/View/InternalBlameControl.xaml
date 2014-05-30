@@ -9,58 +9,103 @@
              xmlns:View="clr-namespace:DXVcsTools.UI.View"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" Focusable="False">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <dxmvvm:BooleanNegationConverter x:Key="negationConverter"/>
+            <Style TargetType="{x:Type dxb:BarButtonItemLinkControl}">
+                <Setter Property="Visibility" Value="{Binding Path=IsEnabled, Mode=TwoWay, RelativeSource={RelativeSource Self}, Converter={StaticResource negationConverter}}"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <dxb:BarManager AllowCustomization="False">
             <dxb:BarManager.Bars>
-                <dxb:Bar>
+                <dxb:Bar Visible="False">
+                    <dxb:BarButtonItem
+                        x:Name="bComparePrevious"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding CompareWithPreviousCommand}"
+                        Content="Compare current revision with previous"
+                        Hint="Compare current revision with previous">
+                    </dxb:BarButtonItem>
+                    <dxb:BarButtonItem
+                        x:Name="bCompareCurrent"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding CompareCurrentFileCommand}"
+                        Content="Compare current revision with current file"
+                        Hint="Compare current revision with current file">
+                    </dxb:BarButtonItem>
                     <dxb:BarButtonItem
                         x:Name="bPrevious"
                         Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
-                        Command="{Binding PreviousViewCommand}"
-                        Content="Previous view"
-                        Hint="Previous view">
+                        Command="{Binding PreviousRevisionCommand}"
+                        Content="Navigate to previous revision"
+                        Hint="Navigate to previous revision">
                     </dxb:BarButtonItem>
                     <dxb:BarButtonItem
                         x:Name="bNext"
                         Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
-                        Command="{Binding NextViewCommand}"
-                        Content="Next view"
-                        Hint="Next View">
+                        Command="{Binding NextRevisionCommand}"
+                        Content="Navigate to next revision"
+                        Hint="Navigate to next revision">
+                    </dxb:BarButtonItem>
+                    <dxb:BarButtonItem
+                        x:Name="bSpecified"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding SpecifiedRevisionCommand}"
+                        Content="Navigate to specified revision"
+                        Hint="Navigate to specified revision">
+                    </dxb:BarButtonItem>
+                    <dxb:BarButtonItem
+                        x:Name="bMax"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding SpecifiedRevisionCommand}"
+                        Content="Navigate to last revision"
+                        Hint="Navigate to last revision">
                     </dxb:BarButtonItem>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <dxg:GridControl 
+                x:Name="grid"
                 ItemsSource="{Binding Path=Blame}"
-                CurrentItem="{Binding Path=CurrentLine}">
+                CurrentItem="{Binding Path=CurrentLine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <dxmvvm:Interaction.Behaviors>
                     <View:CustomDisplayTextAttachedBehavior/>
+                    <View:LineIndexAttachedBehavior/>
                 </dxmvvm:Interaction.Behaviors>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Revision" Width="15" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="User" Width="30" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="CommitDate" Width="30" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="Comment" Width="50" ReadOnly="True"/>
-                    <dxg:GridColumn FieldName="SourceLine" ReadOnly="True"/>
+                    <dxg:GridColumn Fixed="Left" FieldName="Revision" Width="40" ReadOnly="True" AllowSearchPanel="False"/>
+                    <dxg:GridColumn Fixed="Left" FieldName="User" Width="100" ReadOnly="True" AllowSearchPanel="False"/>
+                    <dxg:GridColumn FieldName="CommitDate" Width="80" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="LineNumber" Width="40" UnboundType="Integer" AllowSearchPanel="False"/>
+                    <dxg:GridColumn FieldName="Comment" Width="100" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="SourceLine" ReadOnly="True" MinWidth="1000"/>
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TableView 
+                        ShowSearchPanelMode="Always"
                         ShowHorizontalLines="False" 
-                        AutoWidth="True" 
-                        NavigationStyle="Row">
+                        AutoWidth="False" 
+                        NavigationStyle="Row"
+                        ShowGroupPanel="False">
                         <dxg:TableView.FormatConditions>
                             <dxg:ColorScaleFormatCondition FieldName="Revision">
                                 <dxg:ColorScaleFormat ColorMin="#1000FF00" ColorMax="#4000FF00"/>
                             </dxg:ColorScaleFormatCondition>
                         </dxg:TableView.FormatConditions>
                         <dxg:TableView.RowCellMenuCustomizations>
+                            <dxb:BarItemLink BarItemName="bComparePrevious"/>
+                            <dxb:BarItemLink BarItemName="bCompareCurrent"/>
+                            <dxb:BarItemSeparator/>
+                            <dxb:BarItemLink BarItemName="bSpecified" />
                             <dxb:BarItemLink BarItemName="bPrevious" />
                             <dxb:BarItemLink BarItemName="bNext" />
+                            <dxb:BarItemLink BarItemName="bMax"/>
                         </dxg:TableView.RowCellMenuCustomizations>
                         <dxmvvm:Interaction.Behaviors>
                             <View:MouseOverHighlightBehavior/>
                         </dxmvvm:Interaction.Behaviors>
-
                     </dxg:TableView>
                 </dxg:GridControl.View>
             </dxg:GridControl>

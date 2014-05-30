@@ -1,9 +1,13 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Forms;
 using DXVcsTools.UI.View;
 using DXVcsTools.UI.ViewModel;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace DXVcsTools {
     [Guid("ACBBE549-099F-4F74-9849-CEEBCE8D07E1")]
@@ -12,10 +16,6 @@ namespace DXVcsTools {
         public InternalBlameWindow() : base(null) {
             Caption = "Blame window";
             Content = new InternalBlameControl();
-            Control.Loaded += Control_Loaded;
-        }
-
-        void Control_Loaded(object sender, RoutedEventArgs e) {
         }
         public void Initialize(InternalBlameViewModel model) {
             Control.DataContext = model;
@@ -24,9 +24,6 @@ namespace DXVcsTools {
         public void Show() {
             var frame = (IVsWindowFrame)Frame;
             frame.Show();
-        }
-        protected override void Initialize() {
-            base.Initialize();
         }
     }
 }
