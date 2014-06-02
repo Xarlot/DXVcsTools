@@ -52,15 +52,15 @@ namespace DXVcsTools {
                     if (isControlKeyDepressed) {
                         if (isShifKeyDepressed) {
                             switch (msg.WParam.ToInt64()) {
-                                case 65: // Ctrl+Shit+A command
-                                case 67: // Ctrl+Shit+C command
-                                case 78: // Ctrl+Shit+N command
-                                case 79: // Ctrl+Shit+O command
-                                case 83: // Ctrl+Shit+S command
-                                case 85: // Ctrl+Shit+U command
-                                case 88: // Ctrl+Shit+X command
-                                    isCommandCombinationDepressed = true;
-                                    break;
+                                //case 65: // Ctrl+Shit+A command
+                                //case 67: // Ctrl+Shit+C command
+                                //case 78: // Ctrl+Shit+N command
+                                //case 79: // Ctrl+Shit+O command
+                                //case 83: // Ctrl+Shit+S command
+                                //case 85: // Ctrl+Shit+U command
+                                //case 88: // Ctrl+Shit+X command
+                                //    isCommandCombinationDepressed = true;
+                                //    break;
                                 default:
                                     isCommandCombinationDepressed = false;
                                     break;
