@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using DevExpress.Mvvm.Native;
 using DXVcsTools.Core;
@@ -121,21 +122,11 @@ namespace DXVcsTools.UI {
             InternalBlameViewModel model = new InternalBlameViewModel(filePath, lineNumber, this);
             attachBlameControlHandler(model);
         }
-        public int GetLastRevision(string filePath, int? lineNumber) {
+        public FileDiffInfo GetFileDiffInfo(string filePath, Action<int, int> progress) {
             IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
             MergeHelper helper = new MergeHelper(options, portOptions);
             string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
-
-            FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
-            return diffInfo.LastRevision;
-        }
-        public IList<IBlameLine> BlameAtRevision(string filePath, int? lineNumber, int revision) {
-            IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
-            MergeHelper helper = new MergeHelper(options, portOptions);
-            string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
-
-            FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
-            return diffInfo.BlameAtRevision(revision);
+            return dxRepository.GetFileDiffInfo(vcsFile, progress, SpacesAction.IgnoreAll);
         }
     }
 }

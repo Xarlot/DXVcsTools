@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using EnvDTE;
@@ -8,15 +9,15 @@ using Microsoft.VisualStudio.CommandBars;
 using stdole;
 
 namespace DXVcsTools.VSIX {
-    public class VSDevExpressMenuItem {
+    public class VsDevExpressMenuItem {
         #region props
-        object VSSourceCore;
+        object vsSourceCore;
         string headerCore = string.Empty;
         Image iconCore;
-        public List<VSDevExpressMenuItem> itemsInternal = new List<VSDevExpressMenuItem>();
+        public List<VsDevExpressMenuItem> ItemsInternal = new List<VsDevExpressMenuItem>();
         string toolTipCore = string.Empty;
 
-        public VSDevExpressMenuItem Parent { get; protected set; }
+        public VsDevExpressMenuItem Parent { get; protected set; }
 
         public string Header {
             get { return headerCore; }
@@ -48,26 +49,25 @@ namespace DXVcsTools.VSIX {
                 OnIconChanged(oldValue);
             }
         }
-        protected object VSSource {
-            get { return VSSourceCore; }
+        protected object VsSource {
+            get { return vsSourceCore; }
             set {
-                if (VSSourceCore == value)
+                if (vsSourceCore == value)
                     return;
-                object oldValue = VSSourceCore;
-                VSSourceCore = value;
+                object oldValue = vsSourceCore;
+                vsSourceCore = value;
                 OnVSSourceChanged(oldValue);
             }
         }
-        IEnumerable<VSDevExpressMenuItem> Items { get { return itemsInternal; } }
         public object Tag { get; set; }
 
         public event EventHandler Click;
         #endregion
 
-        public VSDevExpressMenuItem() {
+        public VsDevExpressMenuItem() {
         }
-        protected internal VSDevExpressMenuItem(CommandBarControl source) {
-            VSSourceCore = source;
+        protected internal VsDevExpressMenuItem(CommandBarControl source) {
+            vsSourceCore = source;
             if (source != null) {
                 if (source.Type == MsoControlType.msoControlButton)
                     ((CommandBarButton)source).Click += OnButtonClick;
@@ -77,50 +77,46 @@ namespace DXVcsTools.VSIX {
             CreateChildrenFromSource();
         }
         public void DeleteItem() {
-            var commandBarControl = (CommandBarControl)VSSource;
+            var commandBarControl = (CommandBarControl)VsSource;
             commandBarControl.Delete();
         }
-        public VSDevExpressMenuItem CreateItem(bool isPopup) {
-            if (VSSource == null)
+        public VsDevExpressMenuItem CreateItem(bool isPopup) {
+            if (VsSource == null)
                 return null;
-            var commandBarControl = (CommandBarControl)VSSource;
+            var commandBarControl = (CommandBarControl)VsSource;
             if (commandBarControl.Type != MsoControlType.msoControlPopup) {
                 CommandBar parentCommandBar = commandBarControl.Parent;
                 if (parentCommandBar == null)
                     return null;
                 int savedIndex = commandBarControl.Index;
-                VSSource = parentCommandBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, savedIndex, Type.Missing) as CommandBarPopup;
+                VsSource = parentCommandBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, savedIndex, Type.Missing) as CommandBarPopup;
                 commandBarControl.Delete();
             }
-            var childItem = new VSDevExpressMenuItem();
-            childItem.VSSource = isPopup
-                ? ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing)
-                : ((CommandBarPopup)VSSource).Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            itemsInternal.Add(childItem);
+            var childItem = new VsDevExpressMenuItem();
+            childItem.VsSource = isPopup
+                ? ((CommandBarPopup)VsSource).Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing)
+                : ((CommandBarPopup)VsSource).Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            ItemsInternal.Add(childItem);
             childItem.Parent = this;
             return childItem;
         }
         protected void CreateChildrenFromSource() {
-            var commandBarPopup = VSSource as CommandBarPopup;
+            var commandBarPopup = VsSource as CommandBarPopup;
             if (commandBarPopup == null)
                 return;
             foreach (CommandBarControl control in commandBarPopup.Controls) {
                 if (control.Type == MsoControlType.msoControlButton || control.Type == MsoControlType.msoControlPopup) {
-                    var item = new VSDevExpressMenuItem(control);
+                    var item = new VsDevExpressMenuItem(control);
                     item.Parent = this;
-                    itemsInternal.Add(item);
+                    ItemsInternal.Add(item);
                 }
             }
         }
-        VSDevExpressMenuItem GetItemByHeader(string header) {
-            foreach (VSDevExpressMenuItem child in itemsInternal) {
-                if (child.Header == header)
-                    return child;
-            }
-            return null;
+        VsDevExpressMenuItem GetItemByHeader(string header) {
+            return ItemsInternal.FirstOrDefault(child => child.Header == header);
         }
-        public VSDevExpressMenuItem CreateOrGetItem(string header, bool isPopup = false) {
-            VSDevExpressMenuItem childItem = GetItemByHeader(header);
+        public VsDevExpressMenuItem CreateOrGetItem(string header, bool isPopup = false) {
+            VsDevExpressMenuItem childItem = GetItemByHeader(header);
             if (childItem != null)
                 return childItem;
             childItem = CreateItem(isPopup);
@@ -142,10 +138,10 @@ namespace DXVcsTools.VSIX {
                 if (commandBarControl.Type == MsoControlType.msoControlButton)
                     ((CommandBarButton)commandBarControl).Click -= OnButtonClick;
             }
-            commandBarControl = VSSource as CommandBarControl;
+            commandBarControl = VsSource as CommandBarControl;
             if (commandBarControl != null) {
                 if (commandBarControl.Type == MsoControlType.msoControlButton)
-                    ((CommandBarButton)VSSource).Click += OnButtonClick;
+                    ((CommandBarButton)VsSource).Click += OnButtonClick;
                 UpdateHeader();
                 UpdateIcon();
                 UpdateToolTip();
@@ -159,21 +155,21 @@ namespace DXVcsTools.VSIX {
                 Click(this, new EventArgs());
         }
         protected void UpdateHeader() {
-            if (VSSource == null || string.IsNullOrEmpty(Header))
+            if (VsSource == null || string.IsNullOrEmpty(Header))
                 return;
-            ((CommandBarControl)VSSource).Caption = Header;
+            ((CommandBarControl)VsSource).Caption = Header;
         }
         protected void UpdateToolTip() {
-            if (VSSource == null)
+            if (VsSource == null)
                 return;
-            ((CommandBarControl)VSSource).TooltipText = ToolTip;
+            ((CommandBarControl)VsSource).TooltipText = ToolTip;
         }
         protected void UpdateIcon() {
-            if (VSSource == null)
+            if (VsSource == null)
                 return;
-            if (((CommandBarControl)VSSource).Type != MsoControlType.msoControlButton)
+            if (((CommandBarControl)VsSource).Type != MsoControlType.msoControlButton)
                 return;
-            ((CommandBarButton)VSSource).Picture = MenuItemPictureHelper.ConvertImageToPicture(Icon);
+            ((CommandBarButton)VsSource).Picture = MenuItemPictureHelper.ConvertImageToPicture(Icon);
         }
     }
 
@@ -182,7 +178,7 @@ namespace DXVcsTools.VSIX {
         AddReferenceRoot,
         AddReferenceItem,
     }
-    public class VSDevExpressMenu : VSDevExpressMenuItem {
+    public class VSDevExpressMenu : VsDevExpressMenuItem {
         const string DevExpressMenuBarLocation = "MenuBar";
         const string DevExpressMenuAddReferenceLocation = "Reference Root";
         const string DevExpressMenuConvertToProjectReference = "Reference Item";
@@ -213,7 +209,7 @@ namespace DXVcsTools.VSIX {
                 }
                 if (devExpressMenu == null)
                     devExpressMenu = mainMenuBar.Controls.Add(MsoControlType.msoControlPopup, Type.Missing, Type.Missing, Type.Missing, Type.Missing) as CommandBarPopup;
-                VSSource = devExpressMenu;
+                VsSource = devExpressMenu;
                 CreateChildrenFromSource();
             }
             else if (controlType == MsoControlType.msoControlButton) {
@@ -226,7 +222,7 @@ namespace DXVcsTools.VSIX {
                 }
                 var msoButton = mainMenuBar.Controls.Add(MsoControlType.msoControlButton, Type.Missing, Type.Missing, Type.Missing, Type.Missing) as CommandBarButton;
                 msoButton.Caption = menuName;
-                VSSource = msoButton;
+                VsSource = msoButton;
             }
         }
         MsoControlType GetControlType(bool isDirect) {

@@ -26,15 +26,15 @@
                         x:Name="bComparePrevious"
                         Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
                         Command="{Binding CompareWithPreviousCommand}"
-                        Content="Compare current revision with previous"
+                        Content="Compare current with previous"
                         Hint="Compare current revision with previous">
                     </dxb:BarButtonItem>
                     <dxb:BarButtonItem
                         x:Name="bCompareCurrent"
                         Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
                         Command="{Binding CompareCurrentFileCommand}"
-                        Content="Compare current revision with current file"
-                        Hint="Compare current revision with current file">
+                        Content="Compare current with actual"
+                        Hint="Compare current revision with active document file">
                     </dxb:BarButtonItem>
                     <dxb:BarButtonItem
                         x:Name="bPrevious"
@@ -60,7 +60,7 @@
                     <dxb:BarButtonItem
                         x:Name="bMax"
                         Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
-                        Command="{Binding SpecifiedRevisionCommand}"
+                        Command="{Binding LastRevisionCommand}"
                         Content="Navigate to last revision"
                         Hint="Navigate to last revision">
                     </dxb:BarButtonItem>
@@ -77,7 +77,11 @@
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn Fixed="Left" FieldName="Revision" Width="40" ReadOnly="True" AllowSearchPanel="False"/>
                     <dxg:GridColumn Fixed="Left" FieldName="User" Width="100" ReadOnly="True" AllowSearchPanel="False"/>
-                    <dxg:GridColumn FieldName="CommitDate" Width="80" ReadOnly="True"/>
+                    <dxg:GridColumn FieldName="CommitDate" Width="120" ReadOnly="True">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings Mask="f" MaskType="DateTime"/>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="LineNumber" Width="40" UnboundType="Integer" AllowSearchPanel="False"/>
                     <dxg:GridColumn FieldName="Comment" Width="100" ReadOnly="True"/>
                     <dxg:GridColumn FieldName="SourceLine" ReadOnly="True" MinWidth="1000"/>

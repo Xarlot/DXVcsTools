@@ -33,6 +33,13 @@ namespace DXVcsTools.UI {
                 Thread = null;
             }
         }
+        public static void UpdateText(string text) {
+            lock (Locker) {
+                if (Wrapper == null)
+                    return;
+                Wrapper.Text = text;
+            }
+        }
         public static void UpdateProgress(int current, int count) {
             lock (Locker) {
                 if (Wrapper == null)
@@ -45,7 +52,7 @@ namespace DXVcsTools.UI {
     }
 
     public enum BusyIndicatorStyle {
-        Immediate, 
+        Immediate,
         Marquee,
     }
 
@@ -54,9 +61,11 @@ namespace DXVcsTools.UI {
         public int Progress { get; set; }
         public int Count { get; set; }
         public bool SupportProgress { get; set; }
+        public string Text { get; set; }
         public volatile bool ShouldStop;
         public void Show() {
             Indicator = new ProgressBusyIndicator();
+            Text = "Progress: {0} in {1}";
             Indicator.Tag = this;
             Indicator.ShowDialog();
         }
@@ -65,6 +74,7 @@ namespace DXVcsTools.UI {
         }
     }
     class ProgressBusyIndicator : Window {
+        public string Text { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).Text; } }
         public int Progress { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).Progress; } }
         public int Count { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).Count; } }
         public bool SupportProgress { get { return ((ProgressBarBusyIndicatorThreadWrapper)Tag).SupportProgress; } }
@@ -99,7 +109,7 @@ namespace DXVcsTools.UI {
                 if (!SupportProgress)
                     return;
                 TextBlock tb = (TextBlock)LayoutHelper.FindElementByType(this, typeof(TextBlock));
-                tb.Text = string.Format("Progress: {0} in {1}", Progress, Count);
+                tb.Text = string.Format(Text, Progress, Count);
             }
         }
     }

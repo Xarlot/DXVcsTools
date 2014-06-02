@@ -34,7 +34,7 @@
     group; your package should define its own command set in order to avoid collisions  
     with command ids defined by other packages. -->
 
-    
+
     <!-- In this section you can define new menu groups. A menu group is a container for 
          other menus or buttons (commands); from a visual point of view you can see the 
          group as the part of a menu contained between two lines. The parent of a group 
@@ -44,11 +44,11 @@
       <Group guid="guidDXVcsTools_VSIXCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
-      
+
 
 
     </Groups>
-    
+
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button 
         or combo box in a toolbar. -->
@@ -61,15 +61,6 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-      <Button guid="guidDXVcsTools_VSIXCmdSet" id="cmdidDXVcsToolsRoot" priority="0x0100" type="Button">
-        <Parent guid="guidDXVcsTools_VSIXCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
-        <Strings>
-          <ButtonText>Show port window</ButtonText>
-        </Strings>
-      </Button>
-
-
       <Button guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyTool" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
@@ -77,10 +68,17 @@
           <ButtonText>DXVcsTools port window</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyBlame" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>DXVcsTools blame window</ButtonText>
+        </Strings>
+      </Button>
 
 
     </Buttons>
-   
+
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
       <!--  The bitmap id is defined in a way that is a little bit different from the others: 
@@ -89,29 +87,32 @@
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
       <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows"/>
-      
+
     </Bitmaps>
- 
+
   </Commands>
-
-
+  <KeyBindings>
+    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyTool" key1="E" mod1="CONTROL" mod2="Control" key2="P" editor="guidVSStd97" />
+    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyBlame" key1="E" mod1="CONTROL" mod2="Control" key2="B" editor="guidVSStd97" />
+  </KeyBindings>
 
 
 
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidDXVcsTools_VSIXPkg" value="{2631d8dd-813b-41eb-8f9a-fe0fc88ecba9}" />
-    
+
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidDXVcsTools_VSIXCmdSet" value="{8f625cb3-1d17-45ca-814a-baa4c18152dc}">
 
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidDXVcsToolsRoot" value="0x0100" />
       <IDSymbol name="cmdidMyTool" value="0x0101" />
+      <IDSymbol name="cmdidMyBlame" value="0x0102" />
     </GuidSymbol>
-    
-    
-    
+
+
+
     <GuidSymbol name="guidImages" value="{b6d48b3a-38e3-4e52-b8ab-c4df5780bd8e}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />

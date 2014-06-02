@@ -5,11 +5,12 @@ using System.Windows.Input;
 using DevExpress.Mvvm;
 using DXVcsTools.Core;
 using DXVcsTools.Data;
+using DXVcsTools.DXVcsClient;
 
 namespace DXVcsTools.UI.ViewModel {
     public class InternalBlameViewModel : BindableBase {
-        readonly Dictionary<int, InternalBlameViewState> blameCache = new Dictionary<int, InternalBlameViewState>();
-        readonly int maxRevision;
+        FileDiffInfo fileDiffInfo = null;
+        int LastRevision { get { return fileDiffInfo.LastRevision; } }
         IList<IBlameLine> blame;
         string filePath;
         readonly BlameHelper blameHelper;
@@ -37,7 +38,7 @@ namespace DXVcsTools.UI.ViewModel {
         public ICommand PreviousRevisionCommand { get; private set; }
         public ICommand SpecifiedRevisionCommand { get; private set; }
         public ICommand NextRevisionCommand { get; private set; }
-        public ICommand MaxRevisionCommand { get; private set; }
+        public ICommand LastRevisionCommand { get; private set; }
         public ICommand CompareCurrentFileCommand { get; private set; }
 
         public InternalBlameViewModel(string filePath, int? lineNumber, BlameHelper blameHelper) {
@@ -47,14 +48,26 @@ namespace DXVcsTools.UI.ViewModel {
             PreviousRevisionCommand = new DelegateCommand(NavigateToPreviousRevision, CanNavigateToPreviousRevision);
             NextRevisionCommand = new DelegateCommand(NavigateToNextRevision, CanNavigateToNextRevision);
             SpecifiedRevisionCommand = new DelegateCommand(NavigateToSpecifiedRevision, CanNavigateToSpecifiedRevision);
-            MaxRevisionCommand = new DelegateCommand(NavigateToMaxRevision, CanNavigateToMaxRevision);
+            LastRevisionCommand = new DelegateCommand(NavigateToLastRevision, CanNavigateToLastRevision);
             CompareWithPreviousCommand = new DelegateCommand(CompareWithPrevious, CanCompareWithPrevious);
             CompareCurrentFileCommand = new DelegateCommand(CompareCurrentFile, CanCompareCurrentFile);
 
             int line = lineNumber - 1 ?? 0;
-            maxRevision = blameHelper.GetLastRevision(filePath, line);
-            CurrentRevision = maxRevision;
+
+            InitializeFileDiffInfo();
+            Blame = fileDiffInfo.BlameAtRevision(LastRevision);
+            CurrentRevision = LastRevision;
             CurrentLine = Blame.ElementAtOrDefault(line);
+        }
+        void InitializeFileDiffInfo() {
+            try {
+                BusyIndicator.Show();
+                BusyIndicator.UpdateText("Loading file diff info: progress {0} from {1}");
+                fileDiffInfo = blameHelper.GetFileDiffInfo(filePath, BusyIndicator.UpdateProgress);
+            }
+            finally {
+                BusyIndicator.Close();
+            }
         }
         bool CanCompareCurrentFile() {
             return CurrentLine != null;
@@ -68,11 +81,11 @@ namespace DXVcsTools.UI.ViewModel {
         void CompareWithPrevious() {
             mergeHelper.CompareWithCurrentVersion(filePath, CurrentRevision - 1, CurrentRevision);
         }
-        bool CanNavigateToMaxRevision() {
-            return CurrentRevision != maxRevision;
+        bool CanNavigateToLastRevision() {
+            return CurrentRevision != LastRevision;
         }
-        void NavigateToMaxRevision() {
-            CurrentRevision = maxRevision;
+        void NavigateToLastRevision() {
+            CurrentRevision = LastRevision;
         }
         bool CanNavigateToSpecifiedRevision() {
             return CurrentLine != null && CurrentRevision != CurrentLine.Revision;
@@ -81,7 +94,7 @@ namespace DXVcsTools.UI.ViewModel {
             CurrentRevision = CurrentLine.Revision;
         }
         bool CanNavigateToNextRevision() {
-            return CurrentRevision < maxRevision;
+            return CurrentRevision < LastRevision;
         }
         void NavigateToNextRevision() {
             CurrentRevision += 1;
@@ -93,21 +106,8 @@ namespace DXVcsTools.UI.ViewModel {
             CurrentRevision -= 1;
         }
         void NavigateToRevision() {
-            int revision = CurrentRevision;
-            InternalBlameViewState state;
-            if (!blameCache.TryGetValue(revision, out state)) {
-                var currentBlame = BlameHelper.BlameAtRevision(filePath, null, revision);
-                state = new InternalBlameViewState() { Blame = currentBlame, CurrentLine = CurrentLine, Revision = revision };
-                blameCache[revision] = state;
-            }
-            Blame = state.Blame;
-            CurrentLine = state.CurrentLine;
+            Blame = fileDiffInfo.BlameAtRevision(CurrentRevision);
+            CurrentLine = null;
         }
-    }
-
-    public class InternalBlameViewState {
-        public int Revision { get; set; }
-        public IList<IBlameLine> Blame { get; set; }
-        public IBlameLine CurrentLine { get; set; }
     }
 }

@@ -48,15 +48,15 @@ namespace DXVcsTools.ViewModels {
         public void GenerateDefault() {
             devExpressMenu = new VSDevExpressMenu(dte);
             rootMenuHierarchy[string.Empty] = devExpressMenu;
-            VSDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
+            VsDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
             wizardMenu.Click += WizardMenuClick;
-            VSDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
+            VsDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
             blameMenu.Click += BlameMenuClick;
             if (Options.UseNavigateMenu) {
-                VSDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
+                VsDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
                 navigateMenu.Click += NavigateMenuClick;
             }
-            VSDevExpressMenuItem settingsMenu = devExpressMenu.CreateOrGetItem("Settings...");
+            VsDevExpressMenuItem settingsMenu = devExpressMenu.CreateOrGetItem("Settings...");
             settingsMenu.Click += SettingsMenuOnClick;
         }
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
@@ -204,7 +204,7 @@ namespace DXVcsTools.ViewModels {
                 index = relativePath.IndexOf(Path.AltDirectorySeparatorChar, startIndex);
             return index;
         }
-        void GenerateMenuItemContent(VSDevExpressMenuItem menu, NavigateItem item, string relativePath, Action<VSDevExpressMenuItem, NavigateItem> addClickHandler) {
+        void GenerateMenuItemContent(VsDevExpressMenuItem menu, NavigateItem item, string relativePath, Action<VsDevExpressMenuItem, NavigateItem> addClickHandler) {
             int startIndex = 0;
             relativePath = ReduceRelativePath(relativePath);
             while (startIndex > -1) {
@@ -237,18 +237,18 @@ namespace DXVcsTools.ViewModels {
             return result;
         }
         void RootMenuItemClick(object sender, EventArgs e) {
-            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            VsDevExpressMenuItem menuItem = (VsDevExpressMenuItem)sender;
             NavigateItem item = (NavigateItem)menuItem.Tag;
             package.ToolWindowViewModel.NavigateToSolution(item.Path);
         }
         void AddReferenceMenuItemClick(object sender, EventArgs e) {
-            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            VsDevExpressMenuItem menuItem = (VsDevExpressMenuItem)sender;
             NavigateItem item = (NavigateItem)menuItem.Tag;
-            AddReferenceHelper helper = new AddReferenceHelper();            
+            AddReferenceHelper helper = new AddReferenceHelper();
             helper.AddReferences(new DteWrapper(dte), item);
         }
         void AddProjectReferenceMenuItemClick(object sender, EventArgs e) {
-            VSDevExpressMenuItem menuItem = (VSDevExpressMenuItem)sender;
+            VsDevExpressMenuItem menuItem = (VsDevExpressMenuItem)sender;
             NavigateItem item = (NavigateItem)menuItem.Tag;
             AddReferenceHelper helper = new AddReferenceHelper();
             helper.AddProjectReferences(new DteWrapper(dte), item);

@@ -12,6 +12,7 @@ namespace DXVcsTools.UI {
         public OptionsViewModel() {
         }
 
+        public bool AssignCommandBindings { get; set; }
         public bool ReviewTarget { get; set; }
         public bool CheckInTarget { get; set; }
         public bool CloseAfterMerge { get; set; }

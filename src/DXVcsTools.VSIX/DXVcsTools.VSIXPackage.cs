@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows;
 using DXVcsTools.UI;
@@ -38,12 +39,9 @@ namespace DXVcsTools.VSIX {
         public DXVcsTools_VSIXPackage() {
             var dte = GetGlobalService(typeof(DTE)) as DTE;
             Options = SerializeHelper.DeSerializeSettings();
-            Menu = new MenuViewModel();
-            Menu.DoConnect(dte);
             GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper, GetBlameWindow);
         }
-        MenuViewModel Menu { get; set; }
         public ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
         GenerateMenuItemsHelper GenerateMenuHelper { get; set; }
@@ -156,18 +154,41 @@ namespace DXVcsTools.VSIX {
         /// </summary>
         protected override void Initialize() {
             base.Initialize();
+            GenerateNavigationMenu();
+            GenerateSolutionEvents();
+            GenerateShellEvents();
+            GenerateCommandBindings();
+        }
+        void GenerateNavigationMenu() {
             var dte = (DTE)GetService(typeof(DTE));
             GenerateMenuItemsHelper generateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             generateMenuHelper.GenerateDefault();
             generateMenuHelper.GenerateMenus();
-
+        }
+        void GenerateShellEvents() {
+            var shellService = GetService(typeof(SVsShell)) as IVsShell;
+            ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out shellCookie));
+        }
+        void GenerateSolutionEvents() {
             var solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
             if (solution != null) {
                 solution.AdviseSolutionEvents(this, out solutionEventsCookie);
             }
+        }
+        void GenerateCommandBindings() {
+            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            EventHandler eh = ShowToolWindowMenuHandler;
+            CommandID portID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyTool);
+            mcs.AddCommand(new OleMenuCommand(eh, portID));
 
-            var shellService = GetService(typeof(SVsShell)) as IVsShell;
-            ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out shellCookie));
+            CommandID blameID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyBlame);
+            mcs.AddCommand(new OleMenuCommand(ShowBlameWindow, blameID));
+        }
+        void ShowBlameWindow(object sender, EventArgs e) {
+            ShowBlameWindow();
+        }
+        void ShowToolWindowMenuHandler(object sender, EventArgs e) {
+            ShowToolWindow();
         }
         #endregion
     }
