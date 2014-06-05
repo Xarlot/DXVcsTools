@@ -54,15 +54,15 @@ namespace DXVcsTools {
             var presets = new ObservableCollection<NavigatePreset>();
             presets.Add(new NavigatePreset() {
                 Name = "General",
-                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
             });
             presets.Add(new NavigatePreset() {
                 Name = "Wpf",
-                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
             });
             presets.Add(new NavigatePreset() {
                 Name = "Win",
-                Value = @"(Contains([DisplayText], '2013.1') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization') And Contains([DisplayText], 'Win') Or Contains([DisplayText], 'RealLife')"
+                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization') And Contains([DisplayText], 'Win') Or Contains([DisplayText], 'RealLife')"
             });
             return presets;
         }
@@ -99,10 +99,9 @@ namespace DXVcsTools {
                 options.Branches.Add(new DXVcsBranch { Name = "test13.1", Path = "$/Sandbox/litvinov/13.1/".ToLower() });
                 options.Branches.Add(new DXVcsBranch { Name = "test13.2", Path = "$/Sandbox/litvinov/13.2/".ToLower() });
             }
-            options.Branches.Add(new DXVcsBranch { Name = "12.2", Path = "$/2012.2/" });
-            options.Branches.Add(new DXVcsBranch { Name = "13.1", Path = "$/2013.1/" });
             options.Branches.Add(new DXVcsBranch { Name = "13.2", Path = "$/2013.2/" });
             options.Branches.Add(new DXVcsBranch { Name = "14.1", Path = "$/2014.1/" });
+            options.Branches.Add(new DXVcsBranch { Name = "14.2", Path = "$/2014.2/" });
             options.LightThemeName = "Seven";
             options.DarkThemeName = "MetropolisDark";
             options.BlueThemeName = "VS2010";
