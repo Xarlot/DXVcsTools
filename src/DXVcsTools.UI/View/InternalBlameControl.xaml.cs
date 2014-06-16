@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Data.Filtering;
+using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Grid;
 using DevExpress.Mvvm.UI.Interactivity;

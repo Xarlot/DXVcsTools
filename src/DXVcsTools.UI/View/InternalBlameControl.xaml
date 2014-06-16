@@ -19,7 +19,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <dxb:BarManager AllowCustomization="False">
+        <dxb:BarManager AllowCustomization="False" KeyGestureWorkingMode="AllKeyGesture">
             <dxb:BarManager.Bars>
                 <dxb:Bar Visible="False">
                     <dxb:BarButtonItem
@@ -64,6 +64,14 @@
                         Content="Navigate to last revision"
                         Hint="Navigate to last revision">
                     </dxb:BarButtonItem>
+                    <dxb:BarButtonItem
+                        x:Name="bCopyComment"
+                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
+                        Command="{Binding CopyCommentCommand}"
+                        Content="Copy comment"
+                        Hint="Copy comment"
+                        KeyGesture="Ctrl+C">
+                    </dxb:BarButtonItem>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
             <dxg:GridControl 
@@ -77,7 +85,7 @@
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn Fixed="Left" FieldName="Revision" Width="40" ReadOnly="True" AllowSearchPanel="False"/>
                     <dxg:GridColumn Fixed="Left" FieldName="User" Width="100" ReadOnly="True" AllowSearchPanel="False"/>
-                    <dxg:GridColumn FieldName="CommitDate" Width="120" ReadOnly="True">
+                    <dxg:GridColumn Fixed="Left" FieldName="CommitDate" Width="120" ReadOnly="True">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings Mask="f" MaskType="DateTime"/>
                         </dxg:GridColumn.EditSettings>
@@ -101,6 +109,8 @@
                         <dxg:TableView.RowCellMenuCustomizations>
                             <dxb:BarItemLink BarItemName="bComparePrevious"/>
                             <dxb:BarItemLink BarItemName="bCompareCurrent"/>
+                            <dxb:BarItemSeparator/>
+                            <dxb:BarItemLink BarItemName="bCopyComment"/>
                             <dxb:BarItemSeparator/>
                             <dxb:BarItemLink BarItemName="bSpecified" />
                             <dxb:BarItemLink BarItemName="bPrevious" />

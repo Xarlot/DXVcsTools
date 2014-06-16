@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using DevExpress.Mvvm;
 using DXVcsTools.Core;
@@ -40,6 +41,7 @@ namespace DXVcsTools.UI.ViewModel {
         public ICommand NextRevisionCommand { get; private set; }
         public ICommand LastRevisionCommand { get; private set; }
         public ICommand CompareCurrentFileCommand { get; private set; }
+        public ICommand CopyCommentCommand { get; private set; }
 
         public InternalBlameViewModel(string filePath, int? lineNumber, BlameHelper blameHelper) {
             this.blameHelper = blameHelper;
@@ -51,6 +53,7 @@ namespace DXVcsTools.UI.ViewModel {
             LastRevisionCommand = new DelegateCommand(NavigateToLastRevision, CanNavigateToLastRevision);
             CompareWithPreviousCommand = new DelegateCommand(CompareWithPrevious, CanCompareWithPrevious);
             CompareCurrentFileCommand = new DelegateCommand(CompareCurrentFile, CanCompareCurrentFile);
+            CopyCommentCommand = new DelegateCommand(CopyComment, CanCopyComment);
 
             int line = lineNumber - 1 ?? 0;
 
@@ -58,6 +61,12 @@ namespace DXVcsTools.UI.ViewModel {
             Blame = fileDiffInfo.BlameAtRevision(LastRevision);
             CurrentRevision = LastRevision;
             CurrentLine = Blame.ElementAtOrDefault(line);
+        }
+        bool CanCopyComment() {
+            return CurrentLine != null && !string.IsNullOrEmpty(CurrentLine.Comment);
+        }
+        void CopyComment() {
+            Clipboard.SetText(CurrentLine.Comment);
         }
         void InitializeFileDiffInfo() {
             try {
