@@ -1,11 +1,16 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Editors.Helpers;
+using DXVcsTools.UI;
 using DXVcsTools.UI.View;
 using DXVcsTools.UI.ViewModel;
+using DXVcsTools.Version;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -21,8 +26,12 @@ namespace DXVcsTools {
         InternalBlameControl Control { get { return Content as InternalBlameControl; } }
         public InternalBlameWindow()
             : base(null) {
-            Caption = "Blame window";
+            Caption = "Blame window - " + VersionInfo.FullVersion;
             Content = new InternalBlameControl();
+            Control.Loaded += ControlLoaded;
+        }
+        void ControlLoaded(object sender, RoutedEventArgs e) {
+            ThemeManager.SetThemeName(Control, ThemeProvider.Instance.ThemeName);
         }
         public void Initialize(InternalBlameViewModel model) {
             Control.DataContext = model;

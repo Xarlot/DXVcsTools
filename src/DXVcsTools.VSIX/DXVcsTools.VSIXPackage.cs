@@ -36,11 +36,18 @@ namespace DXVcsTools.VSIX {
     public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents, IVsShellPropertyEvents {
         uint shellCookie;
         uint solutionEventsCookie;
+        DTE dte;
         public DXVcsTools_VSIXPackage() {
-            var dte = GetGlobalService(typeof(DTE)) as DTE;
+            dte = GetGlobalService(typeof(DTE)) as DTE;
+        }
+        public void InitializePackage() {
             Options = SerializeHelper.DeSerializeSettings();
             GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper, GetBlameWindow);
+            GenerateNavigationMenu();
+        }
+        public void ReleasePackage() {
+            GenerateMenuHelper.Release();
         }
         public ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
@@ -154,7 +161,7 @@ namespace DXVcsTools.VSIX {
         /// </summary>
         protected override void Initialize() {
             base.Initialize();
-            GenerateNavigationMenu();
+            InitializePackage();
             GenerateSolutionEvents();
             GenerateShellEvents();
             GenerateCommandBindings();
@@ -176,6 +183,9 @@ namespace DXVcsTools.VSIX {
             }
         }
         void GenerateCommandBindings() {
+            if (!Options.AssignCommandBindings)
+                return;
+
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             EventHandler eh = ShowToolWindowMenuHandler;
             CommandID portID = new CommandID(GuidList.guidDXVcsTools_VSIXCmdSet, (int)PkgCmdIDList.cmdidMyTool);

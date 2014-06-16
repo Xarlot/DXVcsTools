@@ -7,6 +7,7 @@ using System.Reflection;
 using DevExpress.Mvvm.Native;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
+using DXVcsTools.Version;
 using Newtonsoft.Json;
 
 namespace DXVcsTools {
@@ -92,7 +93,7 @@ namespace DXVcsTools {
             }
             return CreateDefault();
         }
-        static OptionsViewModel CreateDefault() {
+        public static OptionsViewModel CreateDefault() {
             var options = new OptionsViewModel();
             options.Branches = new List<DXVcsBranch>();
             if (Debugger.IsAttached) {
@@ -108,7 +109,10 @@ namespace DXVcsTools {
             options.UseNavigateMenu = true;
             options.UpdateNavigateMenuAsync = true;
             options.LayoutOptions = new LayoutOptionsViewModel();
+            options.AssignCommandBindings = true;
             options.TortoiseProc = @"Lib/TortoiseSvn/bin/TortoiseBlame.exe";
+            options.BlameType = DXBlameType.Internal;
+            options.ConfigVersion = VersionInfo.ToIntVersion();
 
             options.DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
             return options;

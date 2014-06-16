@@ -33,7 +33,7 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
-        Func<InternalBlameWindow> internalBlameWindowAccessor;
+        readonly Func<InternalBlameWindow> internalBlameWindowAccessor;
         readonly Locker currentBranchLocker = new Locker();
         readonly GenerateMenuItemsHelper generateMenuItemsHelper;
         public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper, Func<InternalBlameWindow> internalBlameWindowAccessor) {

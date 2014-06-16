@@ -64,9 +64,14 @@ namespace DXVcsTools.UI {
             FilterCriteriaString = filter;
         }
         void OpenConfigLocation() {
-            var startInfo = new ProcessStartInfo();
-            startInfo.FileName = SerializeHelper.NavigationConfigFilePath;
-            Process.Start(startInfo);
+            try {
+                var startInfo = new ProcessStartInfo();
+                startInfo.FileName = Path.GetDirectoryName(SerializeHelper.NavigationConfigFilePath);
+                Process.Start(startInfo);
+            }
+            catch {
+                
+            }
         }
         bool CanGenerate() {
             return Roots != null;

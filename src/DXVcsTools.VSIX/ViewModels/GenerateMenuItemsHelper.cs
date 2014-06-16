@@ -11,11 +11,13 @@ using DXVcsTools.Core;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Navigator;
 using DXVcsTools.UI.View;
+using DXVcsTools.Version;
 using DXVcsTools.VSIX;
 using EnvDTE;
 
 namespace DXVcsTools.ViewModels {
     public class GenerateMenuItemsHelper {
+        const string resetConfigHeader = "Reset config...";
         const string addReferenceFormat = "Add Reference - {0}";
         const string addProjectReferenceFormat = "Add Project Reference - {0}";
         readonly DTE dte;
@@ -48,9 +50,11 @@ namespace DXVcsTools.ViewModels {
         public void GenerateDefault() {
             devExpressMenu = new VSDevExpressMenu(dte);
             rootMenuHierarchy[string.Empty] = devExpressMenu;
-            VsDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem("Show tool window");
+            string wizardMenuText = "Show tool window" + (Options.AssignCommandBindings ? "      CTRL E+T" : string.Empty);
+            VsDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem(wizardMenuText);
             wizardMenu.Click += WizardMenuClick;
-            VsDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem("Show blame window");
+            string blameMenuText = "Show blame window" + (Options.AssignCommandBindings ? "      CTRL E+B" : string.Empty);
+            VsDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem(blameMenuText);
             blameMenu.Click += BlameMenuClick;
             if (Options.UseNavigateMenu) {
                 VsDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
@@ -58,6 +62,11 @@ namespace DXVcsTools.ViewModels {
             }
             VsDevExpressMenuItem settingsMenu = devExpressMenu.CreateOrGetItem("Settings...");
             settingsMenu.Click += SettingsMenuOnClick;
+
+            if (Options.ConfigVersion < VersionInfo.ToIntVersion()) {
+                VsDevExpressMenuItem resetConfigMenu = devExpressMenu.CreateOrGetItem(resetConfigHeader);
+                resetConfigMenu.Click += ResetConfigMenuOnClick;
+            }
         }
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
             DXDialog dialog = new DXDialog();
@@ -69,6 +78,14 @@ namespace DXVcsTools.ViewModels {
                 SerializeHelper.SerializeSettings(Options);
                 ToolWindowViewModel.Update();
             }
+        }
+        void ResetConfigMenuOnClick(object sender, EventArgs eventArgs) {
+            var options = SerializeHelper.CreateDefault();
+            SerializeHelper.SerializeSettings(options);
+            var resetConfigMenu = devExpressMenu.CreateOrGetItem(resetConfigHeader);
+            resetConfigMenu.DeleteItem();
+            package.ReleasePackage();
+            package.InitializePackage();
         }
         void NavigateMenuClick(object sender, EventArgs e) {
             package.ToolWindowViewModel.ShowNavigationConfig();
