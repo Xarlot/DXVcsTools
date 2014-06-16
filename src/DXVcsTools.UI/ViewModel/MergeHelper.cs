@@ -178,7 +178,12 @@ namespace DXVcsTools.Core {
             }
             return true;
         }
-        public void CompareWithCurrentVersion(string filePath, int leftVersion = 0, int rightVersion = 0, bool compareWithCurrent = false) {
+        public void CompareWithCurrentVersion(string filePath, bool isNew) {
+            IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
+            string vcsOriginalPath = Port.GetRelativePath(filePath);
+            PreviewTarget(repository, filePath, vcsOriginalPath, filePath, isNew);
+        }
+        public void CompareWithHistoryVersion(string filePath, int leftVersion = 0, int rightVersion = 0, bool compareWithCurrent = true) {
             IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
             string vcsOriginalPath = Port.GetRelativePath(filePath);
             PreviewTarget(repository, filePath, vcsOriginalPath, leftVersion, rightVersion, compareWithCurrent);

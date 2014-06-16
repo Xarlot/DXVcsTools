@@ -330,7 +330,7 @@ namespace DXVcsTools.VSIX {
         }
         void CompareWithCurrentVersion() {
             var helper = new MergeHelper(Options, PortOptions);
-            helper.CompareWithCurrentVersion(SelectedItem.Path);
+            helper.CompareWithCurrentVersion(SelectedItem.Path, SelectedItem.IsNew);
         }
         bool CanCompareWithPortVersion() {
             if (!IsCorrectlyLoaded)

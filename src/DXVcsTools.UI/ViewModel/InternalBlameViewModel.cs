@@ -73,13 +73,13 @@ namespace DXVcsTools.UI.ViewModel {
             return CurrentLine != null;
         }
         void CompareCurrentFile() {
-            mergeHelper.CompareWithCurrentVersion(filePath, CurrentRevision, 0, true);
+            mergeHelper.CompareWithHistoryVersion(filePath, CurrentRevision, 0, true);
         }
         bool CanCompareWithPrevious() {
             return CurrentRevision > 0;
         }
         void CompareWithPrevious() {
-            mergeHelper.CompareWithCurrentVersion(filePath, CurrentRevision - 1, CurrentRevision);
+            mergeHelper.CompareWithHistoryVersion(filePath, CurrentRevision - 1, CurrentRevision);
         }
         bool CanNavigateToLastRevision() {
             return CurrentRevision != LastRevision;
