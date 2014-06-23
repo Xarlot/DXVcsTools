@@ -112,7 +112,7 @@ namespace DXVcsTools.UI.View {
                     var userValue = grid.GetCellValue(result.RowHandle, "User");
                     var halfHighlightExpression = new BinaryOperator("User", userValue).ToString();
                     var halfHighlightFormat = new Format() {
-                        Background = new SolidColorBrush(!string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov") ? Color.FromArgb(50, 255, 0, 0) : Color.FromArgb(50, 0, 0, 255))
+                        Background = CreateHalfHighlightColor(userValue)
                     };
                     userCondition.Expression = halfHighlightExpression;
                     userCondition.Format = halfHighlightFormat;
@@ -121,7 +121,7 @@ namespace DXVcsTools.UI.View {
 
                     string expression = CriteriaOperator.And(new BinaryOperator("Revision", revisionValue), new BinaryOperator("User", userValue)).ToString();
                     var highlightFormat = new Format() {
-                        Background = new SolidColorBrush(!string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov") ? Color.FromArgb(150, 255, 0, 0) : Color.FromArgb(100, 0, 0, 255))
+                        Background = CreateHighlightColor(userValue)
                     };
                     userCondition2.Format = highlightFormat;
                     userCondition2.Expression = expression;
@@ -135,6 +135,16 @@ namespace DXVcsTools.UI.View {
                     revisionCondition2.Format = null;
                 }
             }
+        }
+        static SolidColorBrush CreateHalfHighlightColor(object userValue) {
+            return new SolidColorBrush(IsDangerUser(userValue) ? Color.FromArgb(50, 255, 0, 0) : Color.FromArgb(50, 0, 0, 255));
+        }
+        static SolidColorBrush CreateHighlightColor(object userValue) {
+            return new SolidColorBrush(IsDangerUser(userValue) ? Color.FromArgb(150, 255, 0, 0) : Color.FromArgb(100, 0, 0, 255));
+        }
+
+        static bool IsDangerUser(object userValue) {
+            return !string.IsNullOrEmpty(userValue as string) && userValue.ToString().Contains("Serov");
         }
     }
 }
