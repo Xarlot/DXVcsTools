@@ -19,7 +19,7 @@ using EnvDTE;
 using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
-    public class ToolWindowViewModel : BindableBase, IUpdatableViewModel, ISupportServices {
+    public class ToolWindowViewModel : BindableBase, IToolWindowViewModel, IUpdatableViewModel, ISupportServices {
         const string Checkinwindow = "CheckInWindow";
         const string MultipleCheckinWindow = "MultipleCheckInWindow";
         const string ManualMergeWindow = "ManualMergeWindow";
@@ -65,7 +65,7 @@ namespace DXVcsTools.VSIX {
             return IsSingleSelection && SelectedItem.Return(x => !x.IsNew, () => false);
         }
         void CompareCurrentWithPortVersion() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             helper.CompareCurrentWithPortVersion(SelectedItem.Path, CurrentBranch);
         }
         void NavigateToItem(ProjectItemBase parameter) {
@@ -128,7 +128,7 @@ namespace DXVcsTools.VSIX {
             CommandManager.InvalidateRequerySuggested();
         }
         public UIType UIType { get { return UIType.Flat; } }
-        PortOptionsViewModel PortOptions { get; set; }
+        public PortOptionsViewModel PortOptions { get; private set; }
         public OptionsViewModel Options { get; private set; }
         public bool IsSingleSelection { get { return SelectedItems.If(x => x.Count <= 1).ReturnSuccess(); } }
 
@@ -163,19 +163,14 @@ namespace DXVcsTools.VSIX {
                     return Options.LightThemeName;
             }
         }
+        public void UpdateConnection() {
+            InitializeConnection();
+        }
         public void Update() {
             Logger.AddInfo("UpdateCommand. Start");
 
-            ThemeProvider.Instance.ThemeName = dte.GetVSTheme(CalcVsTheme);
-            Solution = dte.BuildTree();
-            if (string.IsNullOrEmpty(Solution.Path)) {
-                CanTotalMerge = false;
-                Logger.AddInfo("UpdateCommand. End - cant merge since solution is empty or not under vss");
+            if (!InitializeConnection()) 
                 return;
-            }
-            //since grid bugs we must initialize startup collection
-
-            PortOptions = new PortOptionsViewModel(Solution, Options);
             if (!PortOptions.IsAttached) {
                 Logger.AddInfo("UpdateCommand. End - cant merge since port is not initialized");
                 CanTotalMerge = false;
@@ -187,7 +182,7 @@ namespace DXVcsTools.VSIX {
             CanTotalMerge = MasterBranch != null;
             PortOptions.MasterBranch = MasterBranch;
 
-            MergeHelper helper = new MergeHelper(Options, PortOptions);
+            MergeHelper helper = new MergeHelper(this);
             SelectedItems = new ObservableCollection<ProjectItemBase>();
             var source = GetFlatItemsSource().Where(item => FilterItems(item, helper)).ToList();
             Source = source;
@@ -196,6 +191,19 @@ namespace DXVcsTools.VSIX {
             MergeProgress = 0;
 
             Logger.AddInfo("UpdateCommand. End - successful initialized");
+        }
+        bool InitializeConnection() {
+            ThemeProvider.Instance.ThemeName = dte.GetVSTheme(CalcVsTheme);
+            Solution = dte.BuildTree();
+            if (string.IsNullOrEmpty(Solution.Path)) {
+                CanTotalMerge = false;
+                Logger.AddInfo("UpdateCommand. End - cant merge since solution is empty or not under vss");
+                return false;
+            }
+            //since grid bugs we must initialize startup collection
+
+            PortOptions = new PortOptionsViewModel(Solution, Options);
+            return true;
         }
         bool FilterItems(ProjectItemBase item, MergeHelper helper) {
             return item.IsCheckOut || (item.IsNew && !string.IsNullOrEmpty(item.FullPath) && !helper.IsItemUnderVss(item.FullPath, MasterBranch));
@@ -221,7 +229,7 @@ namespace DXVcsTools.VSIX {
             return (x.IsCheckOut || x.IsNew) && x.MergeState == MergeState.None;
         }
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             item.ItemWrapper.Save();
             return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview, item.IsNew);
         }
@@ -261,7 +269,7 @@ namespace DXVcsTools.VSIX {
             CommandManager.InvalidateRequerySuggested();
         }
         void Blame() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
         }
         bool CanBlame() {
             return IsCorrectlyLoaded && SelectedItem != null;
@@ -284,7 +292,7 @@ namespace DXVcsTools.VSIX {
                 case CheckInTarget.Master:
                     return selectedItemPath;
                 case CheckInTarget.Port:
-                    MergeHelper helper = new MergeHelper(Options, PortOptions);
+                    MergeHelper helper = new MergeHelper(this);
                     return helper.GetFilePathForBranch(selectedItemPath, CurrentBranch);
                 default:
                     throw new ArgumentException("target");
@@ -297,7 +305,7 @@ namespace DXVcsTools.VSIX {
                 var model = new CheckInViewModel(GetCheckInPath(target, SelectedItem.Path), false);
                 MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
                 if (result == MessageBoxResult.OK) {
-                    var helper = new MergeHelper(Options, PortOptions);
+                    var helper = new MergeHelper(this);
                     helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment }, GetCheckInBranch(target), SelectedItem.IsNew);
                     SelectedItem.IsChecked = model.StaysChecked;
                 }
@@ -310,7 +318,7 @@ namespace DXVcsTools.VSIX {
                 var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);
                 var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageBoxButton.OKCancel, "Multiple Check in", model);
                 if (result == MessageBoxResult.OK) {
-                    var helper = new MergeHelper(Options, PortOptions);
+                    var helper = new MergeHelper(this);
                     foreach (var item in SelectedItems) {
                         var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) { Comment = model.Comment };
                         bool success = helper.CheckIn(currentFileModel, GetCheckInBranch(target), item.IsNew);
@@ -329,7 +337,7 @@ namespace DXVcsTools.VSIX {
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
         }
         void CompareWithCurrentVersion() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             helper.CompareWithCurrentVersion(SelectedItem.Path, SelectedItem.IsNew);
         }
         bool CanCompareWithPortVersion() {
@@ -340,7 +348,7 @@ namespace DXVcsTools.VSIX {
             return IsSingleSelection && SelectedItem.If(x => x.IsCheckOut || (x.IsNew && x.MergeState == MergeState.Success)).ReturnSuccess();
         }
         void CompareWithPortVersion() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch, SelectedItem.IsNew);
         }
         bool CanManualMerge() {
@@ -349,7 +357,7 @@ namespace DXVcsTools.VSIX {
         void ManualMerge() {
             Logger.AddInfo("ManualMergeCommand. Merge start.");
 
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
                 () => GetService<IDialogService>(ManualMergeWindow).ShowDialog(MessageBoxButton.OKCancel, "Manual merge", manualMerge) == MessageBoxResult.OK);
@@ -359,19 +367,19 @@ namespace DXVcsTools.VSIX {
             return IsCorrectlyLoaded && CurrentBranch != null;
         }
         void NavigateToSolution() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             helper.NavigateToSolution(CurrentBranch, dte);
             Update();
         }
         public void NavigateToSolution(string path) {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             helper.NavigateToSolution(path, dte);
         }
         bool CanUndoCheckout() {
             return IsCorrectlyLoaded && (IsSingleSelection ? SelectedItem != null : SelectedItems.Count > 0);
         }
         void UndoCheckout() {
-            var helper = new MergeHelper(Options, PortOptions);
+            var helper = new MergeHelper(this);
             if (IsSingleSelection) {
                 SelectedItem.IsCheckOut = helper.UndoCheckout(SelectedItem.Path);
                 SelectedItem.Save();
@@ -397,7 +405,7 @@ namespace DXVcsTools.VSIX {
             try {
                 NavigationConfigViewModel model = SerializeHelper.DeSerializeNavigationConfig();
                 if (PortOptions != null) {
-                    MergeHelper helper = new MergeHelper(Options, PortOptions);
+                    MergeHelper helper = new MergeHelper(this);
                     IEnumerable<string> roots = helper.FindWorkingFolders(Options.Branches);
                     model.Roots = roots;
                 }
@@ -420,8 +428,10 @@ namespace DXVcsTools.VSIX {
             string path = dte.GetActiveDocument();
             if (!CanHandleActiveDocument(path))
                 return;
+
+
             int? lineNumber = dte.GetSelectedLine();
-            BlameHelper helper = new BlameHelper(Options, PortOptions);
+            BlameHelper helper = new BlameHelper(this);
             if (Options.BlameType == DXBlameType.External)
                 helper.ShowExternalBlame(path, lineNumber);
             else

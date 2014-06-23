@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using DevExpress.Xpf.Core;
 using DXVcsTools.DXVcsClient;
@@ -11,13 +12,14 @@ using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
 
 namespace DXVcsTools.Core {
+
     public class MergeHelper {
-        public MergeHelper(OptionsViewModel options, PortOptionsViewModel model) {
-            Options = options;
-            Port = model;
+        public IToolWindowViewModel ToolWindowViewModel { get; private set; }
+        public PortOptionsViewModel Port { get { return ToolWindowViewModel.PortOptions; } }
+        public OptionsViewModel Options { get { return ToolWindowViewModel.Options; } }
+        public MergeHelper(IToolWindowViewModel tool) {
+            ToolWindowViewModel = tool;
         }
-        OptionsViewModel Options { get; set; }
-        PortOptionsViewModel Port { get; set; }
         public MergeState MergeChanges(DXVcsBranch currentBranch, string filePath, string mergePath, bool showPreview, bool isNew) {
             try {
                 IDXVcsRepository repository = DXVcsRepositoryFactory.Create(Port.VcsServer);
@@ -324,5 +326,11 @@ namespace DXVcsTools.Core {
             }
             return true;
         }
+    }
+
+    public interface IToolWindowViewModel {
+        PortOptionsViewModel PortOptions { get; }
+        OptionsViewModel Options { get; }
+        void UpdateConnection();
     }
 }

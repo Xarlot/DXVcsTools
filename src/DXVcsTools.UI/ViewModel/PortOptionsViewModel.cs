@@ -7,18 +7,24 @@ using DXVcsTools.DXVcsClient;
 
 namespace DXVcsTools.UI {
     public class PortOptionsViewModel {
+        readonly SolutionItem solution;
         public PortOptionsViewModel(SolutionItem solution, OptionsViewModel options) {
+            this.solution = solution;
             Options = options;
 
             Locator = new DXVcsFileLocator(new DXVcsBindingInfo());
             Branches = new ReadOnlyCollection<string>(GetBranchesList());
+            MasterBranch = Options.Branches.LastOrDefault();
+            Update();
+        }
+        public void Update() {
             string server;
             string filePath;
-            CalcProjectPath(solution, out filePath, out server);
+            CalcProjectPath(out filePath, out server);
             VcsServer = server;
             ProjectFilePath = filePath;
         }
-        string CalcProjectPath(SolutionItem solution, out string projectFilePath, out string serverPath) {
+        string CalcProjectPath(out string projectFilePath, out string serverPath) {
             string result = string.Empty;
             serverPath = string.Empty;
             projectFilePath = string.Empty;

@@ -43,9 +43,9 @@ namespace DXVcsTools.UI.ViewModel {
         public ICommand CompareCurrentFileCommand { get; private set; }
         public ICommand CopyCommentCommand { get; private set; }
 
-        public InternalBlameViewModel(string filePath, int? lineNumber, BlameHelper blameHelper) {
-            this.blameHelper = blameHelper;
-            this.mergeHelper = new MergeHelper(blameHelper.Options, blameHelper.PortOptions);
+        public InternalBlameViewModel(string filePath, int? lineNumber, IToolWindowViewModel tool) {
+            this.blameHelper = new BlameHelper(tool);
+            this.mergeHelper = new MergeHelper(tool);
             FilePath = filePath;
             PreviousRevisionCommand = new DelegateCommand(NavigateToPreviousRevision, CanNavigateToPreviousRevision);
             NextRevisionCommand = new DelegateCommand(NavigateToNextRevision, CanNavigateToNextRevision);

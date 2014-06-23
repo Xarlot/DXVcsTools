@@ -12,17 +12,16 @@ using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI {
     public class BlameHelper {
-        readonly OptionsViewModel options;
-        readonly PortOptionsViewModel portOptions;
-        public OptionsViewModel Options { get { return options; } }
-        public PortOptionsViewModel PortOptions { get { return portOptions; } }
-        public BlameHelper(OptionsViewModel options, PortOptionsViewModel portOptions) {
-            this.options = options;
-            this.portOptions = portOptions;
+        readonly IToolWindowViewModel toolWindowViewModel;
+        public OptionsViewModel Options { get { return toolWindowViewModel.Options; } }
+        public PortOptionsViewModel PortOptions { get { return toolWindowViewModel.PortOptions; } }
+        public BlameHelper(IToolWindowViewModel tool) {
+            toolWindowViewModel = tool;
         }
         public void ShowExternalBlame(string filePath, int? lineNumber = null) {
             Logger.Logger.AddInfo("ShowExternalBlame. Start.");
             try {
+                EnsureAttach();
                 PrepareBlameFileAndShowBlameUI(filePath, lineNumber);
             }
             catch (Exception e) {
@@ -30,13 +29,17 @@ namespace DXVcsTools.UI {
             }
             Logger.Logger.AddInfo("ShowExternalBlame. End.");
         }
+        void EnsureAttach() {
+            if (!PortOptions.IsAttached)
+                toolWindowViewModel.UpdateConnection();
+        }
         void PrepareBlameFileAndShowBlameUI(string filePath, int? lineNumber) {
             string blameFile = null;
             string logFile = null;
             try {
-                IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
-                MergeHelper helper = new MergeHelper(options, portOptions);
-                string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
+                IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(PortOptions.VcsServer);
+                MergeHelper helper = new MergeHelper(toolWindowViewModel);
+                string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, PortOptions.MasterBranch);
 
                 FileDiffInfo diffInfo = dxRepository.GetFileDiffInfo(vcsFile);
                 int revision = diffInfo.LastRevision;
@@ -103,7 +106,7 @@ namespace DXVcsTools.UI {
 
 
         string GetTortoiseProcPath() {
-            string path = SerializeHelper.ResolveAppPath(options.TortoiseProc);
+            string path = SerializeHelper.ResolveAppPath(Options.TortoiseProc);
             if (!File.Exists(path))
                 throw new ArgumentException("tortoise not found");
             return path;
@@ -111,6 +114,7 @@ namespace DXVcsTools.UI {
         public void ShowInternalBlame(string path, int? lineNumber, Action<InternalBlameViewModel> attachBlameControlHandler) {
             Logger.Logger.AddInfo("ShowInternalBlame. Start.");
             try {
+                EnsureAttach();
                 ShowInternalBlameInternal(path, lineNumber, attachBlameControlHandler);
             }
             catch (Exception e) {
@@ -119,13 +123,13 @@ namespace DXVcsTools.UI {
             Logger.Logger.AddInfo("ShowInternalBlame. End.");
         }
         void ShowInternalBlameInternal(string filePath, int? lineNumber, Action<InternalBlameViewModel> attachBlameControlHandler) {
-            InternalBlameViewModel model = new InternalBlameViewModel(filePath, lineNumber, this);
+            InternalBlameViewModel model = new InternalBlameViewModel(filePath, lineNumber, toolWindowViewModel);
             attachBlameControlHandler(model);
         }
         public FileDiffInfo GetFileDiffInfo(string filePath, Action<int, int> progress) {
-            IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(portOptions.VcsServer);
-            MergeHelper helper = new MergeHelper(options, portOptions);
-            string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, portOptions.MasterBranch);
+            IDXVcsRepository dxRepository = DXVcsConnectionHelper.Connect(PortOptions.VcsServer);
+            MergeHelper helper = new MergeHelper(toolWindowViewModel);
+            string vcsFile = helper.GetMergeVcsPathByOriginalPath(filePath, PortOptions.MasterBranch);
             return dxRepository.GetFileDiffInfo(vcsFile, progress, SpacesAction.IgnoreAll);
         }
     }
