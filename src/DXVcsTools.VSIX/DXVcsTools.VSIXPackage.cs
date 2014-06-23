@@ -36,7 +36,7 @@ namespace DXVcsTools.VSIX {
     public sealed class DXVcsTools_VSIXPackage : Package, IVsSolutionEvents, IVsShellPropertyEvents {
         uint shellCookie;
         uint solutionEventsCookie;
-        DTE dte;
+        readonly DTE dte;
         public DXVcsTools_VSIXPackage() {
             dte = GetGlobalService(typeof(DTE)) as DTE;
         }
@@ -51,6 +51,7 @@ namespace DXVcsTools.VSIX {
         }
         public ToolWindowViewModel ToolWindowViewModel { get; set; }
         OptionsViewModel Options { get; set; }
+        PortOptionsViewModel PortOptions { get; set; }
         GenerateMenuItemsHelper GenerateMenuHelper { get; set; }
         int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var) {
             if (propid == (int)__VSSPROPID.VSSPROPID_Zombie) {
