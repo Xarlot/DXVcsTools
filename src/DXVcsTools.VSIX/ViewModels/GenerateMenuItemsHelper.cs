@@ -4,11 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.Design.WebControls.WebParts;
 using System.Windows;
 using System.Windows.Markup;
+using DevExpress.Mvvm.Native;
 using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Core.Native;
 using DXVcsTools.Core;
 using DXVcsTools.UI;
+using DXVcsTools.UI.AutoUpdate;
 using DXVcsTools.UI.Navigator;
 using DXVcsTools.UI.View;
 using DXVcsTools.Version;
@@ -18,9 +22,11 @@ using EnvDTE;
 namespace DXVcsTools.ViewModels {
     public class GenerateMenuItemsHelper {
         const string resetConfigHeader = "Reset config...";
+        const string updateHeader = "Close VS and update...";
         const string addReferenceFormat = "Add Reference - {0}";
         const string addProjectReferenceFormat = "Add Project Reference - {0}";
         readonly DTE dte;
+        AutoUpdateOptions UpdateOptions { get; set; }
         VSDevExpressMenu devExpressMenu;
         readonly DXVcsTools_VSIXPackage package;
         readonly Dictionary<string, VSDevExpressMenu> rootMenuHierarchy = new Dictionary<string, VSDevExpressMenu>();
@@ -67,6 +73,22 @@ namespace DXVcsTools.ViewModels {
                 VsDevExpressMenuItem resetConfigMenu = devExpressMenu.CreateOrGetItem(resetConfigHeader);
                 resetConfigMenu.Click += ResetConfigMenuOnClick;
             }
+
+            if (Options.EnableAutoUpdate) {
+                VsDevExpressMenuItem updateMenu = devExpressMenu.CreateOrGetItem(updateHeader);
+                updateMenu.Click += UpdateMenuOnClick;
+                updateMenu.Enabled = false;
+                updateMenu.IsSeparator = true;
+                UpdateOptions = null;
+                BackgroundHelper.DoInBackground(
+                    () => UpdateOptions = AutoUpdateHelper.GetUpdateOptions(Options.AutoUpdaterPath),
+                    () => updateMenu.Enabled = UpdateOptions.Return(x => x.Version > VersionInfo.ToIntVersion(), () => false));
+            }
+        }
+        void UpdateMenuOnClick(object sender, EventArgs e) {
+            if (UpdateOptions == null)
+                return;
+            AutoUpdateHelper.Update(UpdateOptions, Options.AutoUpdaterPath);
         }
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
             DXDialog dialog = new DXDialog();

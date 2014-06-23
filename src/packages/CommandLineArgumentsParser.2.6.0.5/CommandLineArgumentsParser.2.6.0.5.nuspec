@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CommandLineArgumentsParser</id>
+    <version>2.6.0.5</version>
+    <title>CommandLine Parser Library</title>
+    <authors>Jakub Maly</authors>
+    <owners>Jakub Maly</owners>
+    <licenseUrl>http://commandlineparser.codeplex.com/license</licenseUrl>
+    <projectUrl>http://commandlineparser.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>- Define arguments for your command line interface.
+- Parse the arguments safely 
+- Map the arguments to your properties
+- Declare valid combination of arguments</description>
+    <summary>CommandLine Parser Library lets you easily define strongly typed command line arguments, allows automatic parsing of command line arguments and mapping the values to properites of your objects.</summary>
+  </metadata>
+</package>

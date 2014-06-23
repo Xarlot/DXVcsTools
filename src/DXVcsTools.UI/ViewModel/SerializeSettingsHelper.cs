@@ -110,6 +110,8 @@ namespace DXVcsTools {
             options.UpdateNavigateMenuAsync = true;
             options.LayoutOptions = new LayoutOptionsViewModel();
             options.AssignCommandBindings = true;
+            options.AutoUpdaterPath = @"\\corp\internal\common\4all\DXVcsTools_2.0\";
+            options.EnableAutoUpdate = true;
             options.TortoiseProc = @"Lib/TortoiseSvn/bin/TortoiseBlame.exe";
             options.BlameType = DXBlameType.Internal;
             options.ConfigVersion = VersionInfo.ToIntVersion();

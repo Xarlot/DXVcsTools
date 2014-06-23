@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using DevExpress.Mvvm.Native;
 using EnvDTE;
 using Microsoft.VisualStudio.CommandBars;
 using stdole;
@@ -16,6 +17,7 @@ namespace DXVcsTools.VSIX {
         Image iconCore;
         public List<VsDevExpressMenuItem> ItemsInternal = new List<VsDevExpressMenuItem>();
         string toolTipCore = string.Empty;
+        bool isSeparator;
 
         public VsDevExpressMenuItem Parent { get; protected set; }
 
@@ -49,9 +51,9 @@ namespace DXVcsTools.VSIX {
                 OnIconChanged(oldValue);
             }
         }
-        protected object VsSource {
+        protected internal object VsSource {
             get { return vsSourceCore; }
-            set {
+            protected set {
                 if (vsSourceCore == value)
                     return;
                 object oldValue = vsSourceCore;
@@ -60,6 +62,19 @@ namespace DXVcsTools.VSIX {
             }
         }
         public object Tag { get; set; }
+        public bool Enabled {
+            get { return (vsSourceCore as CommandBarControl).Return(x => x.Enabled, () => true); }
+            set { (vsSourceCore as CommandBarControl).Do(x => x.Enabled = value); }
+        }
+        public bool IsSeparator {
+            get { return isSeparator; }
+            set {
+                if (isSeparator == value)
+                    return;
+                isSeparator = value;
+                (vsSourceCore as CommandBarControl).Do(x => x.BeginGroup = value);
+            }
+        }
 
         public event EventHandler Click;
         #endregion
@@ -227,6 +242,10 @@ namespace DXVcsTools.VSIX {
         }
         MsoControlType GetControlType(bool isDirect) {
             return isDirect ? MsoControlType.msoControlButton : MsoControlType.msoControlPopup;
+        }
+        public void CreateSeparator() {
+            var item = CreateItem(false);
+            ((CommandBarControl)item.VsSource).BeginGroup = true;
         }
     }
 

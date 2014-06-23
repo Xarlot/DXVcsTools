@@ -12,6 +12,8 @@ namespace DXVcsTools.UI {
         public OptionsViewModel() {
         }
 
+        public bool EnableAutoUpdate { get; set; }
+        public string AutoUpdaterPath { get; set; }
         public int ConfigVersion { get; set; }
         public bool AssignCommandBindings { get; set; }
         public bool ReviewTarget { get; set; }

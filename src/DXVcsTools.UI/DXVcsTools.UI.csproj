@@ -164,6 +164,8 @@
   <ItemGroup>
     <Compile Include="AddReferenceHelper\AddReferenceHelper.cs" />
     <Compile Include="AddReferenceHelper\SolutionParser.cs" />
+    <Compile Include="AutoUpdate\AutoUpdate.cs" />
+    <Compile Include="AutoUpdate\AutoUpdateOptions.cs" />
     <Compile Include="BlameWindowModel.cs" />
     <Compile Include="BlameWindowPresenter.cs" />
     <Compile Include="Blame\BlameHelper.cs" />
