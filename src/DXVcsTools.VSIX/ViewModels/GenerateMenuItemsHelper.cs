@@ -22,7 +22,7 @@ using EnvDTE;
 namespace DXVcsTools.ViewModels {
     public class GenerateMenuItemsHelper {
         const string resetConfigHeader = "Reset config...";
-        const string updateHeader = "Close VS and update...";
+        const string updateHeader = "Update DXVcsTools...";
         const string addReferenceFormat = "Add Reference - {0}";
         const string addProjectReferenceFormat = "Add Project Reference - {0}";
         readonly DTE dte;
