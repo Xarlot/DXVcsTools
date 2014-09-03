@@ -61,4 +61,13 @@ namespace DXVcsTools.Core {
             return new OverwriteFile().Merge(originalFile, originalFile, targetFile);
         }
     }
+
+    public static class MergeFileHelper {
+        public static bool IsBinaryFile(string targetFile) {
+            return IsImage(targetFile);
+        }
+        static bool IsImage(string targetFile) {
+            return targetFile.EndsWith(".png") || targetFile.EndsWith(".bmp");
+        }
+    }
 }

@@ -58,7 +58,7 @@ namespace DXVcsTools.Core {
                     }
 
                     FileDiffBase diff;
-                    if(IsBinaryFile(tmpTargetFile)) diff = new OverwriteFile(); else diff = new FileDiff();
+                    if(MergeFileHelper.IsBinaryFile(tmpTargetFile)) diff = new OverwriteFile(); else diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
                         return MergeState.Conflict;
                     }
@@ -228,7 +228,7 @@ namespace DXVcsTools.Core {
                 }
 
                 repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
-                if(IsBinaryFile(tmpTargetFile)) {
+                if(MergeFileHelper.IsBinaryFile(tmpTargetFile)) {
                     if(OverwriteFile.Write(tmpOriginalFile, tmpTargetFile))
                         return MergeState.Success;
                     else
@@ -244,13 +244,6 @@ namespace DXVcsTools.Core {
             Logger.AddInfo("ManualMergeCommand. Result = MergeState.Success");
             return MergeState.Success;
         }
-        bool IsBinaryFile(string targetFile) {
-            return IsImage(targetFile);
-        }
-        bool IsImage(string targetFile) {
-            return targetFile.EndsWith(".png") || targetFile.EndsWith(".bmp");
-        }
-
         public void NavigateToSolution(DXVcsBranch currentBranch, IDteWrapper dte) {
             try {
                 string filePath = Port.ProjectFilePath;

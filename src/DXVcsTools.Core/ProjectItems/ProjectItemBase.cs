@@ -44,6 +44,9 @@ namespace DXVcsTools.Core {
             get { return name; }
             set { SetProperty(ref name, value, "Name"); }
         }
+        public bool IsBinary {
+            get { return MergeFileHelper.IsBinaryFile(Name); }
+        }
         public bool IsChecked {
             get { return isChecked; }
             set { SetProperty(ref isChecked, value, "IsChecked"); }

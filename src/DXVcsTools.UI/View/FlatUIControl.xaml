@@ -11,6 +11,32 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="MergeButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Image Source="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png" Stretch="None"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=RowData.Row.IsBinary}" Value="True">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Image Source="pack://application:,,,/DXVcsTools.UI;component/Images/MoveDown_16x16.png" Stretch="None">
+                                    <Image.RenderTransform>
+                                        <RotateTransform Angle="-90" CenterX="7" CenterY="7"/>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <dxg:GridControl
             ItemsSource="{Binding Path=Source}"
@@ -27,13 +53,7 @@
                 <dxg:GridColumn FieldName="MergeCommand" Header="" FixedWidth="True" Width="20" AllowColumnFiltering="False" AllowSorting="False">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Padding="0" Command="{Binding Path=RowData.View.DataContext.ManualMergeCommand}">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Image Source="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"/>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                            <Button Padding="0" Command="{Binding Path=RowData.View.DataContext.ManualMergeCommand}" Style="{StaticResource MergeButtonStyle}"/>
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
