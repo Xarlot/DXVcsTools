@@ -10,7 +10,7 @@ namespace DXVcsTools.Core {
         }
     }
 
-    public class FileDiff {
+    public abstract class FileDiffBase {
         public bool Merge(string originalFile, string modifiedFile, string targetFile) {
             if (string.IsNullOrEmpty(originalFile))
                 throw new ArgumentException("originalFile");
@@ -21,16 +21,24 @@ namespace DXVcsTools.Core {
             if (string.IsNullOrEmpty(targetFile))
                 throw new ArgumentException("targetFile");
 
-            using (var targetStream = new MemoryStream()) {
+            return MergeCore(originalFile, modifiedFile, targetFile);
+        }
+
+        protected abstract bool MergeCore(string originalFile, string modifiedFile, string targetFile);
+    }
+
+    public class FileDiff : FileDiffBase {
+        protected override bool MergeCore(string originalFile, string modifiedFile, string targetFile) {
+            using(var targetStream = new MemoryStream()) {
                 SvnFileDiff diff = null;
-                if (!SvnFileDiff.TryCreate(originalFile, modifiedFile, targetFile, new SvnFileDiffArgs(), out diff))
+                if(!SvnFileDiff.TryCreate(originalFile, modifiedFile, targetFile, new SvnFileDiffArgs(), out diff))
                     throw new FileDiffException("SvnFileDiff.TryCreate failed");
 
                 try {
-                    if (diff.HasConflicts)
+                    if(diff.HasConflicts)
                         return false;
 
-                    if (!diff.WriteMerged(targetStream, new SvnDiffWriteMergedArgs()))
+                    if(!diff.WriteMerged(targetStream, new SvnDiffWriteMergedArgs()))
                         throw new FileDiffException("SvnFileDiff.WriteMerged failed");
                 }
                 finally {
@@ -39,8 +47,18 @@ namespace DXVcsTools.Core {
 
                 File.WriteAllBytes(targetFile, targetStream.ToArray());
             }
-
             return true;
+        }
+    }
+
+    public class OverwriteFile : FileDiffBase {
+        protected override bool MergeCore(string originalFile, string modifiedFile, string targetFile) {
+            File.Copy(modifiedFile, targetFile, true);
+            return true;
+        }
+
+        public static bool Write(string originalFile, string targetFile) {
+            return new OverwriteFile().Merge(originalFile, originalFile, targetFile);
         }
     }
 }
