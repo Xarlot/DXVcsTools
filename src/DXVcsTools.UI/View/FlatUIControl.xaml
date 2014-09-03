@@ -24,6 +24,19 @@
                 </dxmvvm:EventToCommand>
             </dxmvvm:Interaction.Triggers>
             <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="MergeCommand" Header="" FixedWidth="True" Width="20" AllowColumnFiltering="False" AllowSorting="False">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Padding="0" Command="{Binding Path=RowData.View.DataContext.ManualMergeCommand}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Image Source="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"/>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
                 <dxg:GridColumn FieldName="Name" Width="200" FixedWidth="True" />
                 <dxg:GridColumn FieldName="Path" />
                 <dxg:GridColumn
