@@ -57,7 +57,8 @@ namespace DXVcsTools.Core {
                         return MergeState.CheckOutFileError;
                     }
 
-                    var diff = new FileDiff();
+                    FileDiffBase diff;
+                    if(MergeFileHelper.IsBinaryFile(tmpTargetFile)) diff = new OverwriteFile(); else diff = new FileDiff();
                     if (!diff.Merge(tmpOriginalFile, filePath, tmpTargetFile)) {
                         return MergeState.Conflict;
                     }
@@ -227,6 +228,12 @@ namespace DXVcsTools.Core {
                 }
 
                 repository.CheckOutFile(vcsTargetFile, tmpTargetFile, string.Empty);
+                if(MergeFileHelper.IsBinaryFile(tmpTargetFile)) {
+                    if(OverwriteFile.Write(tmpOriginalFile, tmpTargetFile))
+                        return MergeState.Success;
+                    else
+                        return MergeState.Conflict;
+                }
                 LaunchDiffTool(tmpOriginalFile, tmpTargetFile);
             }
             catch (Exception e) {
