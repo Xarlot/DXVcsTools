@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
-using System.Management.Instrumentation;
-using DevExpress.Data.PLinq.Helpers;
-using DevExpress.Mvvm.Native;
 using DXVcsTools.UI;
 using DXVcsTools.UI.Logger;
 using DXVcsTools.UI.Navigator;

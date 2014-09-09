@@ -13,6 +13,9 @@ namespace DXVcsTools.UI.View {
                 return new ManualMergeControl();
             throw new ArgumentException("name");
         }
+        public Type ResolveViewType(string name) {
+            throw new NotImplementedException();
+        }
         public override object ProvideValue(IServiceProvider serviceProvider) {
             return this;
         }
