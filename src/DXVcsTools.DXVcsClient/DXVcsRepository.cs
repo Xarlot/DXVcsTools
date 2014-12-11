@@ -6,16 +6,25 @@ using DXVCS;
 
 namespace DXVcsTools.DXVcsClient {
     class DXVcsRepository : IDXVcsRepository {
-        readonly IDXVCSService service;
+        readonly string serviceUrl;
+        readonly DXVcsServiceProvider serviceProvider;
+        IDXVCSService Service {
+            get { return serviceProvider.GetService(serviceUrl); }
+        }
 
-        internal DXVcsRepository(IDXVCSService service) {
+        internal DXVcsRepository(string serviceUrl) {
+            this.serviceProvider = new DXVcsServiceProvider();
+            bool isAdmin;
+            this.serviceUrl = serviceUrl;
+
+            ValidateService();
+        }
+        void ValidateService() {
+            bool isAdmin;
+            var service = Service;
             if (service == null)
                 throw new ArgumentNullException("service");
-
-            this.service = service;
-
-            bool isAdmin;
-            if (!this.service.IsCorrectUser(out isAdmin))
+            if (!service.IsCorrectUser(out isAdmin))
                 throw new ApplicationException("Invalid user name");
         }
 
@@ -25,7 +34,7 @@ namespace DXVcsTools.DXVcsClient {
 
             fileName = Path.GetFileName(vcsFile);
 
-            var fileHistory = new FileHistory(vcsFile, service);
+            var fileHistory = new FileHistory(vcsFile, Service);
             var result = new List<FileVersionInfo>(fileHistory.Count);
             result.AddRange(fileHistory);
             result.Reverse();
@@ -37,7 +46,7 @@ namespace DXVcsTools.DXVcsClient {
         }
 
         public FileDiffInfo GetFileDiffInfo(string vcsFile, Action<int, int> progressAction, SpacesAction spacesAction) {
-            var history = new FileHistory(vcsFile, service);
+            var history = new FileHistory(vcsFile, Service);
             FileDiffInfo diffInfo = new FileDiffInfo(history.Count);
             diffInfo.SpacesAction = spacesAction;
 
@@ -59,7 +68,7 @@ namespace DXVcsTools.DXVcsClient {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentException("path");
 
-            byte[] data = DXVCSHelpers.TryToDecompressData(service.GetFileData(vcsFile, null));
+            byte[] data = DXVCSHelpers.TryToDecompressData(Service.GetFileData(vcsFile, null));
             File.WriteAllBytes(fileName, data);
         }
 
@@ -73,7 +82,7 @@ namespace DXVcsTools.DXVcsClient {
             if (version <= 0)
                 throw new ArgumentException("version");
 
-            byte[] data = DXVCSHelpers.TryToDecompressData(service.GetFileData(vcsFile, version));
+            byte[] data = DXVCSHelpers.TryToDecompressData(Service.GetFileData(vcsFile, version));
             File.WriteAllBytes(fileName, data);
         }
 
@@ -84,8 +93,8 @@ namespace DXVcsTools.DXVcsClient {
             if (string.IsNullOrEmpty(localFile))
                 throw new ArgumentException("localFile");
 
-            bool getLocalCopy = !File.Exists(localFile) || !service.GetFile(vcsFile).CheckedOutMe;
-            service.CheckOut(Environment.MachineName, new[] { vcsFile }, new[] { Path.GetDirectoryName(localFile) }, new[] { comment }, null);
+            bool getLocalCopy = !File.Exists(localFile) || !Service.GetFile(vcsFile).CheckedOutMe;
+            Service.CheckOut(Environment.MachineName, new[] { vcsFile }, new[] { Path.GetDirectoryName(localFile) }, new[] { comment }, null);
 
             if (File.Exists(localFile))
                 File.SetAttributes(localFile, FileAttributes.Normal);
@@ -102,11 +111,11 @@ namespace DXVcsTools.DXVcsClient {
             if (string.IsNullOrEmpty(localFile))
                 throw new ArgumentException("localFile");
 
-            if (!service.GetFile(vcsFile).CheckedOutMe)
+            if (!Service.GetFile(vcsFile).CheckedOutMe)
                 throw new InvalidOperationException("Can't check-in: the file is not checked out: " + vcsFile);
 
             var data = new byte[1][] { File.ReadAllBytes(localFile) };
-            string result = service.CheckIn(new[] { vcsFile }, data, new[] { File.GetLastWriteTimeUtc(localFile) }, new[] { comment }, false);
+            string result = Service.CheckIn(new[] { vcsFile }, data, new[] { File.GetLastWriteTimeUtc(localFile) }, new[] { comment }, false);
             File.SetAttributes(localFile, File.GetAttributes(localFile) | FileAttributes.ReadOnly);
         }
 
@@ -121,7 +130,7 @@ namespace DXVcsTools.DXVcsClient {
             if (string.IsNullOrEmpty(vcsProject))
                 throw new ArgumentException("vcsProject");
 
-            return service.GetWorkingFolder(Environment.MachineName, vcsProject);
+            return Service.GetWorkingFolder(Environment.MachineName, vcsProject);
         }
         public void UndoCheckout(string vcsFile, string localFile) {
             if (string.IsNullOrEmpty(vcsFile))
@@ -129,9 +138,9 @@ namespace DXVcsTools.DXVcsClient {
             if (string.IsNullOrEmpty(localFile))
                 throw new ArgumentException("localFile");
 
-            if (!service.GetFile(vcsFile).CheckedOutMe)
+            if (!Service.GetFile(vcsFile).CheckedOutMe)
                 throw new InvalidOperationException("Can't undo check out: the file is not checked out: " + vcsFile);
-            service.UndoCheckOut(new[] { vcsFile }, new[] { false });
+            Service.UndoCheckOut(new[] { vcsFile }, new[] { false });
         }
         public void AddFile(string vcsFile, byte[] fileBytes, string comment) {
             if (string.IsNullOrEmpty(vcsFile))
@@ -153,22 +162,22 @@ namespace DXVcsTools.DXVcsClient {
                 throw new ArgumentException("vcsFile");
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentException("fileName");
-            service.CreateFile(vcsFile, fileName, fileBytes, DateTime.Now, comment);
+            Service.CreateFile(vcsFile, fileName, fileBytes, DateTime.Now, comment);
         }
         void CreateProject(string vcsFile, string name, string comment) {
             if (string.IsNullOrEmpty(vcsFile))
                 throw new ArgumentException("vcsFile");
             if (!IsUnderVss(vcsFile))
-                service.CreateProject(vcsFile, name, comment, false);
+                Service.CreateProject(vcsFile, name, comment, false);
         }
         public bool IsUnderVss(string vcsFile) {
             if (string.IsNullOrEmpty(vcsFile))
                 throw new ArgumentException("vcsFile");
 
-            var project = service.FindProject(vcsFile);
+            var project = Service.FindProject(vcsFile);
             if (!project.IsNull)
                 return true;
-            var file = service.FindFile(vcsFile);
+            var file = Service.FindFile(vcsFile);
             return !file.IsNull;
         }
     }

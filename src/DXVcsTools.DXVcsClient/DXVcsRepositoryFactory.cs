@@ -22,7 +22,7 @@ namespace DXVcsTools.DXVcsClient {
                 }
             }
 
-            return ProcessWithAssemblyLoadingGuard<IDXVcsRepository>(() => new DXVcsRepository(serviceProvider.CreateService(serviceUrl)));
+            return ProcessWithAssemblyLoadingGuard<IDXVcsRepository>(() => new DXVcsRepository(serviceUrl));
         }
         static void CreateServiceProvider() {
             var domainSetup = new AppDomainSetup();
