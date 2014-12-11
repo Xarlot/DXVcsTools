@@ -171,6 +171,7 @@
     <Compile Include="Navigator\NavigateItem.cs" />
     <Compile Include="Navigator\NavigationTreeItem.cs" />
     <Compile Include="Tests\PathHelperTests.cs" />
+    <Compile Include="ViewModel\AssemblyLoadingGuard.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
     <Compile Include="ViewModel\InternalBlameViewModel.cs" />

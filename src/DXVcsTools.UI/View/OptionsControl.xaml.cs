@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI {
     /// <summary>
@@ -6,6 +7,7 @@ namespace DXVcsTools.UI {
     /// </summary>
     public partial class OptionsControl : UserControl {
         public OptionsControl() {
+            AssemblyLoadingGuard.Protect();
             InitializeComponent();
         }
     }

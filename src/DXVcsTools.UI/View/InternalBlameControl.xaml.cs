@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Data.Filtering;
-using DevExpress.Xpf.Bars;
-using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Grid;
 using DevExpress.Mvvm.UI.Interactivity;
+using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI.View {
     /// <summary>
@@ -16,6 +14,7 @@ namespace DXVcsTools.UI.View {
     /// </summary>
     public partial class InternalBlameControl : UserControl {
         public InternalBlameControl() {
+            AssemblyLoadingGuard.Protect();
             InitializeComponent();
             grid.Focus();
         }

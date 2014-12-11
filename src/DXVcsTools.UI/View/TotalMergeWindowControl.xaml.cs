@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI.View {
     /// <summary>
@@ -6,6 +7,7 @@ namespace DXVcsTools.UI.View {
     /// </summary>
     public partial class TotalMergeWindowControl : UserControl {
         public TotalMergeWindowControl() {
+            AssemblyLoadingGuard.Protect();
             InitializeComponent();
         }
     }

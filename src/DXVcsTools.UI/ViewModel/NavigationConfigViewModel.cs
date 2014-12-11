@@ -130,7 +130,7 @@ namespace DXVcsTools.UI {
             return path.Replace(rootPath, replace);
         }
         string FindRootPath(string path) {
-            return Roots.First(path.StartsWith);
+            return Roots.FirstOrDefault(path.StartsWith);
         }
         public void Save() {
             SerializeHelper.SerializeNavigationConfig(this);

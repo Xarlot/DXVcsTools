@@ -3,6 +3,7 @@ using System.Windows.Forms.VisualStyles;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Grid.TreeList;
 using DXVcsTools.UI.Navigator;
+using DXVcsTools.UI.ViewModel;
 
 namespace DXVcsTools.UI.View {
     /// <summary>
@@ -10,6 +11,7 @@ namespace DXVcsTools.UI.View {
     /// </summary>
     public partial class NavigationConfigUserControl : UserControl {
         public NavigationConfigUserControl() {
+            AssemblyLoadingGuard.Protect();
             InitializeComponent();
         }
         void TreeListView_OnCellValueChanging(object sender, TreeListCellValueChangedEventArgs e) {
