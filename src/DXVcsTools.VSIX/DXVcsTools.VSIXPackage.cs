@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using DXVcsTools.UI;
@@ -41,10 +42,15 @@ namespace DXVcsTools.VSIX {
             dte = GetGlobalService(typeof(DTE)) as DTE;
         }
         public void InitializePackage() {
+            //default assembly loading engine seems broken by vs 2013
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             Options = SerializeHelper.DeSerializeSettings();
             GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper, GetBlameWindow);
             GenerateNavigationMenu();
+        }
+        System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+            return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.FullName == args.Name);
         }
         public void ReleasePackage() {
             GenerateMenuHelper.Release();
