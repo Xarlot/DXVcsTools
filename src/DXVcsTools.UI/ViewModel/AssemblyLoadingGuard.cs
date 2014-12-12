@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace DXVcsTools.UI.ViewModel {
     public static class AssemblyLoadingGuard {
@@ -16,8 +17,11 @@ namespace DXVcsTools.UI.ViewModel {
                 }
             }
         }
-        static System.Reflection.Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args) {
-            return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.FullName == args.Name);
+        static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args) {
+            var result = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.FullName == args.Name);
+            if (result == null && args.Name.Contains("DevExpress") && args.Name.Contains(AssemblyInfo.VSuffixWithoutSeparator))
+                result = Assembly.Load(args.Name);
+            return result;
         }
     }
 }
