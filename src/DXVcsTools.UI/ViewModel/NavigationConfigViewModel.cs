@@ -83,6 +83,9 @@ namespace DXVcsTools.UI {
                 NavigateItems = NavigateHelper.Scan(Roots);
                 GenerateTreeSource();
             }
+            catch {
+                
+            }
             finally {
                 BusyIndicator.Close();
             }

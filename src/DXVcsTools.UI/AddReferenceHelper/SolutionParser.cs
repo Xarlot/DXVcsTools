@@ -99,8 +99,11 @@ namespace DXVcsTools.UI {
             propertyInfo.SetValue(solution, path);
         }
         void DoParse(object solution) {
-            var methodInfo = solution.GetType().GetMethod("ParseSolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
-            methodInfo.Invoke(solution, null);
+            try {
+                var methodInfo = solution.GetType().GetMethod("ParseSolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
+                methodInfo.Invoke(solution, null);
+            }
+            catch { }
         }
         object GetSolutionWrapper() {
             return typeof(BuildManager).Assembly.CreateInstance("Microsoft.Build.Construction.SolutionParser", true, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { }, CultureInfo.CurrentCulture, null);
