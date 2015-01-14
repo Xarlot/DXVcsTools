@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Packaging;
+using System.Windows.Forms.VisualStyles;
 using DXVcsTools.Core;
 using DXVcsTools.UI.Navigator;
 using System.Linq;
@@ -77,6 +78,26 @@ namespace DXVcsTools.UI {
             return AssemblySource.GetHashCode() | Type.GetHashCode() | hCode;
         }
     }
+
+    public class AddReferenceHelperItem {
+        public string Solution { get; set; }
+        public List<ReferenceInfo> References { get; set; }
+    }
+    public class AddReferenceHelperCache {
+        public Dictionary<string, AddReferenceHelperItem> Cache { get; set; }
+        public void AddItem(AddReferenceHelperItem item) {
+            if (Cache == null)
+                Cache = new Dictionary<string, AddReferenceHelperItem>();
+            Cache[item.Solution] = item;
+        }
+        public AddReferenceHelperItem GetItem(string path) {
+            return Cache.With(x => {
+                AddReferenceHelperItem item = null;
+                x.TryGetValue(path, out item);
+                return item;
+            });
+        }
+    }
     public class AddReferenceHelper {
         public void AddReferences(IDteWrapper dte, NavigateItem item) {
             AddReferencesImpl(dte, item, false);
@@ -85,14 +106,28 @@ namespace DXVcsTools.UI {
             dte.LockCurrentProject();
             try {
                 BusyIndicator.Show();
-                
-                SolutionParser parser = new SolutionParser(item.Path);
+
+                string path = item.Path;
+                SolutionParser parser = new SolutionParser(path);
                 var projectType = parser.GetProjectType();
 
                 var newAssemblies = parser.GetReferencedAssemblies(!addAsProjectReference).Select(x => new MultiReference(x));
                 var newVersion = newAssemblies.Select(x=>x.AssemblySource).FirstOrDefault(DXControlsVersionHelper.HasDXVersionInfo).With(DXControlsVersionHelper.GetDXVersionString);
 
-                var updatedReferences = ChangeVersion(dte, projectType, newVersion);
+                BusyIndicator.UpdateText("Search for references...");
+
+                var cache = SerializeHelper.DeserializeAddReferenceHelperCache();
+                var updatedReferenceCachedItem = cache.GetItem(path);
+                IEnumerable<MultiReference> updatedReferences = null;
+                if (updatedReferenceCachedItem != null)
+                    updatedReferences = updatedReferenceCachedItem.References.Select(x => new MultiReference(x)).ToList();
+                else {
+                    updatedReferences = ChangeVersion(dte, projectType, newVersion).ToList();
+                    cache.AddItem(new AddReferenceHelperItem() { Solution = path, References = updatedReferences.Where(x => x.ReferenceSource != null).Select(x => x.ReferenceSource).ToList()});
+                    SerializeHelper.SerializeAddReferenceHelperCache(cache);
+                }
+
+                BusyIndicator.UpdateText("Preparing project...");
 
                 dte.ClearReferences();
                 dte.ClearProjectReferences();
@@ -103,10 +138,16 @@ namespace DXVcsTools.UI {
                 }
                 foreach(var reference in actualReferences)
                     try {
-                        if(reference.Type == MultiReferenceType.Assembly)
-                            dte.AddReference(projectType == ProjectType.SL ? reference.FullAssemblySource : reference.AssemblySource);
-                        else
+                        if (reference.Type == MultiReferenceType.Assembly) {
+                            var assembly = projectType == ProjectType.SL ? reference.FullAssemblySource : reference.AssemblySource;
+                            BusyIndicator.UpdateText("Add reference: " + assembly);
+                            dte.AddReference(assembly);
+                        }
+                        else {
+                            var project = reference.ProjectSource;
+                            BusyIndicator.UpdateText("Add project: " + project);
                             dte.AddProjectReference(reference.ProjectSource);
+                        }
                     } catch { }                    
             }
             finally {
@@ -133,7 +174,7 @@ namespace DXVcsTools.UI {
             var model = SerializeHelper.DeSerializeNavigationConfig();
 
             var projects = model.NavigateItems.Where(x => x.GeneratedProjects != null).SelectMany(x => x.GeneratedProjects).Distinct();
-            var targetProjects = projects.AsParallel().Select(x => new MultiReference(x, MultiReferenceType.Project)).Where(project => {
+            var targetProjects = projects.Select(x => new MultiReference(x, MultiReferenceType.Project)).Where(project => {
                 var projectRoot = ProjectRootElement.Open(project.ProjectSource);
                 if(project.ProjectSource.Contains("Localization") || SolutionParser.GetProjectType(projectRoot).Conflicts(projectType))
                     return false;
@@ -149,9 +190,9 @@ namespace DXVcsTools.UI {
                     return true;
                 }
                 return false;
-            });
-            var dependentProjects = targetProjects.SelectMany(x => SolutionParser.GetDXReferencePaths(x.ProjectSource, true)).Where(x => !ReferenceInfo.IsEmpty(x)).Select(x => new MultiReference(x));
-            return Concat(targetProjects.ToList(), dependentProjects.ToList());
+            }).ToList();
+            var dependentProjects = targetProjects.SelectMany(x => SolutionParser.GetDXReferencePaths(x.ProjectSource, true)).Where(x => !ReferenceInfo.IsEmpty(x)).Select(x => new MultiReference(x)).ToList();
+            return Concat(targetProjects.ToList(), dependentProjects.ToList()).Distinct();
         }
 
         public void AddProjectReferences(IDteWrapper dte, NavigateItem item) {

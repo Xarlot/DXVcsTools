@@ -16,37 +16,44 @@ namespace DXVcsTools {
         static readonly string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DXVcsTools\\";
         const string SettingsFile = "settings.txt";
         const string NavigationConfigFile = "navigationconfig.txt";
+        const string AddReferenceItemsCacheConfigFile = "addreferenceitemscache.txt";
         static string SettingsFilePath {
             get { return SettingsPath + SettingsFile; }
         }
         public static string NavigationConfigFilePath { get { return SettingsPath + NavigationConfigFile; } }
+        public static string AddReferenceItemsCacheFilePath { get { return SettingsPath + AddReferenceItemsCacheConfigFile; } }
 
-        public static void SerializeNavigationConfig(string config) {
-            SerializeNavigationConfigInternal(() => config);
-        }
         public static void SerializeNavigationConfig(NavigationConfigViewModel config) {
-            SerializeNavigationConfigInternal(() => JsonConvert.SerializeObject(config, Formatting.Indented));
+            SaveToFile(NavigationConfigFilePath, config);
         }
-        static void SerializeNavigationConfigInternal(Func<string> getConfigStringHandler) {
-            string path = NavigationConfigFilePath;
+        static void SaveToFile<T>(string path, T model) where T: class {
             if (File.Exists(path))
                 StoreFile(path);
             EnsureDirectory(path);
             using (StreamWriter writer = File.CreateText(path)) {
-                var json = getConfigStringHandler();
+                var json = JsonConvert.SerializeObject(model, Formatting.Indented);
                 writer.Write(json);
             }
         }
+        public static AddReferenceHelperCache DeserializeAddReferenceHelperCache() {
+            return ReadFromFile<AddReferenceHelperCache>(AddReferenceItemsCacheFilePath) ?? new AddReferenceHelperCache();
+        }
+        public static void SerializeAddReferenceHelperCache(AddReferenceHelperCache cache) {
+            SaveToFile(AddReferenceItemsCacheFilePath, cache);
+        }
         public static NavigationConfigViewModel DeSerializeNavigationConfig() {
             string path = NavigationConfigFilePath;
-            NavigationConfigViewModel model = null;
+            return ReadFromFile<NavigationConfigViewModel>(path) ?? CreateDefaultNavigationConfig();
+        }
+        static T ReadFromFile<T>(string path) where T : class {
+            T model = null;
             if (File.Exists(path)) {
                 using (StreamReader reader = File.OpenText(path)) {
                     string json = reader.ReadToEnd();
-                    model = JsonConvert.DeserializeObject<NavigationConfigViewModel>(json, new JsonSerializerSettings());
+                    model = JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings());
                 }
             }
-            return model.Return(x => x, CreateDefaultNavigationConfig);
+            return model;
         }
         static NavigationConfigViewModel CreateDefaultNavigationConfig() {
             return new NavigationConfigViewModel() {Presets = GenerateDefaultPresets()};
@@ -159,6 +166,5 @@ namespace DXVcsTools {
 
             return Path.Combine(basePath, path);
         }
-
     }
 }

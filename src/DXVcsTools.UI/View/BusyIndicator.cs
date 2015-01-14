@@ -65,7 +65,6 @@ namespace DXVcsTools.UI {
         public volatile bool ShouldStop;
         public void Show() {
             Indicator = new ProgressBusyIndicator();
-            Text = "Progress: {0} in {1}";
             Indicator.Tag = this;
             Indicator.ShowDialog();
         }
@@ -101,15 +100,14 @@ namespace DXVcsTools.UI {
             Timer.Stop();
             base.OnClosing(e);
         }
-
+        TextBlock tb;
         void Timer_Tick(object sender, EventArgs e) {
             lock (BusyIndicator.Locker) {
                 if (ShouldStop)
                     Close();
-                if (!SupportProgress)
-                    return;
-                TextBlock tb = (TextBlock)LayoutHelper.FindElementByType(this, typeof(TextBlock));
-                tb.Text = string.Format(Text, Progress, Count);
+                if (tb == null)
+                    tb = (TextBlock)LayoutHelper.FindElementByType(this, typeof(TextBlock));
+                tb.Text = SupportProgress ? string.Format(Text, Progress, Count) : Text;
             }
         }
     }
