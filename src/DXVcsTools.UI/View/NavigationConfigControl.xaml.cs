@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Grid.TreeList;
@@ -13,6 +15,9 @@ namespace DXVcsTools.UI.View {
         public NavigationConfigUserControl() {
             AssemblyLoadingGuard.Protect();
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+        void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
         }
         void TreeListView_OnCellValueChanging(object sender, TreeListCellValueChangedEventArgs e) {
             if (e.Column.FieldName != "UseForAddReference")

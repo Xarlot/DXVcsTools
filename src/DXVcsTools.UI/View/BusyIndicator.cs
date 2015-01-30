@@ -38,6 +38,7 @@ namespace DXVcsTools.UI {
                 if (Wrapper == null)
                     return;
                 Wrapper.Text = text;
+                Wrapper.SupportProgress = false;
             }
         }
         public static void UpdateProgress(int current, int count) {
@@ -66,6 +67,7 @@ namespace DXVcsTools.UI {
         public void Show() {
             Indicator = new ProgressBusyIndicator();
             Indicator.Tag = this;
+            Text = "Loading...";
             Indicator.ShowDialog();
         }
         public void Close() {
@@ -103,8 +105,11 @@ namespace DXVcsTools.UI {
         TextBlock tb;
         void Timer_Tick(object sender, EventArgs e) {
             lock (BusyIndicator.Locker) {
-                if (ShouldStop)
+                if (ShouldStop) {
                     Close();
+                    tb = null;
+                    return;
+                }
                 if (tb == null)
                     tb = (TextBlock)LayoutHelper.FindElementByType(this, typeof(TextBlock));
                 tb.Text = SupportProgress ? string.Format(Text, Progress, Count) : Text;

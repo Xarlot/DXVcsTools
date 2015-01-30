@@ -163,8 +163,12 @@ namespace DXVcsTools.VSIX {
             }
         }
         void OnButtonClick(CommandBarButton ctrl, ref bool cancelDefault) {
+            if ((DateTime.Now - lastClick) < TimeSpan.FromSeconds(3))
+                return;
             RaiseClickEvent();
+            lastClick = DateTime.Now;
         }
+        DateTime lastClick;
         protected virtual void RaiseClickEvent() {
             if (Click != null)
                 Click(this, new EventArgs());

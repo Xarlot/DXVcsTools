@@ -8,6 +8,7 @@ namespace DXVcsTools.UI.Navigator {
             var files = roots.SelectMany(ScanForFiles).ToList();
             var addReferenceHelper = new AddReferenceHelper();
             int index = 0;
+            BusyIndicator.UpdateText("Progress: {0} of {1}");
             foreach (var file in files) {
                 BusyIndicator.UpdateProgress(index + 1, files.Count);
                 NavigateItem item = new NavigateItem();
