@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Controls;
 using DevExpress.Utils.Text.Internal;
@@ -95,8 +96,11 @@ namespace DXVcsTools.UI {
             return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(projectItem);
         }
         void SetSolutionPath(object solution, string path) {
-            var propertyInfo = solution.GetType().GetProperty("SolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
-            propertyInfo.SetValue(solution, path);
+            try {
+                var propertyInfo = solution.GetType().GetProperty("SolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
+                propertyInfo.SetValue(solution, path);
+            }
+            catch { }
         }
         void DoParse(object solution) {
             try {
