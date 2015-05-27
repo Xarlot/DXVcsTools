@@ -78,6 +78,9 @@ build/
 *.log
 *.scc
 
+# Roslyn cache
+*.sln.ide/
+
 # Visual C++ cache files
 ipch/
 *.aps
