@@ -7,9 +7,10 @@ using System.Windows.Input;
 using DevExpress.Data.Access;
 using DevExpress.Mvvm;
 using DXVcsTools.UI.Navigator;
+using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class NavigationConfigViewModel : BindableBase {
+    public class NavigationConfigViewModel : BindableBaseCore {
         IEnumerable<string> roots;
         ObservableCollection<NavigateTreeItem> navigateHierarchy;
         string filterCriteriaString;

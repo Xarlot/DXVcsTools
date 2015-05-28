@@ -23,8 +23,18 @@ namespace DXVcsTools.UI.Navigator {
         static IEnumerable<string> ScanForFiles(string path) {
             if (!Directory.Exists(path))
                 yield break;
-            foreach (var fileInfo in Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories))
-                yield return fileInfo;
+            var enumerator = Directory.EnumerateFiles(path, "*.sln", SearchOption.AllDirectories).GetEnumerator();
+            do {
+                bool moveNext = false;
+                try {
+                    moveNext = enumerator.MoveNext();
+                } catch {
+                    moveNext = false;
+                }
+                if (!moveNext)
+                    break;
+                yield return enumerator.Current;
+            } while (true);
         }
     }
 }

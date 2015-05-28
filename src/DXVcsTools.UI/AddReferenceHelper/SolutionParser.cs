@@ -114,7 +114,7 @@ namespace DXVcsTools.UI {
             }
         }
         IEnumerable GetProjects(object solution) {
-            return solution == null ? Enumerable.Empty<object>() : (IEnumerable)solution.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solution);
+            return solution == null ? Enumerable.Empty<object>() : (IEnumerable)solution.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.Public).GetValue(solution);
         }
         public ProjectType GetProjectType() {
             try {

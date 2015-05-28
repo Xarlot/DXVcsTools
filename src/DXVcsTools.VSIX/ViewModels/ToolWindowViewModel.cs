@@ -19,7 +19,7 @@ using EnvDTE;
 using ProjectItem = DXVcsTools.Core.ProjectItem;
 
 namespace DXVcsTools.VSIX {
-    public class ToolWindowViewModel : BindableBase, IToolWindowViewModel, IUpdatableViewModel, ISupportServices {
+    public class ToolWindowViewModel : BindableBaseCore, IToolWindowViewModel, IUpdatableViewModel, ISupportServices {
         const string Checkinwindow = "CheckInWindow";
         const string MultipleCheckinWindow = "MultipleCheckInWindow";
         const string ManualMergeWindow = "ManualMergeWindow";

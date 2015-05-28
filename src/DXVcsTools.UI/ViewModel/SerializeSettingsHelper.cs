@@ -31,7 +31,7 @@ namespace DXVcsTools {
                 StoreFile(path);
             EnsureDirectory(path);
             using (StreamWriter writer = File.CreateText(path)) {
-                var json = JsonConvert.SerializeObject(model, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(model, typeof(T), Formatting.Indented, null);
                 writer.Write(json);
             }
         }

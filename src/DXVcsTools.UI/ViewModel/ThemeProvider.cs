@@ -1,8 +1,9 @@
 ﻿using System;
 using DevExpress.Mvvm;
+using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class ThemeProvider : BindableBase {
+    public class ThemeProvider : BindableBaseCore {
         public static readonly ThemeProvider Instance;
 
         static ThemeProvider() {

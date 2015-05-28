@@ -1,6 +1,6 @@
 ﻿using DevExpress.Mvvm;
 
 namespace DXVcsTools.Core {
-    public class ViewPendingCheckInViewModel : BindableBase {
+    public class ViewPendingCheckInViewModel : BindableBaseCore {
     }
 }

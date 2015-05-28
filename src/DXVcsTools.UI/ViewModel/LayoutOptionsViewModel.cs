@@ -1,8 +1,9 @@
 ﻿using DevExpress.Xpf.Bars;
 using DevExpress.Mvvm;
+using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class LayoutOptionsViewModel : BindableBase {
+    public class LayoutOptionsViewModel : BindableBaseCore {
         GlyphSize toolbarGlyphSize;
         GlyphSize menuGlyphSize;
 

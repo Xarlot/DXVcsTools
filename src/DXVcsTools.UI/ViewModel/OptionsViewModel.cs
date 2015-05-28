@@ -6,7 +6,7 @@ using DevExpress.Mvvm;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
-    public class OptionsViewModel : BindableBase {
+    public class OptionsViewModel : BindableBaseCore {
         LayoutOptionsViewModel layoutOptions;
 
         public OptionsViewModel() {

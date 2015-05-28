@@ -4,9 +4,10 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.Native;
 using DXVcsTools.UI.Navigator;
 using Microsoft.Build.Evaluation;
+using DXVcsTools.Core;
 
 namespace DXVcsTools.UI.Navigator {
-    public class NavigateTreeItem : BindableBase, IEquatable<NavigateTreeItem> {
+    public class NavigateTreeItem : BindableBaseCore, IEquatable<NavigateTreeItem> {
         public bool Equals(NavigateTreeItem other) {
             if (ReferenceEquals(null, other))
                 return false;

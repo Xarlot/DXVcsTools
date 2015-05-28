@@ -9,7 +9,7 @@ using DXVcsTools.Data;
 using DXVcsTools.DXVcsClient;
 
 namespace DXVcsTools.UI.ViewModel {
-    public class InternalBlameViewModel : BindableBase {
+    public class InternalBlameViewModel : BindableBaseCore {
         FileDiffInfo fileDiffInfo = null;
         int LastRevision { get { return fileDiffInfo.LastRevision; } }
         IList<IBlameLine> blame;
