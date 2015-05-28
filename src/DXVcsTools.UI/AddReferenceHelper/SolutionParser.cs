@@ -34,10 +34,7 @@ namespace DXVcsTools.UI {
             solutionPath = path;
         }
         object GetSolution() {
-            object solution = GetSolutionWrapper();
-            SetSolutionPath(solution, solutionPath);
-            DoParse(solution);
-            return solution;
+            return DoParse();
         }
         public IEnumerable<ReferenceInfo> GetReferencedAssemblies(bool includeRoot) {
             object solution = GetSolution();
@@ -48,7 +45,9 @@ namespace DXVcsTools.UI {
             return GetProjectPathesInternal(solution);
         }
         IEnumerable<string> GetProjectPathesInternal(object solutionWrapper) {
-            var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
+            if (solutionWrapper == null)
+                yield break;
+            var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.Public).GetValue(solutionWrapper);
             if (items == null || !items.Cast<object>().Any())
                 yield break;
             foreach (object projectItem in items) {
@@ -65,6 +64,8 @@ namespace DXVcsTools.UI {
             }
         }
         IEnumerable<ReferenceInfo> GetAssembliesForAddReference(object solutionWrapper, bool includeRoot) {
+            if (solutionWrapper == null)
+                yield break;
             var items = (IEnumerable)solutionWrapper.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solutionWrapper);
             if (items == null || !items.Cast<object>().Any())
                 yield break;
@@ -93,27 +94,27 @@ namespace DXVcsTools.UI {
                 
         }
         string GetAbsolutePath(object projectItem) {
-            return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(projectItem);
+            return (string)projectItem.GetType().GetProperty("AbsolutePath", BindingFlags.Instance | BindingFlags.Public).GetValue(projectItem);
         }
         void SetSolutionPath(object solution, string path) {
             try {
-                var propertyInfo = solution.GetType().GetProperty("SolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
+                var propertyInfo = solution.GetType().GetProperty("SolutionFile", BindingFlags.Instance | BindingFlags.Public);
                 propertyInfo.SetValue(solution, path);
             }
             catch { }
         }
-        void DoParse(object solution) {
+        object DoParse() {
             try {
-                var methodInfo = solution.GetType().GetMethod("ParseSolutionFile", BindingFlags.Instance | BindingFlags.NonPublic);
-                methodInfo.Invoke(solution, null);
+                Type solutionFileType = typeof(BuildManager).Assembly.GetType("Microsoft.Build.Construction.SolutionFile");
+                var methodInfo = solutionFileType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public);
+                return methodInfo.Invoke(null, new [] { solutionPath });
             }
-            catch { }
-        }
-        object GetSolutionWrapper() {
-            return typeof(BuildManager).Assembly.CreateInstance("Microsoft.Build.Construction.SolutionParser", true, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { }, CultureInfo.CurrentCulture, null);
+            catch {
+                return null;
+            }
         }
         IEnumerable GetProjects(object solution) {
-            return (IEnumerable)solution.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solution);
+            return solution == null ? Enumerable.Empty<object>() : (IEnumerable)solution.GetType().GetProperty("ProjectsInOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(solution);
         }
         public ProjectType GetProjectType() {
             try {
