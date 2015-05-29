@@ -71,183 +71,130 @@
         </dx:DialogService>
 
     </i:Interaction.Behaviors>
-    <Grid>
-        <dxb:BarManager AllowCustomization="False" ToolbarGlyphSize="{Binding Path=Options.LayoutOptions.BarGlyphSize}">
-            <dxb:BarManager.Items>
-                <dxb:BarButtonItem
-                    x:Name="bUpdate"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png"
-                    Command="{Binding UpdateCommand}"
-                    Content="Update"
-                    Hint="Reload ">
-                </dxb:BarButtonItem>
+    <DockPanel LastChildFill="True">
+        <dxb:MainMenuControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" AllowCustomizationMenu="False" dxb:BarManager.ToolbarGlyphSize="{Binding Path=Options.LayoutOptions.BarGlyphSize}">
+            <dxb:BarButtonItem x:Name="bUpdate"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/refresh_16x16.png" 
+                                       Command="{Binding UpdateCommand}" 
+                                       Content="Update" 
+                                       Hint="Reload "/>
 
-                <dxb:BarSplitButtonItem
-                    x:Name="bMerge"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
-                    Command="{Binding MergeCommand}"
-                    Hint="Merge selected item(s)">
-                    <dxb:BarSplitButtonItem.PopupControl>
-                        <dxb:PopupMenu>
-                            <dxb:BarButtonItemLink BarItemName="bMergeSubMenuItem" />
-                            <dxb:BarButtonItemLink BarItemName="bMergeAndReviewTargetSubMenuItem" />
-                        </dxb:PopupMenu>
-                    </dxb:BarSplitButtonItem.PopupControl>
-                </dxb:BarSplitButtonItem>
+            <dxb:BarItemSeparator/>
+            <dxb:BarSplitButtonItem x:Name="bMerge"
+                                            
+                                            Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
+                                            Command="{Binding MergeCommand}" 
+                                            Hint="Merge selected item(s)">
+                <dxb:BarSplitButtonItem.PopupControl>
+                    <dxb:PopupMenu>
+                        <dxb:BarButtonItem x:Name="bMergeSubMenuItem"
+                                                   
+                                                   Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
+                                                   Command="{Binding MergeCommand}" 
+                                                   CommandParameter="{StaticResource FalseBoolean}" 
+                                                   Content="Merge without review" 
+                                                   Hint="Merge without review"/>
+                        <dxb:BarButtonItem x:Name="bMergeAndReviewTargetSubMenuItem"
+                                                   
+                                                   Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
+                                                   Command="{Binding MergeCommand}" 
+                                                   Content="Merge and review..." 
+                                                   CommandParameter="{StaticResource TrueBoolean}"/>
+                    </dxb:PopupMenu>
+                </dxb:BarSplitButtonItem.PopupControl>
+            </dxb:BarSplitButtonItem>
+            <dxb:BarButtonItem x:Name="bMergeAll"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png" 
+                                       Command="{Binding MergeAllCommand}" 
+                                       Content="Merge all item" 
+                                       Hint="Merge all items in solution"/>
+            <dxb:BarButtonItem x:Name="bManualMerge"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png" 
+                                       Command="{Binding ManualMergeCommand}" 
+                                       Content="Manual merge..." 
+                                       Hint="Manual merge current file (left) and port file (right)"/>
 
-                <dxb:BarButtonItem
-                    x:Name="bMergeAll"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
-                    Command="{Binding MergeAllCommand}"
-                    Content="Merge all item"
-                    Hint="Merge all items in solution">
-                </dxb:BarButtonItem>
+            <dxb:BarItemSeparator/>
+            <dxb:BarButtonItem x:Name="bCompareWithCurrentVersion"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/comparecurrent_16x16.png" 
+                                       Command="{Binding CompareCurrentVersionCommand}" 
+                                       Content="Compare current version..." 
+                                       Hint="Compare current version from vss (left) and local version (right)"/>
+            <dxb:BarButtonItem x:Name="bCompareWithPortVersion"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png" 
+                                       Command="{Binding ComparePortVersionCommand}" 
+                                       Content="Compare port version..." 
+                                       Hint="Compare port version from vss (left) and local port version (right)"/>
+            <dxb:BarButtonItem x:Name="bCompareCurrentWithPortVersion"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png" 
+                                       Command="{Binding CompareCurrentWithPortCommand}" 
+                                       Content="Compare current with port version..." 
+                                       Hint="Compare local version (left) and local port version (right)"/>
+            <dxb:BarSubItem x:Name="bCheckIn"
+                                            
+                                            Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
+                                            Content="Check in..." 
+                                            Hint="Check in">
+                        <dxb:BarButtonItem x:Name="bCheckInMasterSubMenuItem"
+                                                   
+                                                   Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
+                                                   Command="{Binding CheckInCommand}" 
+                                                   CommandParameter="Master" 
+                                                   Content="Check in current version..." 
+                                                   Hint="Check in current version"/>
+                        <dxb:BarButtonItem x:Name="bCheckInPortSubMenuItem"
+                                                   
+                                                   Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
+                                                   Command="{Binding CheckInCommand}" 
+                                                   CommandParameter="Port" 
+                                                   Content="Check in port version..." 
+                                                   Hint="Check in version version, note you use it at your own risk ;)"/>
+            </dxb:BarSubItem>
+            <dxb:BarButtonItem x:Name="bUndoCheckout"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
+                                       Command="{Binding UndoCheckoutCommand}" 
+                                       Content="Undo check out..." 
+                                       Hint="Undo check out"/>
 
-                <dxb:BarEditItem
-                    x:Name="bCurrentBranch"
-                    EditValue="{Binding Path=CurrentBranch}"
-                    EditWidth="100"
-                    Content="Port to:">
-                    <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings
-                            ItemsSource="{Binding Path=AvailableBranches}"
-                            IsTextEditable="False"
-                            DisplayMember="Name">
-                        </dxe:ComboBoxEditSettings>
-                    </dxb:BarEditItem.EditSettings>
-                </dxb:BarEditItem>
+            <dxb:BarItemSeparator/>
+            <dxb:BarEditItem x:Name="bCurrentBranch"
+                                     
+                                     EditValue="{Binding Path=CurrentBranch}" 
+                                     EditWidth="100" 
+                                     Content="Port to:">
+                <dxb:BarEditItem.EditSettings>
+                    <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=AvailableBranches}" IsTextEditable="False" DisplayMember="Name"/>
+                </dxb:BarEditItem.EditSettings>
+            </dxb:BarEditItem>
+            <dxb:BarButtonItem x:Name="bOpenSolution"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png" 
+                                       Command="{Binding NavigateToSolutionCommand}" 
+                                       Content="Navigate to solution" 
+                                       Hint="Navigate to solution specified by Port combo to perform check in"/>
+            <dxb:BarButtonItem x:Name="bOpenFile"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_file_16x16.png" 
+                                       Command="{Binding NavigateToFileCommand}" 
+                                       CommandParameter="{Binding Path=SelectedItem}" 
+                                       Content="Navigate to file..." 
+                                       Hint="Open selected file for editing..."/>
 
-                <dxb:BarButtonItem
-                    x:Name="bMergeSubMenuItem"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
-                    Command="{Binding MergeCommand}"
-                    CommandParameter="{StaticResource FalseBoolean}"
-                    Content="Merge without review"
-                    Hint="Merge without review">
-                </dxb:BarButtonItem>
-
-                <dxb:BarButtonItem
-                    x:Name="bMergeAndReviewTargetSubMenuItem"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/merge_16x16.png"
-                    Command="{Binding MergeCommand}"
-                    Content="Merge and review..."
-                    CommandParameter="{StaticResource TrueBoolean}">
-                </dxb:BarButtonItem>
-
-                <dxb:BarSplitButtonItem
-                    x:Name="bCheckIn"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
-                    Command="{Binding CheckInCommand}"
-                    Content="Check in..."
-                    Hint="Check in">
-                    <dxb:BarSplitButtonItem.PopupControl>
-                        <dxb:PopupMenu>
-                            <dxb:BarButtonItemLink BarItemName="bCheckInMasterSubMenuItem" />
-                            <dxb:BarButtonItemLink BarItemName="bCheckInPortSubMenuItem" />
-                        </dxb:PopupMenu>
-                    </dxb:BarSplitButtonItem.PopupControl>
-                </dxb:BarSplitButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bCheckInMasterSubMenuItem"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
-                    Command="{Binding CheckInCommand}"
-                    CommandParameter="Master"
-                    Content="Check in current version..."
-                    Hint="Check in current version">
-                </dxb:BarButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bCheckInPortSubMenuItem"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png"
-                    Command="{Binding CheckInCommand}"
-                    CommandParameter="Port"
-                    Content="Check in port version..."
-                    Hint="Check in version version, note you use it at your own risk ;)">
-                </dxb:BarButtonItem>
-
-                <dxb:BarButtonItem
-                    x:Name="bUndoCheckout"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png"
-                    Command="{Binding UndoCheckoutCommand}"
-                    Content="Undo check out..."
-                    Hint="Undo check out">
-                </dxb:BarButtonItem>
-
-
-                <dxb:BarButtonItem
-                    x:Name="bCompareWithCurrentVersion"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/comparecurrent_16x16.png"
-                    Command="{Binding CompareCurrentVersionCommand}"
-                    Content="Compare current version..."
-                    Hint="Compare current version from vss (left) and local version (right)">
-                </dxb:BarButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bCompareWithPortVersion"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png"
-                    Command="{Binding ComparePortVersionCommand}"
-                    Content="Compare port version..."
-                    Hint="Compare port version from vss (left) and local port version (right)">
-                </dxb:BarButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bCompareCurrentWithPortVersion"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/compareport_16x16.png"
-                    Command="{Binding CompareCurrentWithPortCommand}"
-                    Content="Compare current with port version..."
-                    Hint="Compare local version (left) and local port version (right)">
-                </dxb:BarButtonItem>
-
-                <dxb:BarButtonItem
-                    x:Name="bManualMerge"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_differences_16x16.png"
-                    Command="{Binding ManualMergeCommand}"
-                    Content="Manual merge..."
-                    Hint="Manual merge current file (left) and port file (right)">
-                </dxb:BarButtonItem>
-
-                <dxb:BarButtonItem
-                    x:Name="bOpenSolution"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_16x16.png"
-                    Command="{Binding NavigateToSolutionCommand}"
-                    Content="Navigate to solution"
-                    Hint="Navigate to solution specified by Port combo to perform check in">
-                </dxb:BarButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bOpenFile"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/open_file_16x16.png"
-                    Command="{Binding NavigateToFileCommand}"
-                    CommandParameter="{Binding Path=SelectedItem}"
-                    Content="Navigate to file..."
-                    Hint="Open selected file for editing...">
-                </dxb:BarButtonItem>
-                <dxb:BarButtonItem
-                    x:Name="bShowLog"
-                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_log_16x16.png"
-                    Command="{Binding ShowLogCommand}"
-                    Content="Show error log"
-                    Hint="Show error log">
-                </dxb:BarButtonItem>
-            </dxb:BarManager.Items>
-            <dxb:BarManager.Bars>
-                <dxb:Bar>
-                    <dxb:BarItemLink BarItemName="bUpdate" />
-                    <dxb:BarItemLinkSeparator />
-                    <dxb:BarItemLink BarItemName="bMerge" />
-                    <dxb:BarItemLink BarItemName="bMergeAll" />
-                    <dxb:BarItemLink BarItemName="bManualMerge" />
-                    <dxb:BarItemLinkSeparator />
-                    <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
-                    <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
-                    <dxb:BarItemLink BarItemName="bCompareCurrentWithPortVersion" />
-                    <dxb:BarItemLink BarItemName="bCheckIn" />
-                    <dxb:BarItemLink BarItemName="bUndoCheckout" />
-                    <dxb:BarItemLinkSeparator />
-                    <dxb:BarItemLink BarItemName="bCurrentBranch" />
-                    <dxb:BarItemLink BarItemName="bOpenSolution"/>
-                    <dxb:BarItemLink BarItemName="bOpenFile"/>
-                    <dxb:BarItemLinkSeparator />
-                    <dxb:BarItemLink BarItemName="bShowLog"/>
-                </dxb:Bar>
-            </dxb:BarManager.Bars>
-            <ui:OnDemandContentControl DelayedContent="{Binding}" ContentTemplateSelector="{StaticResource uiSelector}"/>
-        </dxb:BarManager>
-    </Grid>
+            <dxb:BarItemSeparator/>
+            <dxb:BarButtonItem x:Name="bShowLog"
+                                       
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/show_log_16x16.png" 
+                                       Command="{Binding ShowLogCommand}" 
+                                       Content="Show error log" 
+                                       Hint="Show error log"/>
+        </dxb:MainMenuControl>
+        <ui:OnDemandContentControl DelayedContent="{Binding}" ContentTemplateSelector="{StaticResource uiSelector}" DockPanel.Dock="Bottom"/>
+    </DockPanel>
 </UserControl>
