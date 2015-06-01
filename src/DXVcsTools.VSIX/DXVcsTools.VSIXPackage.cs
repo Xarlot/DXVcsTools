@@ -44,6 +44,7 @@ namespace DXVcsTools.VSIX {
         }
         public void InitializePackage() {
             AssemblyLoadingGuard.Protect();
+            AssemblyLoadingGuard.LoadXpfLibraries();
             Options = SerializeHelper.DeSerializeSettings();
             GenerateMenuHelper = new GenerateMenuItemsHelper(this, dte);
             ToolWindowViewModel = new ToolWindowViewModel(dte, Options, GenerateMenuHelper, GetBlameWindow);
