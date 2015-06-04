@@ -35,9 +35,9 @@ namespace DXVcsTools.UI.ViewModel {
         public static void LoadXpfLibraries() {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             foreach (var file in Directory.GetFiles(path, "DevExpress.*.dll", SearchOption.AllDirectories)) {
-#pragma warning disable CS0618 // Type or member is obsolete
-                Assembly assembly = Assembly.LoadFile(file);
-#pragma warning restore CS0618 // Type or member is obsolete
+//#pragma warning disable CS0618 // Type or member is obsolete
+                Assembly assembly = Assembly.LoadFrom(file);
+//#pragma warning restore CS0618 // Type or member is obsolete
                 RequestedAssemblies.Add(assembly.FullName);
             }
         }
