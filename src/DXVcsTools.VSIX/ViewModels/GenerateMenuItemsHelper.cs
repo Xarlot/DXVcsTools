@@ -62,12 +62,15 @@ namespace DXVcsTools.ViewModels {
             string wizardMenuText = "Show tool window";
             VsDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem(wizardMenuText);
             wizardMenu.Click += WizardMenuClick;
-            var command = dte.Commands.Cast<Command>().FirstOrDefault(x => x.Name == "View.DXVcsToolsportwindow");
-            wizardMenu.Shortcut = GetShortcutText(((IEnumerable)command.Bindings).Cast<string>().FirstOrDefault());
+            var portWindowCommand = dte.Commands.Cast<Command>().FirstOrDefault(x => x.Name == "View.DXVcsToolsportwindow");
+            wizardMenu.Shortcut = GetShortcutText(portWindowCommand);
 
             string blameMenuText = "Show blame window";
             VsDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem(blameMenuText);
             blameMenu.Click += BlameMenuClick;
+            var blameWindowCommand = dte.Commands.Cast<Command>().FirstOrDefault(x => x.Name == "View.DXVcsToolsblamewindow");
+            blameMenu.Shortcut = GetShortcutText(blameWindowCommand);
+
             if (Options.UseNavigateMenu) {
                 VsDevExpressMenuItem navigateMenu = devExpressMenu.CreateOrGetItem("Configure navigate menu...");
                 navigateMenu.Click += NavigateMenuClick;
@@ -92,10 +95,11 @@ namespace DXVcsTools.ViewModels {
                     () => updateMenu.Enabled = UpdateOptions.Return(x => x.Version > VersionInfo.ToIntVersion(), () => false));
             }
         }
-        string GetShortcutText(string value) {
-            if (string.IsNullOrEmpty(value))
-                return value;
-            return value.TrimStart("Global::".ToCharArray());
+        string GetShortcutText(Command command) {
+            string text =((IEnumerable)command.Bindings).With(x => x.Cast<string>().FirstOrDefault());
+            if (string.IsNullOrEmpty(text))
+                return text;
+            return text.TrimStart("Global::".ToCharArray());
         }
         void UpdateMenuOnClick(object sender, EventArgs e) {
             if (UpdateOptions == null)
