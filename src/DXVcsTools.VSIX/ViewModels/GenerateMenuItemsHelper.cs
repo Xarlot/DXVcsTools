@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.Design.WebControls.WebParts;
@@ -79,6 +81,7 @@ namespace DXVcsTools.ViewModels {
                 updateMenu.Click += UpdateMenuOnClick;
                 updateMenu.Enabled = false;
                 updateMenu.IsSeparator = true;
+                updateMenu.Icon = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("DXVcsTools.Resources.Update.png"));
                 UpdateOptions = null;
                 BackgroundHelper.DoInBackground(
                     () => UpdateOptions = AutoUpdateHelper.GetUpdateOptions(Options.AutoUpdaterPath),

@@ -92,8 +92,8 @@
 
   </Commands>
   <KeyBindings>
-    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyTool" key1="E" mod1="CONTROL" mod2="Control" key2="T" editor="guidVSStd97" />
-    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyBlame" key1="E" mod1="CONTROL" mod2="Control" key2="B" editor="guidVSStd97" />
+    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyTool" key1="E" mod1="CONTROL" key2="T" editor="guidVSStd97" />
+    <KeyBinding guid="guidDXVcsTools_VSIXCmdSet" id="cmdidMyBlame" key1="E" mod1="CONTROL" key2="B" editor="guidVSStd97" />
   </KeyBindings>
 
 

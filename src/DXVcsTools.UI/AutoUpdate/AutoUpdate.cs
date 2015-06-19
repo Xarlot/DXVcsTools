@@ -11,7 +11,7 @@ using MessageBox = System.Windows.MessageBox;
 namespace DXVcsTools.UI.AutoUpdate {
     public static class AutoUpdateHelper {
         const string FileName = "DXVcsTools.VSIX.vsix";
-        const string updateFileName = "update.ini";
+        const string updateFileName = "update_" + VersionInfo.Major + "." + VersionInfo.Minor + ".ini";
         public static bool Publish(AutoUpdateOptions update, string source, string target) {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
                 return false;
