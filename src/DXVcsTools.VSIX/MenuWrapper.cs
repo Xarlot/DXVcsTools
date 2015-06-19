@@ -18,6 +18,7 @@ namespace DXVcsTools.VSIX {
         public List<VsDevExpressMenuItem> ItemsInternal = new List<VsDevExpressMenuItem>();
         string toolTipCore = string.Empty;
         bool isSeparator;
+        string shortcutText;
 
         public VsDevExpressMenuItem Parent { get; protected set; }
 
@@ -65,6 +66,15 @@ namespace DXVcsTools.VSIX {
         public bool Enabled {
             get { return (vsSourceCore as CommandBarControl).Return(x => x.Enabled, () => true); }
             set { (vsSourceCore as CommandBarControl).Do(x => x.Enabled = value); }
+        }
+        public string Shortcut {
+            get { return shortcutText; }
+            set {
+                if (shortcutText == value)
+                    return;
+                shortcutText = value;
+                OnShortcutTextChanged();
+            }
         }
         public bool IsSeparator {
             get { return isSeparator; }
@@ -161,6 +171,12 @@ namespace DXVcsTools.VSIX {
                 UpdateIcon();
                 UpdateToolTip();
             }
+        }
+        void OnShortcutTextChanged() {
+            var commandBarControl = VsSource as CommandBarButton;
+            if (commandBarControl == null)
+                return;
+            commandBarControl.ShortcutText = Shortcut;
         }
         void OnButtonClick(CommandBarButton ctrl, ref bool cancelDefault) {
             if ((DateTime.Now - lastClick) < TimeSpan.FromSeconds(3))

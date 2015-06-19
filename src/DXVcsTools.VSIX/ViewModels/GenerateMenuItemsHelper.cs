@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -58,10 +59,13 @@ namespace DXVcsTools.ViewModels {
         public void GenerateDefault() {
             devExpressMenu = new VSDevExpressMenu(dte);
             rootMenuHierarchy[string.Empty] = devExpressMenu;
-            string wizardMenuText = "Show tool window" + (Options.AssignCommandBindings ? "      CTRL E+T" : string.Empty);
+            string wizardMenuText = "Show tool window";
             VsDevExpressMenuItem wizardMenu = devExpressMenu.CreateOrGetItem(wizardMenuText);
             wizardMenu.Click += WizardMenuClick;
-            string blameMenuText = "Show blame window" + (Options.AssignCommandBindings ? "      CTRL E+B" : string.Empty);
+            var command = dte.Commands.Cast<Command>().FirstOrDefault(x => x.Name == "View.DXVcsToolsportwindow");
+            wizardMenu.Shortcut = GetShortcutText(((IEnumerable)command.Bindings).Cast<string>().FirstOrDefault());
+
+            string blameMenuText = "Show blame window";
             VsDevExpressMenuItem blameMenu = devExpressMenu.CreateOrGetItem(blameMenuText);
             blameMenu.Click += BlameMenuClick;
             if (Options.UseNavigateMenu) {
@@ -87,6 +91,11 @@ namespace DXVcsTools.ViewModels {
                     () => UpdateOptions = AutoUpdateHelper.GetUpdateOptions(Options.AutoUpdaterPath),
                     () => updateMenu.Enabled = UpdateOptions.Return(x => x.Version > VersionInfo.ToIntVersion(), () => false));
             }
+        }
+        string GetShortcutText(string value) {
+            if (string.IsNullOrEmpty(value))
+                return value;
+            return value.TrimStart("Global::".ToCharArray());
         }
         void UpdateMenuOnClick(object sender, EventArgs e) {
             if (UpdateOptions == null)
