@@ -12,6 +12,18 @@ namespace DXVcsTools.UI.AutoUpdate {
     public static class AutoUpdateHelper {
         const string FileName = "DXVcsTools.VSIX.vsix";
         const string updateFileName = "update_" + VersionInfo.Major + "." + VersionInfo.Minor + ".ini";
+        const string atomFeed = @"..\..\lib\AtomFeed\AtomfeedCore.exe";
+        public static bool PublishToGallery(string source) {
+            if (string.IsNullOrEmpty(source))
+                return false;
+            string sourceFile = Path.Combine(source, FileName);
+            string atomFile = Path.Combine(source, atomFeed);
+            if (!File.Exists(sourceFile) || !File.Exists(atomFile)) {
+                return false;
+            }
+            var process = Process.Start(atomFile, sourceFile);
+            return process.WaitForExit((int)new TimeSpan(0, 1, 0).TotalMilliseconds);            
+        }
         public static bool Publish(AutoUpdateOptions update, string source, string target) {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
                 return false;
@@ -33,7 +45,7 @@ namespace DXVcsTools.UI.AutoUpdate {
                 }
                 if (File.Exists(targetFile))
                     File.Delete(targetFile);
-                File.Copy(sourceFile, targetFile);
+                File.Copy(sourceFile, targetFile);                
             }
             catch {
                 return false;

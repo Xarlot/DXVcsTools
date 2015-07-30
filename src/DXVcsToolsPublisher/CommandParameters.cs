@@ -6,5 +6,9 @@ namespace DXVcsToolsPublisher {
         public string PublishPath { get; set; }
         [Option('s', "showall", DefaultValue = false, HelpText = "Define show update for all users")]
         public bool ShowAll { get; set; }
+        [Option('g', "skipGallery", DefaultValue = false, HelpText = "Skip pushing update to the VS gallery")]
+        public bool SkipGalleryUpdate { get; set; }
+        [Option('n', "skipNetwork", DefaultValue = false, HelpText = "Skip pushing update to the network folder")]
+        public bool SkipNetworkUpdate { get; set; }
     }
 }
