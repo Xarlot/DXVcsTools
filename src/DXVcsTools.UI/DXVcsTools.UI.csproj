@@ -171,6 +171,7 @@
     <Compile Include="Navigator\NavigateItem.cs" />
     <Compile Include="Navigator\NavigationTreeItem.cs" />
     <Compile Include="Tests\PathHelperTests.cs" />
+    <Compile Include="ViewModel\AnalyticsViewModel.cs" />
     <Compile Include="ViewModel\AssemblyLoadingGuard.cs" />
     <Compile Include="ViewModel\CheckInViewModel.cs" />
     <Compile Include="MVVM\IUpdatableViewModel.cs" />
@@ -188,6 +189,9 @@
     <Compile Include="ViewModel\StatusCheckOutViewModel.cs" />
     <Compile Include="ViewModel\ThemeProvider.cs" />
     <Compile Include="ViewModel\UIType.cs" />
+    <Compile Include="View\AnalyticsControl.xaml.cs">
+      <DependentUpon>AnalyticsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BusyIndicator.cs" />
     <Compile Include="View\CheckInControl.xaml.cs">
       <DependentUpon>CheckInControl.xaml</DependentUpon>
@@ -264,6 +268,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\AnalyticsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\CheckInControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
