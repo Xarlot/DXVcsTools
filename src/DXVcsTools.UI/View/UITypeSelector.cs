@@ -8,8 +8,6 @@ namespace DXVcsTools.UI.View {
                 return base.SelectTemplate(null, container);
 
             return ((FrameworkElement)container).FindResource("FlatDataTemplate") as DataTemplate;
-
-            return base.SelectTemplate(item, container);
         }
     }
 }

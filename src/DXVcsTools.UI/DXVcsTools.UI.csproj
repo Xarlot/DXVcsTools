@@ -84,43 +84,43 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Data.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Data.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Data.v15.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Mvvm.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Mvvm.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Mvvm.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Mvvm.v15.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Core.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Core.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Core.v15.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Grid.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v15.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v14.2.Core">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v14.2.Core.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Grid.v15.1.Core">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Grid.v15.1.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.LayoutControl.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.LayoutControl.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.LayoutControl.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.PropertyGrid.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.Office2013.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Themes.Office2013.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.Seven.v14.2">
-      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v14.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpf.Themes.Seven.v15.1">
+      <HintPath>..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v15.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
