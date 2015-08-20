@@ -267,78 +267,103 @@
   <ItemGroup>
     <Content Include="..\..\lib\DX\DevExpress.Data.v15.1.dll">
       <Link>Lib\DevExpress.Data.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Mvvm.v15.1.dll">
       <Link>Lib\DevExpress.Mvvm.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Printing.v15.1.Core.dll">
       <Link>Lib\DevExpress.Printing.v15.1.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Core.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Core.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v15.1.Core.dll">
       <Link>Lib\DevExpress.Xpf.Grid.v15.1.Core.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Grid.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Grid.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.LayoutControl.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.LayoutControl.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.PropertyGrid.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.PropertyGrid.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.DXStyle.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.DXStyle.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.HybridApp.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.HybridApp.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.LightGray.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.LightGray.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisDark.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.MetropolisDark.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.MetropolisLight.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.MetropolisLight.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2007Black.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2007Black.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2007Blue.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2007Blue.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2007Silver.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2007Silver.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2010Black.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2010Black.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2010Blue.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2010Blue.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2010Silver.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2010Silver.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2013.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013DarkGray.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2013DarkGray.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Office2013LightGray.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Office2013LightGray.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.Seven.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.Seven.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.TouchlineDark.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.TouchlineDark.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\DX\DevExpress.Xpf.Themes.VS2010.v15.1.dll">
       <Link>Lib\DevExpress.Xpf.Themes.VS2010.v15.1.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\lib\SharpSvn\SharpPlink-Win32.svnExe">
       <Link>Lib\SharpSvn\SharpPlink-Win32.svnExe</Link>
