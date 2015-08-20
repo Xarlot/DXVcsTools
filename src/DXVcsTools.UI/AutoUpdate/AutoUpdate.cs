@@ -12,7 +12,7 @@ namespace DXVcsTools.UI.AutoUpdate {
     public static class AutoUpdateHelper {
         const string FileName = "DXVcsTools.VSIX.vsix";
         const string updateFileName = "update_" + VersionInfo.Major + "." + VersionInfo.Minor + ".ini";
-        const string atomFeed = @"..\..\lib\AtomFeed\AtomfeedCore.exe";
+        const string atomFeed = @"AtomfeedCore.exe";
         public static bool PublishToGallery(string source) {
             if (string.IsNullOrEmpty(source))
                 return false;
