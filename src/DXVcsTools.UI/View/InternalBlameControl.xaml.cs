@@ -110,7 +110,7 @@ namespace DXVcsTools.UI.View {
                     var revisionValue = grid.GetCellValue(result.RowHandle, "Revision");
                     var userValue = grid.GetCellValue(result.RowHandle, "User");
                     var halfHighlightExpression = new BinaryOperator("User", userValue).ToString();
-                    var halfHighlightFormat = new Format() {
+                    var halfHighlightFormat = new DevExpress.Xpf.Core.ConditionalFormatting.Format() { 
                         Background = CreateHalfHighlightColor(userValue)
                     };
                     userCondition.Expression = halfHighlightExpression;
@@ -119,7 +119,7 @@ namespace DXVcsTools.UI.View {
                     revisionCondition.Format = halfHighlightFormat;
 
                     string expression = CriteriaOperator.And(new BinaryOperator("Revision", revisionValue), new BinaryOperator("User", userValue)).ToString();
-                    var highlightFormat = new Format() {
+                    var highlightFormat = new DevExpress.Xpf.Core.ConditionalFormatting.Format() {
                         Background = CreateHighlightColor(userValue)
                     };
                     userCondition2.Format = highlightFormat;

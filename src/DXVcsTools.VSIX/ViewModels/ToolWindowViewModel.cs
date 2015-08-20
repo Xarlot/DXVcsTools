@@ -303,8 +303,8 @@ namespace DXVcsTools.VSIX {
                 Logger.AddInfo("CheckInCommand. Start single check in.");
 
                 var model = new CheckInViewModel(GetCheckInPath(target, SelectedItem.Path), false);
-                MessageBoxResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageBoxButton.OKCancel, "Check in", model);
-                if (result == MessageBoxResult.OK) {
+                MessageResult result = GetService<IDialogService>(Checkinwindow).ShowDialog(MessageButton.OKCancel, "Check in", model);
+                if (result == MessageResult.OK) {
                     var helper = new MergeHelper(this);
                     helper.CheckIn(new CheckInViewModel(SelectedItem.Path, model.StaysChecked) { Comment = model.Comment }, GetCheckInBranch(target), SelectedItem.IsNew);
                     SelectedItem.IsChecked = model.StaysChecked;
@@ -315,9 +315,9 @@ namespace DXVcsTools.VSIX {
             else {
                 Logger.AddInfo("CheckInCommand. Start multiple check in.");
 
-                var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);
-                var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageBoxButton.OKCancel, "Multiple Check in", model);
-                if (result == MessageBoxResult.OK) {
+                var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);                
+                var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageButton.OKCancel, "Multiple Check in", model);
+                if (result == MessageResult.OK) {
                     var helper = new MergeHelper(this);
                     foreach (var item in SelectedItems) {
                         var currentFileModel = new CheckInViewModel(item.Path, model.StaysChecked) { Comment = model.Comment };
@@ -360,7 +360,7 @@ namespace DXVcsTools.VSIX {
             var helper = new MergeHelper(this);
             var manualMerge = new ManualMergeViewModel(SelectedItem.Path);
             SelectedItem.MergeState = helper.ManualMerge(CurrentBranch, manualMerge,
-                () => GetService<IDialogService>(ManualMergeWindow).ShowDialog(MessageBoxButton.OKCancel, "Manual merge", manualMerge) == MessageBoxResult.OK);
+                () => GetService<IDialogService>(ManualMergeWindow).ShowDialog(MessageButton.OKCancel, "Manual merge", manualMerge) == MessageResult.OK);
             Logger.AddInfo("ManualMergeCommand. Merge end.");
         }
         bool CanNavigateToSolution() {
@@ -411,7 +411,7 @@ namespace DXVcsTools.VSIX {
                 }
 
                 model.GenerateTreeSource();
-                if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageBoxButton.OKCancel, "Navigation config", model) == MessageBoxResult.OK) {
+                if (GetService<IDialogService>(NavigationConfigWindow).ShowDialog(MessageButton.OKCancel, "Navigation config", model) == MessageResult.OK) {
                     model.Save();
                     generateMenuItemsHelper.Release();
                     generateMenuItemsHelper.GenerateDefault();
