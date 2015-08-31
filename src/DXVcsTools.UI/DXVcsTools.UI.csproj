@@ -200,6 +200,7 @@
     <Compile Include="View\ChildNodesSelector.cs" />
     <Compile Include="View\Converters.cs" />
     <Compile Include="DXBlameViewer.cs" />
+    <Compile Include="View\CriteriaOperatorToCheckedConverter.cs" />
     <Compile Include="View\FlatUIControl.xaml.cs">
       <DependentUpon>FlatUIControl.xaml</DependentUpon>
     </Compile>

@@ -1,56 +1,96 @@
 ﻿<UserControl x:Class="DXVcsTools.UI.View.TreeUIControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:ui="clr-namespace:DXVcsTools.UI"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ui:HierarchyToEnumerableConverter x:Key="objectToEnumerableConverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <dxg:GridControl
-        ItemsSource="{Binding Path=HierarchicalSource}">
-        <dxg:GridControl.Columns>
-            <dxg:GridColumn FieldName="Name" />
-            <dxg:GridColumn FieldName="Path" />
-            <dxg:GridColumn FieldName="MergeState">
-                <dxg:GridColumn.CellTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="0" x:Name="back">
-                            <dxe:TextEdit x:Name="PART_Editor" />
-                        </Border>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Path=Value}" Value="Success">
-                                <Setter Property="Background" Value="LightGreen" TargetName="back" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Value}" Value="Conflict">
-                                <Setter Property="Background" Value="LightPink" TargetName="back" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </dxg:GridColumn.CellTemplate>
-            </dxg:GridColumn>
-            <dxg:GridColumn FieldName="IsCheckOut">
-                <dxg:GridColumn.EditSettings>
-                    <dxe:CheckEditSettings />
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
-        </dxg:GridControl.Columns>
-        <dxg:GridControl.View>
-            <dxg:TreeListView
-                TreeDerivationMode="ChildNodesSelector"
-                ChildNodesPath="Children"
-                NavigationStyle="Row"
-                FocusedRow="{Binding Path=SelectedItem}"
-                AutoWidth="True">
-            </dxg:TreeListView>
-        </dxg:GridControl.View>
-    </dxg:GridControl>
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <dxg:GridControl
+            ItemsSource="{Binding Path=Source}"
+            SelectionMode="Row"
+            FilterCriteria="{Binding Path=FilterCriteria}"
+            SelectedItem="{Binding Path=SelectedItem}"
+            SelectedItems="{Binding Path=SelectedItems}">
+            <dxmvvm:Interaction.Triggers>
+                <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding NavigateToFileCommand}" EventName="MouseDoubleClick">
+                    <dxmvvm:EventToCommand.EventArgsConverter>
+                        <dx:RoutedEventArgsToDataRowConverter />
+                    </dxmvvm:EventToCommand.EventArgsConverter>
+                </dxmvvm:EventToCommand>
+            </dxmvvm:Interaction.Triggers>
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="Name" Width="200" FixedWidth="True" />
+                <dxg:GridColumn FieldName="Path" />
+                <dxg:GridColumn
+                    FieldName="MergeState"
+                    FixedWidth="True"
+                    Width="100">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0" x:Name="back">
+                                <dxe:TextEdit HorizontalContentAlignment="Center" x:Name="PART_Editor" />
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="Success">
+                                    <Setter Property="Background" Value="LightGreen" TargetName="back" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="Conflict">
+                                    <Setter Property="Background" Value="MediumVioletRed" TargetName="back" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="TargetFileError">
+                                    <Setter Property="Background" Value="MediumOrchid" TargetName="back" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Value}" Value="UnknownError">
+                                    <Setter Property="Background" Value="DarkRed" TargetName="back" />
+                                    <Setter Property="Foreground" Value="White" TargetName="PART_Editor"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="IsCheckOut" Header="Checked Out" FixedWidth="True" Width="80">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:CheckEditSettings />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="IsNew"  FixedWidth="True" Width="80">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:CheckEditSettings />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+            </dxg:GridControl.Columns>
+            <dxg:GridControl.View>
+                <dxg:TreeListView
+                    TreeDerivationMode="ChildNodesSelector"
+                    ChildNodesSelector="{Binding Path=Selector}"
+                    AutoExpandAllNodes="True"
+                    FilterMode="Extended"
+                    NavigationStyle="Row"
+                    AutoWidth="True">
+                    <dxg:TreeListView.RowCellMenuCustomizations>
+                        <dxb:BarItemLink BarItemName="bOpenFile" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bManualMerge" />
+                        <dxb:BarButtonItemLink BarItemName="bMergeSubMenuItem" />
+                        <dxb:BarButtonItemLink BarItemName="bMergeAndReviewTargetSubMenuItem" />
+                        <dxb:BarItemLink BarItemName="bMergeAll" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bCompareWithCurrentVersion" />
+                        <dxb:BarItemLink BarItemName="bCompareWithPortVersion" />
+                        <dxb:BarItemLink BarItemName="bCompareCurrentWithPortVersion" />
+                        <dxb:BarItemLinkSeparator/>
+                        <dxb:BarItemLink BarItemName="bCheckIn" />
+                        <dxb:BarItemLink BarItemName="bUndoCheckout" />
+                    </dxg:TreeListView.RowCellMenuCustomizations>
+                </dxg:TreeListView>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </Grid>
 
 </UserControl>

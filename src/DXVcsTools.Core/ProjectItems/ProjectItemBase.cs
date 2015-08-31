@@ -154,7 +154,7 @@ namespace DXVcsTools.Core {
         public virtual int Priority {
             get { return 0; }
         }
-        public bool IsNew {
+        public virtual bool IsNew {
             get { return isNew; }
             set { SetProperty(ref isNew, value, () => IsNew); }
         }

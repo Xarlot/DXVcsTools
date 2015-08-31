@@ -28,6 +28,7 @@ namespace DXVcsTools.UI {
         public string BlueThemeName { get; set; }
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
+        public bool UseFlatUI { get; set; }
         public string TortoiseProc { get; set; }
 
         [Required]

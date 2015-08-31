@@ -20,7 +20,11 @@
             <DataTemplate x:Key="FlatDataTemplate">
                 <view:FlatUIControl DataContext="{TemplateBinding DataContext}"/>
             </DataTemplate>
+            <DataTemplate x:Key="TreeDataTemplate">
+                <view:TreeUIControl DataContext="{TemplateBinding DataContext}"/>
+            </DataTemplate>
             <view:UITypeSelector x:Key="uiSelector"/>
+            <view:CriteriaOperatorToCheckedConverter x:Key="criteriaOperatorToCheckedConverter"/>
             <Style x:Key="windowStyle" TargetType="dx:DXDialogWindow">
                 <Setter Property="dx:ThemeManager.ThemeName" Value="{Binding Path=ThemeName, Source={x:Static ui:ThemeProvider.Instance}}"/>
                 <Setter Property="SizeToContent" Value="WidthAndHeight"/>
@@ -141,14 +145,14 @@
                                             Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
                                             Content="Check in..." 
                                             Hint="Check in">
-                        <dxb:BarButtonItem x:Name="bCheckInMasterSubMenuItem"
+                <dxb:BarButtonItem x:Name="bCheckInMasterSubMenuItem"
                                                    
                                                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
                                                    Command="{Binding CheckInCommand}" 
                                                    CommandParameter="Master" 
                                                    Content="Check in current version..." 
                                                    Hint="Check in current version"/>
-                        <dxb:BarButtonItem x:Name="bCheckInPortSubMenuItem"
+                <dxb:BarButtonItem x:Name="bCheckInPortSubMenuItem"
                                                    
                                                    Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/check_in_16x16.png" 
                                                    Command="{Binding CheckInCommand}" 
@@ -164,8 +168,26 @@
                                        Hint="Undo check out"/>
 
             <dxb:BarItemSeparator/>
+            <dxb:BarCheckItem 
+                x:Name="bCheckOutOnly"
+                Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
+                Command="{Binding ShowCheckOutOnlyCommand}" 
+                Content="Check out only" 
+                Hint="Show only checkout items..."
+                IsChecked="{Binding Path=FilterCriteria, Converter={StaticResource criteriaOperatorToCheckedConverter}, ConverterParameter='[IsChecked] = true'}">
+            </dxb:BarCheckItem>
+            <dxb:BarCheckItem x:Name="bNewOnly"
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
+                                       Command="{Binding ShowNewOnlyCommand}" 
+                                       Content="New items only"
+                                       Hint="Show only new items..."/>
+            <dxb:BarCheckItem x:Name="bShowAll"
+                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
+                                       Command="{Binding ShowAllItemsCommand}" 
+                                       Content="New items only"
+                                       Hint="Show all items..."/>
+            <dxb:BarItemSeparator/>
             <dxb:BarEditItem x:Name="bCurrentBranch"
-                                     
                                      EditValue="{Binding Path=CurrentBranch}" 
                                      EditWidth="100" 
                                      Content="Port to:">

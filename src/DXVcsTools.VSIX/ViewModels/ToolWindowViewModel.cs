@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using DevExpress.Data.Filtering;
 using DevExpress.Xpf.Core;
 using DXVcsTools.Core;
 using DXVcsTools.DXVcsClient;
@@ -33,6 +34,7 @@ namespace DXVcsTools.VSIX {
         ProjectItemBase selectedItem;
         ObservableCollection<ProjectItemBase> selectedItems;
         SolutionItem solutionItem;
+        CriteriaOperator filterCriteria;
         readonly Func<InternalBlameWindow> internalBlameWindowAccessor;
         readonly Locker currentBranchLocker = new Locker();
         readonly GenerateMenuItemsHelper generateMenuItemsHelper;
@@ -56,7 +58,29 @@ namespace DXVcsTools.VSIX {
             UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
             ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
             NavigateToFileCommand = new DelegateCommand<ProjectItemBase>(NavigateToItem, CanNavigateToItem);
+            ShowAllItemsCommand = new DelegateCommand(ShowAlllItems, CanShowAllItems);
+            ShowCheckoutOnlyCommand = new DelegateCommand(ShowCheckoutOnly, CanSHowCheckoutOnly);
+            ShowNewItemsOnlyCommand = new DelegateCommand(ShowNewOnly, CanShowNewOnly);
         }
+        bool CanShowNewOnly() {
+            return IsCorrectlyLoaded;
+        }
+        void ShowNewOnly() {
+            FilterCriteria = CriteriaOperator.Parse("[IsNew] = true");
+        }
+        bool CanSHowCheckoutOnly() {
+            return IsCorrectlyLoaded;
+        }
+        void ShowCheckoutOnly() {
+            FilterCriteria = CriteriaOperator.Parse("[IsChecked = true]");
+        }
+        bool CanShowAllItems() {
+            return IsCorrectlyLoaded;
+        }
+        void ShowAlllItems() {
+            FilterCriteria = null;
+        }
+        bool UseFlatUI { get { return Options.UseFlatUI; } }
         bool CanCompareCurrentWithPortVersion() {
             if (!IsCorrectlyLoaded)
                 return false;
@@ -121,13 +145,17 @@ namespace DXVcsTools.VSIX {
                 selectedItems.Do(x => x.CollectionChanged += SelectedItemsCollectionChanged);
             }
         }
+        public CriteriaOperator FilterCriteria {
+            get { return filterCriteria; }
+            set { SetProperty(ref filterCriteria, value, "FilterCriteria", CommandManager.InvalidateRequerySuggested); }
+        }
+
         void SelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
             CommandManager.InvalidateRequerySuggested();
         }
         void SelectedItemsChanged() {
             CommandManager.InvalidateRequerySuggested();
         }
-        public UIType UIType { get { return UIType.Flat; } }
         public PortOptionsViewModel PortOptions { get; private set; }
         public OptionsViewModel Options { get; private set; }
         public bool IsSingleSelection { get { return SelectedItems.If(x => x.Count <= 1).ReturnSuccess(); } }
@@ -145,7 +173,11 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand UndoCheckoutCommand { get; private set; }
         public DelegateCommand ShowLogCommand { get; private set; }
         public DelegateCommand StatusCheckOutCommand { get; private set; }
+        public DelegateCommand ShowCheckoutOnlyCommand { get; private set; }
+        public DelegateCommand ShowNewItemsOnlyCommand { get; private set; }
+        public DelegateCommand ShowAllItemsCommand { get; private set; }
         public DelegateCommand<ProjectItemBase> NavigateToFileCommand { get; private set; }
+        public ChildNodesSelector Selector { get; private set; }
 
         public IServiceContainer ServiceContainer { get; private set; }
         bool IsCorrectlyLoaded { get { return PortOptions.If(x => x.IsAttached).ReturnSuccess(); } }
@@ -169,7 +201,7 @@ namespace DXVcsTools.VSIX {
         public void Update() {
             Logger.AddInfo("UpdateCommand. Start");
 
-            if (!InitializeConnection()) 
+            if (!InitializeConnection())
                 return;
             if (!PortOptions.IsAttached) {
                 Logger.AddInfo("UpdateCommand. End - cant merge since port is not initialized");
@@ -184,13 +216,19 @@ namespace DXVcsTools.VSIX {
 
             MergeHelper helper = new MergeHelper(this);
             SelectedItems = new ObservableCollection<ProjectItemBase>();
-            var source = GetFlatItemsSource().Where(item => FilterItems(item, helper)).ToList();
+            Selector = new ChildNodesSelector(item => FilterItems(item, helper));
+            var source = GenerateSource(helper);
             Source = source;
 
             currentBranchLocker.DoIfNotLocked(() => CurrentBranch = Options.Branches.LastOrDefault(item => item != MasterBranch));
             MergeProgress = 0;
 
             Logger.AddInfo("UpdateCommand. End - successful initialized");
+        }
+        IEnumerable GenerateSource(MergeHelper helper) {
+            if (UseFlatUI)
+                return GetFlatItemsSource().Where(item => FilterItems(item, helper)).ToList();
+            return GetTreeItemsSource();
         }
         bool InitializeConnection() {
             ThemeProvider.Instance.ThemeName = dte.GetVSTheme(CalcVsTheme);
@@ -206,7 +244,7 @@ namespace DXVcsTools.VSIX {
             return true;
         }
         bool FilterItems(ProjectItemBase item, MergeHelper helper) {
-            return item.IsCheckOut || (item.IsNew && !string.IsNullOrEmpty(item.FullPath) && !helper.IsItemUnderVss(item.FullPath, MasterBranch));
+            return (item.IsNew && !string.IsNullOrEmpty(item.FullPath) && !helper.IsItemUnderVss(item.FullPath, MasterBranch));
         }
         DXVcsBranch FindMasterBranch(PortOptionsViewModel portOptions) {
             string relativePath = portOptions.GetRelativePath(PortOptions.ProjectFilePath);
@@ -214,10 +252,18 @@ namespace DXVcsTools.VSIX {
         }
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
-            var items = IsSingleSelection ? (IEnumerable)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
-            foreach (ProjectItemBase item in items) {
+            var items = IsSingleSelection ? (IEnumerable<ProjectItemBase>)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
+            var result = items;
+            result = items.Aggregate(result, (current, item) => current.Concat(GetTotalChildren(item)));
+            var itemsForMerge = result.Distinct().ToList();
+            foreach (var item in itemsForMerge) {
                 item.MergeState = PerformMerge(item, showPreview);
             }
+        }
+        IEnumerable<ProjectItemBase> GetMergeItems(ProjectItemBase projectItems) {
+            if (UseFlatUI)
+                return new[] { projectItems };
+            return GetChildren(projectItems);
         }
         bool CanMerge(bool? parameter) {
             return IsSingleSelection
@@ -225,10 +271,26 @@ namespace DXVcsTools.VSIX {
                 : SelectedItems.Return(x => x.Select(CanMergeInternal).Any(), () => false);
 
         }
-        static bool CanMergeInternal(ProjectItemBase x) {
+        bool CanMergeInternal(ProjectItemBase x) {
+            return CalcCanMergeItem(x);
+        }
+        bool CalcCanMergeItem(ProjectItemBase item) {
+            var folderItem = item as FolderItem;
+            if (folderItem != null)
+                return CanMergeFolderItem(folderItem);
+            return CanMergeFileItem(item);
+        }
+        bool CanMergeFolderItem(FolderItem folderItem) {
+            var children = GetTotalChildren(folderItem);
+            return children.Any(CanMergeFileItem);
+        }
+        bool CanMergeFileItem(ProjectItemBase x) {
             return (x.IsCheckOut || x.IsNew) && x.MergeState == MergeState.None;
         }
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
+            if (item is FolderItem)
+                return MergeState.Success;
+
             var helper = new MergeHelper(this);
             item.ItemWrapper.Save();
             return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview, item.IsNew);
@@ -250,6 +312,11 @@ namespace DXVcsTools.VSIX {
                 return new List<ProjectItemBase>();
             return GetChildren(Solution);
         }
+        IEnumerable<ProjectItemBase> GetTreeItemsSource() {
+            if (Solution == null)
+                return new List<ProjectItemBase>();
+            return new List<ProjectItemBase>() { Solution };
+        }
         IEnumerable<ProjectItemBase> GetChildren(ProjectItemBase root) {
             if (root.Children == null)
                 yield break;
@@ -258,9 +325,22 @@ namespace DXVcsTools.VSIX {
                     yield return item;
                 if (item is FileItem)
                     yield return item;
-                foreach (ProjectItemBase subItem in GetChildren(item)) {
+                foreach (var subItem in GetChildren(item)) {
                     if (subItem is FileItem)
                         yield return subItem;
+                }
+            }
+        }
+        IEnumerable<ProjectItemBase> GetTotalChildren(ProjectItemBase root) {
+            if (root.Children == null)
+                yield break;
+            foreach (ProjectItemBase item in root.Children) {
+                if (item is ProjectItem)
+                    yield return item;
+                if (item is FileItem)
+                    yield return item;
+                foreach (ProjectItemBase subItem in GetTotalChildren(item)) {
+                    yield return subItem;
                 }
             }
         }
@@ -315,7 +395,7 @@ namespace DXVcsTools.VSIX {
             else {
                 Logger.AddInfo("CheckInCommand. Start multiple check in.");
 
-                var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);                
+                var model = new CheckInViewModel(GetCheckInPath(target, Solution.Path), false);
                 var result = GetService<IDialogService>(MultipleCheckinWindow).ShowDialog(MessageButton.OKCancel, "Multiple Check in", model);
                 if (result == MessageResult.OK) {
                     var helper = new MergeHelper(this);
