@@ -62,15 +62,15 @@ namespace DXVcsTools {
             var presets = new ObservableCollection<NavigatePreset>();
             presets.Add(new NavigatePreset() {
                 Name = "General",
-                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+                Value = @"(Contains([DisplayText], '2015.2') Or Contains([DisplayText], '2015.1') Or Contains([DisplayText], '2014.2')) And Not Contains([DisplayText], 'Localization')"
             });
             presets.Add(new NavigatePreset() {
                 Name = "Wpf",
-                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization')"
+                Value = @"(Contains([DisplayText], '2015.2') Or Contains([DisplayText], '2015.1') Or Contains([DisplayText], '2014.2'))  And Not Contains([DisplayText], 'Localization')"
             });
             presets.Add(new NavigatePreset() {
                 Name = "Win",
-                Value = @"(Contains([DisplayText], '2014.2') Or Contains([DisplayText], '2013.2') Or Contains([DisplayText], '2014.1')) And Not Contains([DisplayText], 'Localization') And Contains([DisplayText], 'Win') Or Contains([DisplayText], 'RealLife')"
+                Value = @"(Contains([DisplayText], '2015.2') Or Contains([DisplayText], '2015.1') Or Contains([DisplayText], '2014.2'))  And Not Contains([DisplayText], 'Localization') And Contains([DisplayText], 'Win') Or Contains([DisplayText], 'RealLife')"
             });
             return presets;
         }
@@ -122,6 +122,7 @@ namespace DXVcsTools {
             options.TortoiseProc = @"Lib/TortoiseSvn/bin/TortoiseBlame.exe";
             options.BlameType = DXBlameType.Internal;
             options.ConfigVersion = VersionInfo.ToIntVersion();
+            options.StartupFilterType = StartupFilterType.CheckedOut;
 
             options.DiffTool = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
             return options;

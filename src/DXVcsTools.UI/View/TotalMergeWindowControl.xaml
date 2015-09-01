@@ -171,21 +171,26 @@
             <dxb:BarCheckItem 
                 x:Name="bCheckOutOnly"
                 Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
-                Command="{Binding ShowCheckOutOnlyCommand}" 
+                Command="{Binding ShowCheckoutOnlyCommand}" 
                 Content="Check out only" 
                 Hint="Show only checkout items..."
-                IsChecked="{Binding Path=FilterCriteria, Converter={StaticResource criteriaOperatorToCheckedConverter}, ConverterParameter='[IsChecked] = true'}">
+                IsChecked="{Binding Path=FilterCriteria, Converter={StaticResource criteriaOperatorToCheckedConverter}, ConverterParameter='[IsCheckOut] = True', Mode=OneWay}">
             </dxb:BarCheckItem>
             <dxb:BarCheckItem x:Name="bNewOnly"
                                        Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
                                        Command="{Binding ShowNewOnlyCommand}" 
                                        Content="New items only"
-                                       Hint="Show only new items..."/>
-            <dxb:BarCheckItem x:Name="bShowAll"
-                                       Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
-                                       Command="{Binding ShowAllItemsCommand}" 
-                                       Content="New items only"
-                                       Hint="Show all items..."/>
+                                       Hint="Show only new items..."
+                              IsChecked="{Binding Path=FilterCriteria, Converter={StaticResource criteriaOperatorToCheckedConverter}, ConverterParameter='[IsNew] = True', Mode=OneWay}">
+            </dxb:BarCheckItem>
+            <dxb:BarCheckItem 
+                x:Name="bShowAll"
+                Glyph="pack://application:,,,/DXVcsTools.UI;component/Images/undo_check_out_16x16.png" 
+                Command="{Binding ShowAllCommand}" 
+                Content="New items only"
+                Hint="Show all items..."
+                IsChecked="{Binding Path=FilterCriteria, Converter={StaticResource criteriaOperatorToCheckedConverter}, Mode=OneWay}">
+            </dxb:BarCheckItem>
             <dxb:BarItemSeparator/>
             <dxb:BarEditItem x:Name="bCurrentBranch"
                                      EditValue="{Binding Path=CurrentBranch}" 

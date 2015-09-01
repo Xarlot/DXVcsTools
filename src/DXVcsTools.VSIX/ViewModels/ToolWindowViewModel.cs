@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using DevExpress.Data.Filtering;
+using DevExpress.Data.Filtering.Helpers;
 using DevExpress.Xpf.Core;
 using DXVcsTools.Core;
 using DXVcsTools.DXVcsClient;
@@ -38,6 +39,8 @@ namespace DXVcsTools.VSIX {
         readonly Func<InternalBlameWindow> internalBlameWindowAccessor;
         readonly Locker currentBranchLocker = new Locker();
         readonly GenerateMenuItemsHelper generateMenuItemsHelper;
+        Func<ProjectItemBase, bool> filterPredicate = x => true;
+
         public ToolWindowViewModel(DTE dte, OptionsViewModel options, GenerateMenuItemsHelper generateMenuHelper, Func<InternalBlameWindow> internalBlameWindowAccessor) {
             this.generateMenuItemsHelper = generateMenuHelper;
             this.dte = new DteWrapper(dte);
@@ -58,29 +61,41 @@ namespace DXVcsTools.VSIX {
             UndoCheckoutCommand = new DelegateCommand(UndoCheckout, CanUndoCheckout);
             ShowLogCommand = new DelegateCommand(ShowLog, CanShowLog);
             NavigateToFileCommand = new DelegateCommand<ProjectItemBase>(NavigateToItem, CanNavigateToItem);
-            ShowAllItemsCommand = new DelegateCommand(ShowAlllItems, CanShowAllItems);
+            ShowAllCommand = new DelegateCommand(ShowAlllItems, CanShowAllItems);
             ShowCheckoutOnlyCommand = new DelegateCommand(ShowCheckoutOnly, CanSHowCheckoutOnly);
-            ShowNewItemsOnlyCommand = new DelegateCommand(ShowNewOnly, CanShowNewOnly);
+            ShowNewOnlyCommand = new DelegateCommand(ShowNewOnly, CanShowNewOnly);
+
+            FilterCriteria = CreateFilterCriteria(Options.StartupFilterType);
         }
         bool CanShowNewOnly() {
             return IsCorrectlyLoaded;
         }
         void ShowNewOnly() {
-            FilterCriteria = CriteriaOperator.Parse("[IsNew] = true");
+            FilterCriteria = CreateFilterCriteria(StartupFilterType.New);
         }
         bool CanSHowCheckoutOnly() {
             return IsCorrectlyLoaded;
         }
         void ShowCheckoutOnly() {
-            FilterCriteria = CriteriaOperator.Parse("[IsChecked = true]");
+            FilterCriteria = CreateFilterCriteria(StartupFilterType.CheckedOut);
+        }
+        CriteriaOperator CreateFilterCriteria(StartupFilterType filterType) {
+            if (filterType == StartupFilterType.All)
+                return null;
+            if (filterType == StartupFilterType.CheckedOut)
+                return CriteriaOperator.Parse("[IsCheckOut] = True");
+            if (filterType == StartupFilterType.New)
+                return CriteriaOperator.Parse("[IsNew] = true");
+            throw new ArgumentException("filter");
         }
         bool CanShowAllItems() {
             return IsCorrectlyLoaded;
         }
         void ShowAlllItems() {
-            FilterCriteria = null;
+            FilterCriteria = CreateFilterCriteria(StartupFilterType.All);
         }
         bool UseFlatUI { get { return Options.UseFlatUI; } }
+        StartupFilterType FilterType { get; set; }
         bool CanCompareCurrentWithPortVersion() {
             if (!IsCorrectlyLoaded)
                 return false;
@@ -147,7 +162,20 @@ namespace DXVcsTools.VSIX {
         }
         public CriteriaOperator FilterCriteria {
             get { return filterCriteria; }
-            set { SetProperty(ref filterCriteria, value, "FilterCriteria", CommandManager.InvalidateRequerySuggested); }
+            set {
+                SetProperty(ref filterCriteria, value, "FilterCriteria", () => {
+                    UpdateFilterPredicate();
+                    CommandManager.InvalidateRequerySuggested();
+                });
+            }
+        }
+        void UpdateFilterPredicate() {
+            if (object.Equals(FilterCriteria, null))
+                filterPredicate = x => true;
+            else {
+                CriteriaCompiledContextDescriptorTyped criteria = new CriteriaCompiledContextDescriptorTyped(typeof(ProjectItemBase));
+                filterPredicate = CriteriaCompiler.ToPredicate<ProjectItemBase>(FilterCriteria, criteria);
+            }
         }
 
         void SelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
@@ -174,8 +202,8 @@ namespace DXVcsTools.VSIX {
         public DelegateCommand ShowLogCommand { get; private set; }
         public DelegateCommand StatusCheckOutCommand { get; private set; }
         public DelegateCommand ShowCheckoutOnlyCommand { get; private set; }
-        public DelegateCommand ShowNewItemsOnlyCommand { get; private set; }
-        public DelegateCommand ShowAllItemsCommand { get; private set; }
+        public DelegateCommand ShowNewOnlyCommand { get; private set; }
+        public DelegateCommand ShowAllCommand { get; private set; }
         public DelegateCommand<ProjectItemBase> NavigateToFileCommand { get; private set; }
         public ChildNodesSelector Selector { get; private set; }
 
@@ -253,26 +281,22 @@ namespace DXVcsTools.VSIX {
         void Merge(bool? parameter) {
             bool showPreview = parameter.HasValue ? parameter.Value : Options.ReviewTarget;
             var items = IsSingleSelection ? (IEnumerable<ProjectItemBase>)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
-            var result = items;
-            result = items.Aggregate(result, (current, item) => current.Concat(GetTotalChildren(item)));
-            var itemsForMerge = result.Distinct().ToList();
+            List<ProjectItemBase> itemsForMerge = CalcItemsForMerge(items);
             foreach (var item in itemsForMerge) {
                 item.MergeState = PerformMerge(item, showPreview);
             }
         }
-        IEnumerable<ProjectItemBase> GetMergeItems(ProjectItemBase projectItems) {
-            if (UseFlatUI)
-                return new[] { projectItems };
-            return GetChildren(projectItems);
+        List<ProjectItemBase> CalcItemsForMerge(IEnumerable<ProjectItemBase> items) {
+            IEnumerable<ProjectItemBase> projectItemBase = items as IList<ProjectItemBase> ?? items.ToList();
+            var result = projectItemBase;
+            result = projectItemBase.Aggregate(result, (current, item) => current.Concat(GetTotalChildren(item)));
+            var itemsForMerge = result.Where(x => filterPredicate(x)).Distinct().ToList();
+            return itemsForMerge;
         }
         bool CanMerge(bool? parameter) {
-            return IsSingleSelection
-                ? SelectedItem.Return(CanMergeInternal, () => false)
-                : SelectedItems.Return(x => x.Select(CanMergeInternal).Any(), () => false);
-
-        }
-        bool CanMergeInternal(ProjectItemBase x) {
-            return CalcCanMergeItem(x);
+            var items = IsSingleSelection ? (IEnumerable<ProjectItemBase>)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
+            List<ProjectItemBase> itemsForMerge = CalcItemsForMerge(items);
+            return itemsForMerge.Any(CalcCanMergeItem);
         }
         bool CalcCanMergeItem(ProjectItemBase item) {
             var folderItem = item as FolderItem;

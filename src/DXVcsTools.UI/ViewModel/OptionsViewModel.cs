@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Serialization;
-using DevExpress.Mvvm;
 using DXVcsTools.Core;
 
 namespace DXVcsTools.UI {
@@ -29,6 +26,7 @@ namespace DXVcsTools.UI {
         public bool UseNavigateMenu { get; set; }
         public bool UpdateNavigateMenuAsync { get; set; }
         public bool UseFlatUI { get; set; }
+        public StartupFilterType StartupFilterType { get; set; }
         public string TortoiseProc { get; set; }
 
         [Required]
@@ -38,5 +36,11 @@ namespace DXVcsTools.UI {
                 SetProperty(ref layoutOptions, value ?? new LayoutOptionsViewModel(), () => LayoutOptions);
             }
         }
+    }
+
+    public enum StartupFilterType {
+        All,
+        CheckedOut,
+        New,
     }
 }
