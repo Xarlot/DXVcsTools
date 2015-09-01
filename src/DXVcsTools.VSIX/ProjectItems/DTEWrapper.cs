@@ -18,7 +18,9 @@ namespace DXVcsTools.Core {
             solutionBuild = ((SolutionBuild2)((Solution2)dte.Solution).SolutionBuild);
         }
         public SolutionItem BuildTree() {
-            return new SolutionItem(GetProjects(dte.Solution).ToList()) { Name = dte.Solution.FullName, Path = dte.Solution.FileName };
+            var item = new SolutionItem(GetProjects(dte.Solution).ToList()) { Name = dte.Solution.FullName, Path = dte.Solution.FileName};
+            item.ItemWrapper = new SolutionWrapper(dte.Solution);
+            return item;
         }
         IEnumerable<ProjectItem> GetProjects(EnvDTE.Solution solution) {
             string name = solution.FullName;
@@ -61,6 +63,11 @@ namespace DXVcsTools.Core {
                 fileName = projectItem.FileNames[0];
             }
             catch {
+                try {
+                    fileName = projectItem.Name;
+                }
+                catch {
+                }
             }
             if (fileName == null)
                 return null;

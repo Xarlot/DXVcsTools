@@ -39,8 +39,8 @@ namespace DXVcsTools.UI {
     }
 
     public enum StartupFilterType {
-        All,
         CheckedOut,
         New,
+        All,
     }
 }

@@ -318,13 +318,12 @@ namespace DXVcsTools.VSIX {
         MergeState PerformMerge(ProjectItemBase item, bool showPreview) {
             if (item is FolderItem)
                 return MergeState.Success;
-
             var helper = new MergeHelper(this);
             item.ItemWrapper.Save();
             return helper.MergeChanges(CurrentBranch, item.Path, null, showPreview, item.IsNew);
         }
         void MergeAll() {
-            List<ProjectItemBase> items = Source.Cast<ProjectItemBase>().Where(item => item.MergeState == MergeState.None).ToList();
+            var items = CalcItemsForMerge(new[] {Solution});
             foreach (ProjectItemBase item in items) {
                 item.MergeState = PerformMerge(item, false);
             }
