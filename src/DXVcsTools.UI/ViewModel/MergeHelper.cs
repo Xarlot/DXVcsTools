@@ -316,7 +316,7 @@ namespace DXVcsTools.Core {
                     return;
                 }
                 string fileTargetPath = repository.GetFileWorkingPath(vcsTargetPath);
-                PreviewTarget(repository, filePath, vcsTargetPath, fileTargetPath, false);
+                PreviewTarget(repository, fileTargetPath, vcsTargetPath, filePath, false);
             }
             catch (Exception e) {
                 DXMessageBox.Show(e.Message);
