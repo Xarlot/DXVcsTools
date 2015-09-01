@@ -109,8 +109,7 @@ namespace DXVcsTools.ViewModels {
         void SettingsMenuOnClick(object sender, EventArgs eventArgs) {
             DXDialog dialog = new DXDialog();
             dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            dialog.DataContext = Options;
-            dialog.Content = new RootSettingsControl();
+            dialog.Content = new RootSettingsControl() {DataContext = Options};
             dialog.SizeToContent = SizeToContent.WidthAndHeight;
             if (dialog.ShowDialog(MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                 SerializeHelper.SerializeSettings(Options);

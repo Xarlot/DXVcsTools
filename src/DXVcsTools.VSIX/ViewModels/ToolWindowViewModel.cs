@@ -259,7 +259,7 @@ namespace DXVcsTools.VSIX {
         }
         IEnumerable GenerateSource(MergeHelper helper) {
             if (UseFlatUI)
-                return GetFlatItemsSource().Where(item => FilterItems(item, helper)).ToList();
+                return GetFlatItemsSource().Where(item => !FilterItems(item, helper)).ToList();
             return GetTreeItemsSource();
         }
         bool InitializeConnection() {
