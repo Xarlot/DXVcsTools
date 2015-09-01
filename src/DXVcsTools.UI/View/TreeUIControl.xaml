@@ -14,7 +14,7 @@
         <dxg:GridControl
             ItemsSource="{Binding Path=Source}"
             SelectionMode="Row"
-            FilterCriteria="{Binding Path=FilterCriteria}"
+            FilterCriteria="{Binding Path=FilterCriteria, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             SelectedItem="{Binding Path=SelectedItem}"
             SelectedItems="{Binding Path=SelectedItems}">
             <dxmvvm:Interaction.Triggers>

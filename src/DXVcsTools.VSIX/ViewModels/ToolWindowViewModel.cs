@@ -174,7 +174,11 @@ namespace DXVcsTools.VSIX {
                 filterPredicate = x => true;
             else {
                 CriteriaCompiledContextDescriptorTyped criteria = new CriteriaCompiledContextDescriptorTyped(typeof(ProjectItemBase));
-                filterPredicate = CriteriaCompiler.ToPredicate<ProjectItemBase>(FilterCriteria, criteria);
+                var filter = CriteriaCompiler.ToPredicate<ProjectItemBase>(FilterCriteria, criteria);
+                filterPredicate = x => {
+                    bool fileItem = x is FileItem;
+                    return !fileItem || filter(x);
+                };
             }
         }
 
@@ -294,9 +298,9 @@ namespace DXVcsTools.VSIX {
             return itemsForMerge;
         }
         bool CanMerge(bool? parameter) {
-            var items = IsSingleSelection ? (IEnumerable<ProjectItemBase>)new List<ProjectItemBase> { SelectedItem } : SelectedItems;
+            var items = IsSingleSelection ? (IEnumerable<ProjectItemBase>)SelectedItem.Return(x => new List<ProjectItemBase> { x }, () => new List<ProjectItemBase>()) : SelectedItems;
             List<ProjectItemBase> itemsForMerge = CalcItemsForMerge(items);
-            return itemsForMerge.Any(CalcCanMergeItem);
+            return itemsForMerge.Return(x => x.Any(CalcCanMergeItem), () => false);
         }
         bool CalcCanMergeItem(ProjectItemBase item) {
             var folderItem = item as FolderItem;
@@ -359,10 +363,8 @@ namespace DXVcsTools.VSIX {
             if (root.Children == null)
                 yield break;
             foreach (ProjectItemBase item in root.Children) {
-                if (item is ProjectItem)
-                    yield return item;
-                if (item is FileItem)
-                    yield return item;
+                yield return item;
+
                 foreach (ProjectItemBase subItem in GetTotalChildren(item)) {
                     yield return subItem;
                 }
@@ -456,7 +458,7 @@ namespace DXVcsTools.VSIX {
             helper.CompareWithPortVersion(SelectedItem.Path, CurrentBranch, SelectedItem.IsNew);
         }
         bool CanManualMerge() {
-            return IsCorrectlyLoaded && IsSingleSelection && SelectedItem.If(x => x.IsCheckOut).ReturnSuccess();
+            return IsCorrectlyLoaded && IsSingleSelection && SelectedItem.If(x => x is FileItem).ReturnSuccess();
         }
         void ManualMerge() {
             Logger.AddInfo("ManualMergeCommand. Merge start.");
