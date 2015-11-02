@@ -13,7 +13,7 @@ namespace DXVcsTools.DXVcsClient {
         }
         public IDXVCSService GetService(string serviceUrl) {
             EndpointAddress myEndpointAddress = new EndpointAddress(new Uri(serviceUrl), new SpnEndpointIdentity(String.Empty));
-            ServiceEndpoint point = GZipMessageEncodingBindingElement.CreateEndpoint(myEndpointAddress);
+            ServiceEndpoint point = GZipMessageEncodingBindingElement.CreateEndpoint(myEndpointAddress, typeof(IDXVCSService));
             ChannelFactory<IDXVCSService> factory = new Factory(point);
             factory.Credentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Identification;
             IDXVCSService newService = factory.CreateChannel();

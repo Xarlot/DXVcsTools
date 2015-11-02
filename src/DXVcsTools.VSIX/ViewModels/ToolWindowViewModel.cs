@@ -291,7 +291,7 @@ namespace DXVcsTools.VSIX {
             }
         }
         List<ProjectItemBase> CalcItemsForMerge(IEnumerable<ProjectItemBase> items) {
-            IEnumerable<ProjectItemBase> projectItemBase = items as IList<ProjectItemBase> ?? items.ToList();
+            IEnumerable<ProjectItemBase> projectItemBase = items as IList<ProjectItemBase> ?? items.With(x => x.ToList()) ?? new List<ProjectItemBase>();
             var result = projectItemBase;
             result = projectItemBase.Aggregate(result, (current, item) => current.Concat(GetTotalChildren(item)));
             var itemsForMerge = result.Where(x => filterPredicate(x)).Distinct().ToList();
