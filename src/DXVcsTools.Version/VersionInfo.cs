@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 
 namespace DXVcsTools.Version {
     public sealed class VersionInfo {
         public const string Major = "2";
         public const string Minor = "3";
-        public const string Build = "5";
+        public const string Build = "6";
         public const string Revision = "0";
 
         public const string FullVersion = Major + "." + Minor + "." + Build + "." + Revision;
